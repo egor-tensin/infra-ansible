@@ -12,7 +12,7 @@ requirements.yml:
 collections:
   - source: https://github.com/egor-tensin/infra-ansible.git
     type: git
-    version: master # Or a commit hash
+    version: master # Or a git tag
 ```
 
 ```
