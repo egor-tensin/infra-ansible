@@ -1,0 +1,33 @@
+- name: Workspace directory
+  become: true
+  ansible.builtin.file:
+    path: '{{ workspace_dir }}'
+    state: directory
+    owner: '{{ ansible_user }}'
+    group: '{{ ansible_user }}'
+    mode: '0750'
+
+- name: Install dependencies
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+      - vim
+
+- name: Configure git
+  block:
+    - name: Set user.name
+      community.general.git_config:
+        scope: global
+        name: user.name
+        value: '{{ git_name }}'
+
+    - name: Set user.email
+      community.general.git_config:
+        scope: global
+        name: user.email
+        value: '{{ git_email }}'
+
+- name: Update projects
+  ansible.builtin.include_tasks: project.yml
+  loop: '{{ workspace_projects }}'
