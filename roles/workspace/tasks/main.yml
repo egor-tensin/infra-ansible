@@ -12,6 +12,8 @@
   ansible.builtin.apt:
     name:
       - git
+      # I use Makefiles a lot, makes sense to install this:
+      - make
       - vim
 
 - name: Configure git
