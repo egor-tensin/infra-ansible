@@ -1,0 +1,23 @@
+- name: Set up Wireguard
+  become: true
+  block:
+  - name: Install wireguard-tools
+    ansible.builtin.apt:
+      install_recommends: false
+      name: wireguard-tools
+      state: present
+  
+  - name: Config file
+    ansible.builtin.template:
+      src: wg0.conf
+      dest: '/etc/wireguard/{{ wg_name }}.conf'
+      owner: root
+      group: root
+      mode: '600'
+    register: config
+  
+  - name: Restart wg-quick service
+    ansible.builtin.systemd_service:
+      name: 'wg-quick@{{ wg_name }}'
+      state: restarted
+    when: config.changed
