@@ -1,0 +1,8 @@
+namespace: tensin
+name: infra
+# The version field is unmaintained.
+version: 0.0.1
+readme: README.md
+license: MIT
+authors:
+  - Egor Tensin <Egor.Tensin@gmail.com>

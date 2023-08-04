@@ -1,0 +1,13 @@
+- name: Install Docker
+  become: true
+  ansible.builtin.apt:
+    install_recommends: false
+    name:
+      - docker.io
+      - docker-compose
+    state: present
+
+- name: Clean up Docker data
+  become: true
+  ansible.builtin.command: docker system prune -a -f --volumes
+  changed_when: true
