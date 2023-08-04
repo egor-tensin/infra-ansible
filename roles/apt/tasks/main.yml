@@ -18,3 +18,10 @@
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
+
+- name: Install extra packages
+  become: true
+  ansible.builtin.apt:
+    install_recommends: false
+    name: '{{ apt_extra_packages }}'
+    state: present
