@@ -1,0 +1,21 @@
+- name: Set certificate name
+  ansible.builtin.set_fact:
+    certificate_name: '{{ item.name | default(item) }}'
+
+- name: Set certificate domains
+  ansible.builtin.set_fact:
+    certificate_domains: "{{ item.domains | default([certificate_name]) | join(',') }}"
+
+- name: 'Create certificate: {{ certificate_name }}'
+  become: true
+  ansible.builtin.command: |
+    certbot certonly --noninteractive --agree-tos \
+        --cert-name '{{ certificate_name }}' \
+        --email '{{ certbot_email }}' \
+        --domains '{{ certificate_domains }}' \
+        --preferred-challenges dns \
+        --dns-digitalocean \
+        --dns-digitalocean-credentials '{{ certbot_ini }}' \
+        --dns-digitalocean-propagation-seconds 30
+  args:
+    creates: '/etc/letsencrypt/live/{{ certificate_name }}'
