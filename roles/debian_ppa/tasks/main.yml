@@ -1,0 +1,19 @@
+- name: Set up repository
+  become: true
+  block:
+    - name: Create keys directory
+      ansible.builtin.file:
+        path: '{{ ppa_keys_dir }}'
+        mode: '755'
+        state: directory
+
+    - name: 'Add key: {{ ppa_name }}'
+      ansible.builtin.get_url:
+        url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
+        dest: '{{ ppa_keys_dir }}/linux-status.asc'
+        mode: '644'
+
+    - name: 'Add repository: {{ ppa_name }}'
+      ansible.builtin.apt_repository:
+        repo: 'deb [signed-by={{ ppa_keys_dir }}/{{ ppa_name }}.asc] https://ppa.launchpadcontent.net/{{ ppa_owner }}/{{ ppa_name }}/ubuntu {{ ppa_distro }} main'
+        filename: '{{ ppa_name }}'

@@ -1,22 +1,11 @@
 - name: Set up repository
-  become: true
-  block:
-    - name: Create keys directory
-      ansible.builtin.file:
-        path: '{{ keys_dir }}'
-        mode: '755'
-        state: directory
-
-    - name: Add key
-      ansible.builtin.get_url:
-        url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ gpg_key_id }}'
-        dest: '{{ keys_dir }}/linux-status.asc'
-        mode: '644'
-
-    - name: Add repository
-      ansible.builtin.apt_repository:
-        repo: 'deb [signed-by={{ keys_dir }}/linux-status.asc] https://ppa.launchpadcontent.net/egor-tensin/linux-status/ubuntu focal main'
-        filename: linux-status
+  ansible.builtin.include_role:
+    name: debian_ppa
+  vars:
+    ppa_owner: egor-tensin
+    ppa_name: linux-status
+    ppa_distro: focal
+    ppa_key: ecb69cbafc6d7cd8bd67ec35b1089b3051c9384d
 
 - name: Install linux-status
   become: true
