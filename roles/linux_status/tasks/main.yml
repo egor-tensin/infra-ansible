@@ -23,3 +23,30 @@
   ansible.builtin.apt:
     install_recommends: false
     name: linux-status
+
+- name: Disable power management
+  when: linux_status_disable_power_management
+  become: true
+  vars:
+    service_name: linux-status
+  block:
+    - name: 'Create override directory: {{ service_name }}'
+      ansible.builtin.file:
+        path: '/etc/systemd/system/{{ service_name }}.service.d'
+        state: directory
+
+    - name: 'Set up override: {{ service_name }}'
+      community.general.ini_file:
+        dest: '/etc/systemd/system/{{ service_name }}.service.d/override.conf'
+        section: Unit
+        option: ExecStart
+        values: ['', '/usr/bin/python3 -B server.py --disable-power']
+        no_extra_spaces: true
+      register: overridden
+
+    - name: 'Restart service: {{ service_name }}'
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+        name: '{{ service_name }}'
+        state: restarted
+      when: overridden.changed
