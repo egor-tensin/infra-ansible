@@ -1,4 +1,4 @@
-- name: Set up systemd service dependency
+- name: Edit systemd service definition
   become: true
   block:
     - name: 'Create override directory: {{ service_name }}'
@@ -9,9 +9,10 @@
     - name: 'Set up override: {{ service_name }}'
       community.general.ini_file:
         dest: '/etc/systemd/system/{{ service_name }}.service.d/override.conf'
-        section: Unit
-        option: RequiresMountsFor
-        value: '{{ mount_dir }}'
+        section: '{{ service_section }}'
+        option: '{{ service_option }}'
+        values: '{{ service_values }}'
+        no_extra_spaces: true
       register: overridden
 
     - name: 'Restart service: {{ service_name }}'
