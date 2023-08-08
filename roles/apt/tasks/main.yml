@@ -4,7 +4,7 @@
     install_recommends: false
     update_cache: true
     upgrade: dist
-  notify: reboot
+  notify: Reboot
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
@@ -14,7 +14,7 @@
   ansible.builtin.apt:
     autoremove: true
     purge: true
-  notify: reboot
+  notify: Reboot
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers

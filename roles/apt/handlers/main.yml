@@ -1,16 +1,5 @@
 - name: Reboot
+  become: true
   ansible.builtin.reboot:
-  args:
     # 3 minutes is plenty.
     reboot_timeout: 180
-  # Don't reboot yourself accidentally:
-  when: 'ansible_env["SSH_CLIENT"].split()[0] not in ansible_all_ipv4_addresses'
-  become: true
-  listen: reboot
-
-- name: Wait for connectivity
-  ansible.builtin.wait_for_connection:
-  args:
-    # 3 minutes is plenty.
-    timeout: 180
-  listen: reboot

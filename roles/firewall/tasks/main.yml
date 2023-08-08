@@ -16,7 +16,7 @@
   loop:
     - {src: rules.v4, dest: /etc/iptables/rules.v4}
     - {src: rules.v6, dest: /etc/iptables/rules.v6}
-  notify: Reload iptables
+  notify: Reboot
 
-- name: Flush handlers
+- name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
