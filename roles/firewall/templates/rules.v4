@@ -17,7 +17,7 @@
 {% set ssh_port = hostvars[inventory_hostname].ansible_port %}
 
 # Open TCP ports:
-{% set tcp_ports = firewall_ports_tcp + firewall_ports4_tcp + [ssh_port] %}
+{% set tcp_ports = [ssh_port] + firewall_ports_tcp + firewall_ports4_tcp %}
 {% set tcp_ports = tcp_ports | unique %}
 
 {% for port in tcp_ports %}
