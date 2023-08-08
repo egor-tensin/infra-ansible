@@ -1,2 +1,3 @@
 wg_name: wg0
 wg_listen_port: 51280
+wg_firewall: false
