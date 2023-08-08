@@ -2,5 +2,5 @@
     name: systemd_edit
   vars:
     service_section: Unit
-    service_option: RequiresMountFor
+    service_option: RequiresMountsFor
     service_values: ['{{ mount_dir }}']
