@@ -1,0 +1,22 @@
+- name: Install iptables-persistent
+  become: true
+  ansible.builtin.apt:
+    install_recommends: false
+    name: iptables-persistent
+    state: present
+
+- name: 'Configure rules'
+  become: true
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: root
+    group: root
+    mode: '640'
+  loop:
+    - {src: rules.v4, dest: /etc/iptables/rules.v4}
+    - {src: rules.v6, dest: /etc/iptables/rules.v6}
+  notify: Reload iptables
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

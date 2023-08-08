@@ -1,0 +1,10 @@
+firewall_ports_tcp: []
+firewall_ports4_tcp: []
+firewall_ports6_tcp: []
+
+firewall_ports_udp: []
+firewall_ports4_udp: []
+firewall_ports6_udp: []
+
+firewall_rules4: []
+firewall_rules6: []
