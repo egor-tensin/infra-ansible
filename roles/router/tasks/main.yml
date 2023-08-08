@@ -1,0 +1,11 @@
+- name: Set sysctl values
+  become: true
+  ansible.posix.sysctl:
+    name: '{{ item }}'
+    value: 1
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-router.conf
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv4.conf.all.forwarding
+    - net.ipv6.conf.all.forwarding
