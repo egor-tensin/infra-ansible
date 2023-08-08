@@ -1,0 +1,3 @@
+{% for domain in certificate_domains %}
+{{ domain }}
+{% endfor %}

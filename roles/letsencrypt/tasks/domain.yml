@@ -4,7 +4,17 @@
 
 - name: Set certificate domains
   ansible.builtin.set_fact:
-    certificate_domains: "{{ item.domains | default([certificate_name]) | join(',') }}"
+    certificate_domains: "{{ item.domains | default([certificate_name]) | sort | unique }}"
+
+- name: Cache domain list
+  become: true
+  ansible.builtin.template:
+    src: domain_list.txt
+    dest: '/etc/letsencrypt/.domains_{{ certificate_name }}.txt'
+    owner: root
+    group: root
+    mode: '640'
+  register: domain_list
 
 - name: 'Create certificate: {{ certificate_name }}'
   become: true
@@ -12,10 +22,9 @@
     certbot certonly --noninteractive --agree-tos \
         --cert-name '{{ certificate_name }}' \
         --email '{{ certbot_email }}' \
-        --domains '{{ certificate_domains }}' \
+        --domains '{{ certificate_domains | join(',') }}' \
         --preferred-challenges dns \
         --dns-digitalocean \
         --dns-digitalocean-credentials '{{ certbot_ini }}' \
         --dns-digitalocean-propagation-seconds 30
-  args:
-    creates: '/etc/letsencrypt/live/{{ certificate_name }}'
+  when: domain_list.changed
