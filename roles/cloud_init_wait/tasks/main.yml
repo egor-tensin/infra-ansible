@@ -1,0 +1,12 @@
+- name: Wait until cloud-init is finished
+  ansible.builtin.stat:
+    path: /var/lib/cloud/instance/boot-finished
+    # WTF? Is this the best way to _just_ check if a file exists?
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: boot_finished
+  until: boot_finished.stat.exists is not false
+  # About 5 minutes worth of attempts.
+  retries: 30
+  delay: 10
