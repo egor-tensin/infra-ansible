@@ -1,3 +1,11 @@
+# Make a playbook usable immediately after creating a VM - even before
+# the SSH server is started.
+- name: Wait for SSH connection
+  ansible.builtin.wait_for_connection:
+    timeout: '{{ cloud_init_wait_seconds }}'
+
+# Again, make a playbook usable immediately after creating a VM - that includes
+# waiting until cloud-init is done.
 - name: Wait until cloud-init is finished
   ansible.builtin.stat:
     path: '{{ cloud_init_wait_path }}'
