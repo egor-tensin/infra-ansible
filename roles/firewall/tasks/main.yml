@@ -5,33 +5,11 @@
     name: iptables-persistent
     state: present
 
-- name: Configure rules
-  become: true
-  ansible.builtin.template:
-    src: '{{ item.src }}'
-    dest: '{{ item.dest }}'
-    owner: root
-    group: root
-    mode: '640'
+- name: Configure rule files
+  ansible.builtin.include_tasks: file.yml
   loop:
-    - {src: rules.v4, dest: /etc/iptables/rules.v4}
-    - {src: rules.v6, dest: /etc/iptables/rules.v6}
-  notify: Reboot
-
-# If I simply restart the netfilter-persistent service, it happily restarts,
-# effectively ignoring errors in files. That way the operator doesn't get
-# feedback if the rules file is malformed.
-- name: Check that the rule files are valid
-  become: true
-  ansible.builtin.command:
-    argv:
-      - '/usr/sbin/{{ item.iptables }}-restore'
-      - --test
-      - '{{ item.dest }}'
-  changed_when: false
-  loop:
-    - {iptables: iptables,  dest: /etc/iptables/rules.v4}
-    - {iptables: ip6tables, dest: /etc/iptables/rules.v6}
+    - {src: rules.v4, dest: /etc/iptables/rules.v4, tool: iptables}
+    - {src: rules.v6, dest: /etc/iptables/rules.v6, tool: ip6tables}
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
