@@ -1,0 +1,3 @@
+file_wait_seconds: 300
+file_wait_delay: 10
+file_wait_reboots: 3

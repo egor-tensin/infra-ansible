@@ -1,0 +1,25 @@
+- name: Wait for connection
+  ansible.builtin.wait_for_connection:
+    timeout: '{{ file_wait_seconds }}'
+
+- name: Check if the file exists
+  ansible.builtin.file:
+    path: '{{ file_wait_path }}'
+    state: file
+  register: file_wait_check
+  until: file_wait_check is succeeded
+  retries: '{{ file_wait_seconds // file_wait_delay }}'
+  delay: '{{ file_wait_delay }}'
+  ignore_unreachable: true
+  ignore_errors: true
+
+- name: If the host restarted, try again
+  block:
+    - name: Note a reboot happened
+      ansible.builtin.set_fact:
+        file_wait_reboots: '{{ (file_wait_reboots | int) - 1 }}'
+
+    - name: Retry if there're more attempts
+      ansible.builtin.include_tasks: check.yml
+      when: (file_wait_reboots | int > 0)
+  when: file_wait_check is unreachable

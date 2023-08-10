@@ -1,5 +1,5 @@
-- ansible.builtin.include_tasks: check.yml
-
-- ansible.builtin.fail:
-    msg: Failed to wait until cloud-init is done
-  when: boot_finished is not defined or boot_finished is not succeeded
+- ansible.builtin.include_role:
+    name: file_wait
+  vars:
+    file_wait_path: '{{ cloud_init_wait_path }}'
+    file_wait_seconds: '{{ cloud_init_wait_seconds }}'

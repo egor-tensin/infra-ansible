@@ -1,0 +1,7 @@
+- name: Checking if the file exists
+  ansible.builtin.include_tasks: check.yml
+
+- name: Fail unless the file exists
+  ansible.builtin.fail:
+    msg: 'File is missing: {{ file_wait_path }}'
+  when: file_wait_check is not defined or file_wait_check is not succeeded or file_wait_check is unreachable
