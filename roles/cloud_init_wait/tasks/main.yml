@@ -1,20 +1,5 @@
-# Make a playbook usable immediately after creating a VM - even before
-# the SSH server is started.
-- name: Wait for SSH connection
-  ansible.builtin.wait_for_connection:
-    timeout: '{{ cloud_init_wait_seconds }}'
+- ansible.builtin.include_tasks: check.yml
 
-# Again, make a playbook usable immediately after creating a VM - that includes
-# waiting until cloud-init is done.
-- name: Wait until cloud-init is finished
-  ansible.builtin.stat:
-    path: '{{ cloud_init_wait_path }}'
-    # WTF? Is this the best way to _just_ check if a file exists?
-    get_attributes: false
-    get_checksum: false
-    get_mime: false
-  register: boot_finished
-  until: boot_finished.stat.exists is not false
-  # About 5 minutes worth of attempts.
-  retries: '{{ cloud_init_wait_seconds // cloud_init_wait_delay }}'
-  delay: '{{ cloud_init_wait_delay }}'
+- ansible.builtin.fail:
+    msg: Failed to wait until cloud-init is done
+  when: boot_finished is not defined or boot_finished is not succeeded
