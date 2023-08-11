@@ -25,3 +25,6 @@
     install_recommends: false
     name: '{{ apt_extra_packages }}'
     state: present
+
+- name: Configure unattended-upgrades
+  ansible.builtin.include_tasks: unattended_upgrades.yml
