@@ -7,6 +7,9 @@
         section: Journal
         option: MaxLevelStore
         value: '{{ journald_log_level }}'
+        owner: root
+        group: root
+        mode: '644'
       register: edited
 
     - name: Restart systemd-journald

@@ -5,7 +5,7 @@
     state: directory
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: '0750'
+    mode: '750'
 
 - name: Install dependencies
   become: true

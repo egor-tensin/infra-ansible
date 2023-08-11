@@ -5,6 +5,9 @@
       ansible.builtin.file:
         path: '/etc/systemd/system/{{ service_name }}.service.d'
         state: directory
+        owner: root
+        group: root
+        mode: '755'
 
     - name: 'Set up override: {{ service_name }}'
       community.general.ini_file:
@@ -13,6 +16,9 @@
         option: '{{ service_option }}'
         values: '{{ service_values }}'
         no_extra_spaces: true
+        owner: root
+        group: root
+        mode: '644'
       register: overridden
 
     - name: 'Restart service: {{ service_name }}'

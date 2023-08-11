@@ -1,4 +1,5 @@
-- ansible.builtin.include_role:
+- name: 'Wait for {{ cloud_init_wait_path }}'
+  ansible.builtin.include_role:
     name: file_wait
   vars:
     file_wait_path: '{{ cloud_init_wait_path }}'

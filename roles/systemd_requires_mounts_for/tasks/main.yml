@@ -1,4 +1,5 @@
-- ansible.builtin.include_role:
+- name: Set up a service to require a mounted directory
+  ansible.builtin.include_role:
     name: systemd_edit
   vars:
     service_section: Unit

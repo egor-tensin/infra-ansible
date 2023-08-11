@@ -1,5 +1,5 @@
 - name: Install unattended-upgrades
-  become:
+  become: true
   ansible.builtin.apt:
     install_recommends: false
     name: unattended-upgrades
