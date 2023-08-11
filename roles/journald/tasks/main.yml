@@ -6,7 +6,7 @@
         dest: /etc/systemd/journald.conf
         section: Journal
         option: MaxLevelStore
-        value: warning
+        value: '{{ journald_log_level }}'
       register: edited
 
     - name: Restart systemd-journald
