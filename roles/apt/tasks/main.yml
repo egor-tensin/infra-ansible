@@ -28,3 +28,4 @@
 
 - name: Configure unattended-upgrades
   ansible.builtin.include_tasks: unattended_upgrades.yml
+  when: apt_unattended

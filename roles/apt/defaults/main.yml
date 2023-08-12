@@ -1,3 +1,4 @@
 apt_extra_packages: []
+apt_unattended: true
 apt_unattended_reboot: true
 apt_unattended_reboot_time: "02:00"
