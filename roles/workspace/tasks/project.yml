@@ -6,17 +6,30 @@
   ansible.builtin.set_fact:
     project_name: "{{ item.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
 
+- name: Set project directory
+  ansible.builtin.set_fact:
+    project_dir: '{{ workspace_dir }}/{{ project_name }}'
+
 - name: 'Update repository: {{ project_name }}'
   ansible.builtin.git:
     accept_hostkey: true
-    dest: '{{ workspace_dir }}/{{ project_name }}'
+    dest: '{{ project_dir }}'
     repo: '{{ project_url }}'
 
 - name: 'Rebuild containers: {{ project_name }}'
   become: true
-  ansible.builtin.shell:
-    docker-compose pull &&
-        docker-compose build --force-rm --pull -q &&
-        docker-compose up --remove-orphans -d
-  args:
-    chdir: '{{ workspace_dir }}/{{ project_name }}'
+  block:
+    - name: docker-compose pull
+      ansible.builtin.command: docker-compose pull
+      args:
+        chdir: '{{ project_dir }}'
+
+    - name: docker-compose build
+      ansible.builtin.command: docker-compose build --force-rm --pull -q
+      args:
+        chdir: '{{ project_dir }}'
+
+    - name: docker-compose up
+      ansible.builtin.command: docker-compose up --remove-orphans -d
+      args:
+        chdir: '{{ project_dir }}'
