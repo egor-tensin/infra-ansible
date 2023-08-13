@@ -16,8 +16,36 @@
     dest: '{{ project_dir }}'
     repo: '{{ project_url }}'
 
-- name: 'Rebuild containers: {{ project_name }}'
+- name: Check for Makefile
+  ansible.builtin.file:
+    path: '{{ project_dir }}/Makefile'
+    state: file
+  register: makefile_check
+
+- name: This project uses make
   become: true
+  when: makefile_check is succeeded
+  block:
+    - name: Run make
+      ansible.builtin.command: make
+      args:
+        chdir: '{{ project_dir }}'
+      register: make_output
+      when: makefile_check is succeeded
+    
+    - name: Show make output
+      ansible.builtin.debug:
+        var: make_output
+
+- name: Check for docker-compose.yml
+  ansible.builtin.file:
+    path: '{{ project_dir }}/docker-compose.yml'
+    state: file
+  register: docker_compose_check
+
+- name: This project uses docker-compose
+  become: true
+  when: makefile_check is not succeeded and docker_compose_check is succeeded
   block:
     - name: docker-compose pull
       ansible.builtin.command: docker-compose pull
