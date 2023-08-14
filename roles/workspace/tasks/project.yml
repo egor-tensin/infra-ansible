@@ -63,3 +63,8 @@
       ansible.builtin.command: docker-compose up --remove-orphans -d
       args:
         chdir: '{{ project_dir }}'
+      register: docker_compose_up
+
+    - name: Show docker-compose up output
+      ansible.builtin.debug:
+        var: docker_compose_up
