@@ -1,0 +1,28 @@
+# Instructions are from
+#     https://certbot.eff.org/instructions?ws=nginx&os=snap&tab=wildcard
+
+- name: Install Certbot
+  become: true
+  block:
+    - name: Install snapd
+      ansible.builtin.apt:
+        install_recommends: false
+        name: snapd
+
+    - name: Install Certbot
+      community.general.snap:
+        classic: true
+        name: certbot
+
+    - name: Confirm plugin containment level
+      ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
+
+    - name: Install Certbot DigitalOcean plugin
+      community.general.snap:
+        name: certbot-dns-digitalocean
+
+    - name: Create Certbot symlink in /usr/bin
+      ansible.builtin.file:
+        src: /snap/bin/certbot
+        dest: /usr/bin/certbot
+        state: link

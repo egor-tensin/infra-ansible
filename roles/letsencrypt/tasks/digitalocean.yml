@@ -1,0 +1,28 @@
+- name: Configure Certbot DigitalOcean plugin
+  become: true
+  block:
+    - name: Prompt for token
+      ansible.builtin.pause:
+        prompt: |
+          Enter your API token:
+        echo: false
+      register: digitalocean_token
+      when:
+        - lookup('env', 'DIGITALOCEAN_TOKEN') | length <= 0
+
+    - name: Set the token as a fact
+      ansible.builtin.set_fact:
+        digitalocean_token: "{{ digitalocean_token.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
+
+    - name: Fail if the token is invalid
+      ansible.builtin.fail:
+        msg: 'DigitalOcean token is invalid'
+      when: digitalocean_token | length == 0
+
+    - name: Configure certbot.ini
+      ansible.builtin.template:
+        src: certbot.ini
+        dest: '{{ certbot_ini }}'
+        owner: root
+        group: root
+        mode: '600'
