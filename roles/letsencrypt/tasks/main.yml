@@ -40,7 +40,12 @@
 
     - name: Set the token as a fact
       ansible.builtin.set_fact:
-        digitalocean_token: "{{ digitalocean_.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
+        digitalocean_token: "{{ digitalocean_token.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
+
+    - name: Fail if the token is invalid
+      ansible.builtin.fail:
+        msg: 'DigitalOcean token is invalid'
+      when: digitalocean_token | length == 0
 
     - name: Configure certbot.ini
       ansible.builtin.template:
