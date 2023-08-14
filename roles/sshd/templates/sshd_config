@@ -1,0 +1,29 @@
+# Parameters that have sane defaults on Debian 11 are omitted.
+
+{% set ssh_port = hostvars[inventory_hostname].ansible_port %}
+{% set ssh_user = hostvars[inventory_hostname].ansible_user %}
+
+{% set groups = [ssh_user] + ssh_allowed_groups %}
+{% set groups = groups | sort | unique %}
+
+Port {{ ssh_port }}
+
+# Whitelist users:
+PermitRootLogin no
+AllowGroups {{ groups | join(' ') }}
+
+# Only public key authentication:
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+AuthenticationMethods publickey
+
+# Whitelist accepted environment variables:
+AcceptEnv LANG LC_*
+
+# Drop idle sessions:
+ClientAliveCountMax 3
+ClientAliveInterval 15
+
+# Miscellaneous:
+PrintMotd no
+Subsystem sftp /usr/lib/openssh/sftp-server

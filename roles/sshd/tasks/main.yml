@@ -1,0 +1,16 @@
+- name: Configure sshd
+  become: true
+  ansible.builtin.template:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '644'
+  register: sshd_config
+
+- name: Restart sshd
+  become: true
+  ansible.builtin.systemd_service:
+    name: sshd
+    state: restarted
+  when: sshd_config.changed
