@@ -7,7 +7,7 @@
         name: wireguard-tools
         state: present
 
-    - name: Config file
+    - name: Write wg-quick config file
       ansible.builtin.template:
         src: wg0.conf
         dest: '/etc/wireguard/{{ wg_name }}.conf'

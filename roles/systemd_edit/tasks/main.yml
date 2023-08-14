@@ -1,4 +1,4 @@
-- name: Edit systemd service definition
+- name: Edit systemd service
   become: true
   block:
     - name: 'Create override directory: {{ service_name }}'
@@ -9,7 +9,7 @@
         group: root
         mode: '755'
 
-    - name: 'Set up override: {{ service_name }}'
+    - name: 'Set up override.conf: {{ service_name }}'
       community.general.ini_file:
         dest: '/etc/systemd/system/{{ service_name }}.service.d/override.conf'
         section: '{{ service_section }}'

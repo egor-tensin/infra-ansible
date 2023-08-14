@@ -1,4 +1,4 @@
-- name: Set up a service to require a mounted directory
+- name: Edit systemd service
   ansible.builtin.include_role:
     name: systemd_edit
   vars:

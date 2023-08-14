@@ -1,4 +1,4 @@
-- name: Less noisy journal
+- name: Make journald less noisy
   become: true
   block:
     - name: Edit journald.conf

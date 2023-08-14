@@ -1,4 +1,4 @@
-- name: Workspace directory
+- name: Create workspace directory
   become: true
   ansible.builtin.file:
     path: '{{ workspace_dir }}'

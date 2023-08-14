@@ -1,4 +1,4 @@
-- name: Set sysctl values
+- name: Enable traffic forwarding
   become: true
   ansible.posix.sysctl:
     name: '{{ item }}'

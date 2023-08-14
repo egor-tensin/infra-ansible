@@ -2,7 +2,7 @@
   ansible.builtin.wait_for_connection:
     timeout: '{{ file_wait_seconds }}'
 
-- name: Check if the file exists
+- name: Check if file exists
   ansible.builtin.file:
     path: '{{ file_wait_path }}'
     state: file
@@ -16,10 +16,14 @@
 - name: If the host restarted, try again
   when: file_wait_check is unreachable
   block:
-    - name: Note a reboot happened
+    - name: Log the number of tolerable reboots
+      ansible.builtin.debug:
+        msg: 'Number of tolerable reboots: {{ file_wait_reboots }}'
+
+    - name: Decrement the number of tolerable reboots
       ansible.builtin.set_fact:
         file_wait_reboots: '{{ (file_wait_reboots | int) - 1 }}'
 
-    - name: Retry if there're more attempts
+    - name: Retry if there're more tolerable reboots
       ansible.builtin.include_tasks: check.yml
-      when: (file_wait_reboots | int > 0)
+      when: (file_wait_reboots | int >= 0)

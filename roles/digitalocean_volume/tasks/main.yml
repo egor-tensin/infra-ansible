@@ -1,8 +1,8 @@
-- name: Default mount path
+- name: Set default mount point
   ansible.builtin.set_fact:
     volume_dir: "{{ volume_dir | default('/mnt/{{ volume_name }}') }}"
 
-- name: Mount volume
+- name: 'Mount volume: {{ volume_name }}'
   become: true
   ansible.posix.mount:
     path: '{{ volume_dir }}'
