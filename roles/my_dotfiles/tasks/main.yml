@@ -1,0 +1,12 @@
+- name: Pull repositories
+  ansible.builtin.git:
+    accept_hostkey: true
+    dest: "~/workspace/personal/{{ item }}"
+    repo: "git@github.com:egor-tensin/{{ item }}.git"
+  loop:
+    - linux-home
+
+- name: Run setup.sh
+  ansible.builtin.command: ./setup.sh
+  args:
+    chdir: ~/workspace/personal/linux-home
