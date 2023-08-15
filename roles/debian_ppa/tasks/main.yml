@@ -10,7 +10,7 @@
     - name: 'Add key: {{ ppa_name }}'
       ansible.builtin.get_url:
         url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
-        dest: '{{ ppa_keys_dir }}/linux-status.asc'
+        dest: '{{ ppa_keys_dir }}/{{ ppa_name }}.asc'
         mode: '644'
 
     - name: 'Add repository: {{ ppa_name }}'
