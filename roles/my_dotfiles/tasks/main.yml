@@ -1,12 +1,10 @@
 - name: Pull repositories
   ansible.builtin.git:
     accept_hostkey: true
-    dest: "~/workspace/personal/{{ item }}"
-    repo: "git@github.com:egor-tensin/{{ item }}.git"
-  loop:
-    - linux-home
+    dest: '{{ my_dotfiles_dir }}'
+    repo: '{{ my_dotfiles_repo }}'
 
 - name: Run setup.sh
   ansible.builtin.command: ./setup.sh
   args:
-    chdir: ~/workspace/personal/linux-home
+    chdir: '{{ my_dotfiles_dir }}'
