@@ -1,6 +1,6 @@
 - name: Set up repository
   ansible.builtin.include_role:
-    name: apt_ppa
+    name: ppa
   vars:
     ppa_owner: egor-tensin
     ppa_name: linux-status
