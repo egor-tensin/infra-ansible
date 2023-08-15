@@ -1,1 +1,1 @@
-journald_log_level: warning
+journald_log_level: notice
