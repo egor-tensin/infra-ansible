@@ -4,7 +4,6 @@
   vars:
     ppa_owner: egor-tensin
     ppa_name: linux-status
-    ppa_distro: focal
     ppa_key: ecb69cbafc6d7cd8bd67ec35b1089b3051c9384d
 
 - name: Install linux-status
