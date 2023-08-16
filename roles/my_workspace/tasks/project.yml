@@ -23,27 +23,18 @@
   register: makefile_check
   ignore_errors: true
 
-- name: This project uses make
-  become: true
-  when: makefile_check is succeeded
-  block:
-    - name: Run make
-      ansible.builtin.command: make
-      args:
-        chdir: '{{ project_dir }}'
-      register: make_output
-      when: makefile_check is succeeded
-
-    - name: Show make output
-      ansible.builtin.debug:
-        var: make_output
-
 - name: Check for docker-compose.yml
   ansible.builtin.file:
     path: '{{ project_dir }}/docker-compose.yml'
     state: file
   register: docker_compose_check
   ignore_errors: true
+
+- name: Run make
+  become: true
+  community.general.make:
+    chdir: '{{ project_dir }}'
+  when: makefile_check is succeeded
 
 - name: This project uses docker-compose
   become: true
