@@ -33,7 +33,7 @@
         chdir: '{{ project_dir }}'
       register: make_output
       when: makefile_check is succeeded
-    
+
     - name: Show make output
       ansible.builtin.debug:
         var: make_output

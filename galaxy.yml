@@ -4,6 +4,7 @@ version: 0.0.15
 description: Some common Ansible roles used by me to manage things
 repository: https://github.com/egor-tensin/infra-ansible
 readme: README.md
-license: MIT
+license:
+  - MIT
 authors:
   - Egor Tensin <Egor.Tensin@gmail.com>

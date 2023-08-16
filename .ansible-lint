@@ -1,0 +1,8 @@
+skip_list:
+  # No, the changelog is not required, it works perfectly fine without it.
+  - galaxy[no-changelog]
+  # Tags are not required either.
+  - galaxy[tags]
+  # These are just plain stupid.
+  - galaxy[version-incorrect]
+  - name[casing]
