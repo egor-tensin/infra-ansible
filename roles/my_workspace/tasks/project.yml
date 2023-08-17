@@ -36,26 +36,12 @@
     chdir: '{{ project_dir }}'
   when: makefile_check is succeeded
 
-- name: This project uses docker-compose
+- name: Run docker-compose
   become: true
+  community.docker.docker_compose:
+    build: true
+    debug: true
+    project_src: '{{ project_dir }}'
+    pull: true
+    remove_orphans: true
   when: makefile_check is not succeeded and docker_compose_check is succeeded
-  block:
-    - name: docker-compose pull
-      ansible.builtin.command: docker-compose pull
-      args:
-        chdir: '{{ project_dir }}'
-
-    - name: docker-compose build
-      ansible.builtin.command: docker-compose build --force-rm --pull -q
-      args:
-        chdir: '{{ project_dir }}'
-
-    - name: docker-compose up
-      ansible.builtin.command: docker-compose up --remove-orphans -d
-      args:
-        chdir: '{{ project_dir }}'
-      register: docker_compose_up
-
-    - name: Show docker-compose up output
-      ansible.builtin.debug:
-        var: docker_compose_up
