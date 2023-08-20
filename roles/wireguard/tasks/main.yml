@@ -9,7 +9,7 @@
 
     - name: Write wg-quick config file
       ansible.builtin.template:
-        src: wg0.conf
+        src: wg0.conf.j2
         dest: '/etc/wireguard/{{ wg_name }}.conf'
         owner: root
         group: root

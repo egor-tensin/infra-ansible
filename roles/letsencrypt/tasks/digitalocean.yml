@@ -21,7 +21,7 @@
 
     - name: Configure certbot.ini
       ansible.builtin.template:
-        src: certbot.ini
+        src: certbot.ini.j2
         dest: '{{ certbot_ini }}'
         owner: root
         group: root

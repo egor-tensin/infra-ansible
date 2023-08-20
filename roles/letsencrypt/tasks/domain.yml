@@ -6,7 +6,7 @@
   block:
     - name: Cache domain list
       ansible.builtin.template:
-        src: domain_list.txt
+        src: domain_list.txt.j2
         dest: '/etc/letsencrypt/.domains_{{ certificate_name }}.txt'
         owner: root
         group: root

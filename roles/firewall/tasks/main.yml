@@ -8,8 +8,8 @@
 - name: Configure rule files
   ansible.builtin.include_tasks: file.yml
   loop:
-    - {src: rules.v4, dest: /etc/iptables/rules.v4, tool: iptables}
-    - {src: rules.v6, dest: /etc/iptables/rules.v6, tool: ip6tables}
+    - {src: rules.v4.j2, dest: /etc/iptables/rules.v4, tool: iptables}
+    - {src: rules.v6.j2, dest: /etc/iptables/rules.v6, tool: ip6tables}
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
