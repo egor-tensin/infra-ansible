@@ -1,3 +1,5 @@
+{{ ansible_managed | comment }}
+
 # Parameters that have sane defaults on Debian 11 are omitted.
 
 {% set ssh_port = hostvars[inventory_hostname].ansible_port %}
