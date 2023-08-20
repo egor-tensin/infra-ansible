@@ -1,8 +1,8 @@
-- name: Create a temporary file
+- name: Create temporary file
   ansible.builtin.tempfile:
   register: rules_file
 
-- name: Configure rules in a temporary file
+- name: Configure rules in temporary file
   become: true
   ansible.builtin.template:
     src: '{{ item.src }}'
@@ -18,7 +18,7 @@
 # If I simply restart the netfilter-persistent service, it happily restarts,
 # effectively ignoring errors in files. That way the operator doesn't get
 # feedback if the rules file is malformed.
-- name: Check that the rules are valid
+- name: Check that rules are valid
   become: true
   ansible.builtin.command:
     argv:

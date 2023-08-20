@@ -10,11 +10,11 @@
       when:
         - lookup('env', 'DIGITALOCEAN_TOKEN') | length <= 0
 
-    - name: Set the token as a fact
+    - name: Set token as fact
       ansible.builtin.set_fact:
         digitalocean_token: "{{ digitalocean_token.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
 
-    - name: Fail if the token is invalid
+    - name: Fail if token is invalid
       ansible.builtin.fail:
         msg: 'DigitalOcean token is invalid'
       when: digitalocean_token | length == 0
