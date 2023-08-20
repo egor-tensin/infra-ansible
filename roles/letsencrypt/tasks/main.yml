@@ -13,3 +13,5 @@
 - name: Update certificates
   ansible.builtin.include_tasks: domain.yml
   loop: '{{ letsencrypt_domains }}'
+  loop_control:
+    loop_var: domain

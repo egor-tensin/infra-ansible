@@ -13,17 +13,17 @@
   ignore_unreachable: true
   ignore_errors: true
 
-- name: If the host restarted, try again
+- name: If host restarted, try again
   when: file_wait_check is unreachable
   block:
-    - name: Log the number of tolerable reboots
+    - name: Show number of reboots
       ansible.builtin.debug:
-        msg: 'Number of tolerable reboots: {{ file_wait_reboots }}'
+        msg: 'Number of reboots left: {{ file_wait_reboots_left }}'
 
-    - name: Decrement the number of tolerable reboots
+    - name: Decrement number of reboots
       ansible.builtin.set_fact:
-        file_wait_reboots: '{{ (file_wait_reboots | int) - 1 }}'
+        file_wait_reboots_left: '{{ (file_wait_reboots_left | int) - 1 }}'
 
-    - name: Retry if there're more tolerable reboots
+    - name: Retry if there're more reboots
       ansible.builtin.include_tasks: check.yml
-      when: (file_wait_reboots | int >= 0)
+      when: (file_wait_reboots_left | int >= 0)

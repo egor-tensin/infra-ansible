@@ -31,3 +31,5 @@
 - name: Update projects
   ansible.builtin.include_tasks: project.yml
   loop: '{{ workspace_projects }}'
+  loop_control:
+    loop_var: project

@@ -1,3 +1,7 @@
+- name: Reset number of reboots
+  ansible.builtin.set_fact:
+    file_wait_reboots_left: '{{ file_wait_reboots }}'
+
 - name: Check if file exists
   ansible.builtin.include_tasks: check.yml
 

@@ -1,30 +1,26 @@
-- name: Set certificate name
-  ansible.builtin.set_fact:
-    certificate_name: '{{ item.name | default(item) }}'
-
-- name: Set certificate domains
-  ansible.builtin.set_fact:
-    certificate_domains: "{{ item.domains | default([certificate_name]) | sort | unique }}"
-
-- name: Cache domain list
+- name: Set up certificate for domain
   become: true
-  ansible.builtin.template:
-    src: domain_list.txt
-    dest: '/etc/letsencrypt/.domains_{{ certificate_name }}.txt'
-    owner: root
-    group: root
-    mode: '640'
-  register: domain_list
+  vars:
+    certificate_name: '{{ domain.name | default(domain) }}'
+    certificate_domains: "{{ domain.domains | default([certificate_name]) | sort | unique }}"
+  block:
+    - name: Cache domain list
+      ansible.builtin.template:
+        src: domain_list.txt
+        dest: '/etc/letsencrypt/.domains_{{ certificate_name }}.txt'
+        owner: root
+        group: root
+        mode: '640'
+      register: domain_list
 
-- name: 'Create certificate: {{ certificate_name }}'
-  become: true
-  ansible.builtin.command: |
-    certbot certonly --noninteractive --agree-tos \
-        --cert-name '{{ certificate_name }}' \
-        --email '{{ certbot_email }}' \
-        --domains '{{ certificate_domains | join(',') }}' \
-        --preferred-challenges dns \
-        --dns-digitalocean \
-        --dns-digitalocean-credentials '{{ certbot_ini }}' \
-        --dns-digitalocean-propagation-seconds 30
-  when: domain_list.changed
+    - name: 'Create certificate: {{ certificate_name }}'
+      ansible.builtin.command: |
+        certbot certonly --noninteractive --agree-tos \
+            --cert-name '{{ certificate_name }}' \
+            --email '{{ certbot_email }}' \
+            --domains '{{ certificate_domains | join(',') }}' \
+            --preferred-challenges dns \
+            --dns-digitalocean \
+            --dns-digitalocean-credentials '{{ certbot_ini }}' \
+            --dns-digitalocean-propagation-seconds 30
+      when: domain_list.changed

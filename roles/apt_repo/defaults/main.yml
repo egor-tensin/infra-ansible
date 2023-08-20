@@ -1,2 +1,4 @@
 apt_repo_keys_dir: /etc/apt/keyrings
 apt_repo_key_dearmor: false
+
+apt_repo_component: main

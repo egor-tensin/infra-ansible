@@ -1,47 +1,41 @@
-- name: Set project URL
-  ansible.builtin.set_fact:
-    project_url: '{{ item.url | default(item) }}'
-
-- name: Set project name
-  ansible.builtin.set_fact:
-    project_name: "{{ item.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
-
-- name: Set project directory
-  ansible.builtin.set_fact:
+- name: Set up project
+  vars:
+    project_url: '{{ project.url | default(project) }}'
+    project_name: "{{ project.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
     project_dir: '{{ workspace_dir }}/{{ project_name }}'
+  block:
+    - name: 'Update repository: {{ project_name }}'
+      ansible.builtin.git:
+        accept_hostkey: true
+        dest: '{{ project_dir }}'
+        repo: '{{ project_url }}'
 
-- name: 'Update repository: {{ project_name }}'
-  ansible.builtin.git:
-    accept_hostkey: true
-    dest: '{{ project_dir }}'
-    repo: '{{ project_url }}'
+    - name: Check for Makefile
+      ansible.builtin.file:
+        path: '{{ project_dir }}/Makefile'
+        state: file
+      register: makefile_check
+      ignore_errors: true
 
-- name: Check for Makefile
-  ansible.builtin.file:
-    path: '{{ project_dir }}/Makefile'
-    state: file
-  register: makefile_check
-  ignore_errors: true
+    - name: Check for docker-compose.yml
+      ansible.builtin.file:
+        path: '{{ project_dir }}/docker-compose.yml'
+        state: file
+      register: docker_compose_check
+      ignore_errors: true
 
-- name: Check for docker-compose.yml
-  ansible.builtin.file:
-    path: '{{ project_dir }}/docker-compose.yml'
-    state: file
-  register: docker_compose_check
-  ignore_errors: true
+    - name: Run make
+      become: true
+      community.general.make:
+        chdir: '{{ project_dir }}'
+      when: makefile_check is succeeded
 
-- name: Run make
-  become: true
-  community.general.make:
-    chdir: '{{ project_dir }}'
-  when: makefile_check is succeeded
-
-- name: Run docker-compose
-  become: true
-  community.docker.docker_compose:
-    build: true
-    debug: true
-    project_src: '{{ project_dir }}'
-    pull: true
-    remove_orphans: true
-  when: makefile_check is not succeeded and docker_compose_check is succeeded
+    - name: Run docker-compose
+      become: true
+      community.docker.docker_compose:
+        build: true
+        debug: true
+        project_src: '{{ project_dir }}'
+        pull: true
+        remove_orphans: true
+      when: makefile_check is not succeeded and docker_compose_check is succeeded
