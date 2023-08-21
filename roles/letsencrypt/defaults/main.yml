@@ -1,2 +1,4 @@
+letsencrypt_domains: []
+
 certbot_email: Egor.Tensin@gmail.com
 certbot_ini: /root/.certbot.ini

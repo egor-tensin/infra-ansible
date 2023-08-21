@@ -1,3 +1,7 @@
 wg_name: wg0
 wg_listen_port: 51280
+#wg_private_key:
+#wg_addr4:
+#wg_addr6:
+#wg_peers:
 wg_firewall: false

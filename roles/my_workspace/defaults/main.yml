@@ -2,3 +2,4 @@ git_name: Egor Tensin
 git_email: Egor.Tensin@gmail.com
 
 workspace_dir: /srv/workspace
+workspace_projects: []

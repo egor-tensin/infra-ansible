@@ -5,7 +5,7 @@
     # running `gpg --dearmor`, you must save it with the .gpg extension
     # instead of .asc. You can then completely skip the gpg step. Source:
     # https://stackoverflow.com/q/71585303/514684
-    apt_repo_key_path: '{{ apt_repo_keys_dir }}/{{ apt_repo_name }}{{ apt_repo_key_dearmor | ternary(".gpg", ".asc") }}'
+    key_path: '{{ apt_repo_keys_dir }}/{{ apt_repo_name }}{{ apt_repo_key_dearmor | ternary(".gpg", ".asc") }}'
   block:
     - name: Create keys directory
       ansible.builtin.file:
@@ -16,7 +16,7 @@
     - name: 'Add key: {{ apt_repo_name }}'
       ansible.builtin.get_url:
         url: '{{ apt_repo_key_url }}'
-        dest: '{{ apt_repo_key_path }}'
+        dest: '{{ key_path }}'
         mode: '644'
 
     - name: Get host distro
@@ -25,7 +25,7 @@
 
     - name: 'Add repository: {{ apt_repo_name }}'
       ansible.builtin.apt_repository:
-        repo: 'deb [signed-by={{ apt_repo_key_path }}] {{ apt_repo_url }} {{ distro }} {{ apt_repo_component }}'
+        repo: 'deb [signed-by={{ key_path }}] {{ apt_repo_url }} {{ distro }} {{ apt_repo_component }}'
         filename: '{{ apt_repo_name }}'
       vars:
         distro: '{{ apt_repo_distro | default(ansible_distribution_release) }}'
