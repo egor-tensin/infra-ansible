@@ -6,18 +6,34 @@
     ppa_name: linux-status
     ppa_key: ecb69cbafc6d7cd8bd67ec35b1089b3051c9384d
 
+- name: Disable power management
+  when: linux_status_disable_power_management
+  become: true
+  block:
+    - name: Create override directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/linux-status.service.d
+        state: directory
+        owner: root
+        group: root
+        mode: '755'
+
+    - name: Create override file
+      ansible.builtin.template:
+        src: disable_power_management.conf.j2
+        dest: /etc/systemd/system/linux-status.service.d/99-disable_power_management.conf
+        owner: root
+        group: root
+        mode: '644'
+      notify: linux_status_restart
+
 - name: Install linux-status
   become: true
   ansible.builtin.apt:
     install_recommends: false
     name: linux-status
+    policy_rc_d: 101
+  notify: linux_status_restart
 
-- name: Disable power management
-  when: linux_status_disable_power_management
-  ansible.builtin.include_role:
-    name: systemd_edit
-  vars:
-    service_name: linux-status
-    service_section: Service
-    service_option: ExecStart
-    service_values: ['', '/usr/bin/python3 -B server.py --disable-power']
+- name: Restart systemd service if necessary
+  ansible.builtin.meta: flush_handlers
