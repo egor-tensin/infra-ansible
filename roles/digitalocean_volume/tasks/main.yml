@@ -1,8 +1,8 @@
-- name: 'Mount volume: {{ volume_name }}'
+- name: 'Mount volume: {{ digitalocean_volume_name }}'
   become: true
   ansible.posix.mount:
-    path: "{{ volume_dir | default('/mnt/{{ volume_name }}') }}"
-    src: '/dev/disk/by-id/scsi-0DO_Volume_{{ volume_name }}'
+    path: "{{ digitalocean_volume_dir | default('/mnt/{{ digitalocean_volume_name }}') }}"
+    src: '/dev/disk/by-id/scsi-0DO_Volume_{{ digitalocean_volume_name }}'
     state: mounted
-    fstype: '{{ volume_fs }}'
+    fstype: '{{ digitalocean_volume_fs }}'
     opts: defaults,nofail,discard
