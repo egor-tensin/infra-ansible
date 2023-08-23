@@ -22,7 +22,7 @@
     - name: Configure certbot.ini
       ansible.builtin.template:
         src: certbot.ini.j2
-        dest: '{{ certbot_ini }}'
+        dest: '{{ letsencrypt_credentials_ini }}'
         owner: root
         group: root
         mode: '600'

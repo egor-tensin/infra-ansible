@@ -1,4 +1,4 @@
 letsencrypt_domains: []
 
-certbot_email: Egor.Tensin@gmail.com
-certbot_ini: /root/.certbot.ini
+letsencrypt_email: Egor.Tensin@gmail.com
+letsencrypt_credentials_ini: /root/.certbot.ini

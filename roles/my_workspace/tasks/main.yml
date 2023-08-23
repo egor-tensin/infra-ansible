@@ -1,7 +1,7 @@
 - name: Create workspace directory
   become: true
   ansible.builtin.file:
-    path: '{{ workspace_dir }}'
+    path: '{{ my_workspace_dir }}'
     state: directory
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
@@ -30,6 +30,6 @@
 
 - name: Update projects
   ansible.builtin.include_tasks: project.yml
-  loop: '{{ workspace_projects }}'
+  loop: '{{ my_workspace_projects }}'
   loop_control:
     loop_var: project

@@ -2,7 +2,7 @@
   vars:
     project_url: '{{ project.url | default(project) }}'
     project_name: "{{ project.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
-    project_dir: '{{ workspace_dir }}/{{ project_name }}'
+    project_dir: '{{ my_workspace_dir }}/{{ project_name }}'
   block:
     - name: 'Update repository: {{ project_name }}'
       ansible.builtin.git:

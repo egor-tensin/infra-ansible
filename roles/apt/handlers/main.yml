@@ -3,3 +3,4 @@
   ansible.builtin.reboot:
     # 3 minutes is plenty.
     reboot_timeout: 180
+  listen: apt_reboot

@@ -17,10 +17,10 @@
       ansible.builtin.command: |
         certbot certonly --noninteractive --agree-tos \
             --cert-name '{{ certificate_name }}' \
-            --email '{{ certbot_email }}' \
+            --email '{{ letsencrypt_email }}' \
             --domains '{{ certificate_domains | join(',') }}' \
             --preferred-challenges dns \
             --dns-digitalocean \
-            --dns-digitalocean-credentials '{{ certbot_ini }}' \
+            --dns-digitalocean-credentials '{{ letsencrypt_credentials_ini }}' \
             --dns-digitalocean-propagation-seconds 30
       when: domain_list.changed

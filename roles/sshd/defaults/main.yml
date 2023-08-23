@@ -1,1 +1,1 @@
-ssh_allowed_groups: []
+sshd_allowed_groups: []
