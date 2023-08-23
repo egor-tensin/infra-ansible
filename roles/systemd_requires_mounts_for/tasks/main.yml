@@ -1,7 +1,0 @@
-- name: Edit systemd service
-  ansible.builtin.include_role:
-    name: systemd_edit
-  vars:
-    service_section: Unit
-    service_option: RequiresMountsFor
-    service_values: ['{{ mount_dir }}']
