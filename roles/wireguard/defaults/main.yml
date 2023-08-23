@@ -4,4 +4,4 @@ wg_listen_port: 51280
 #wg_addr4:
 #wg_addr6:
 #wg_peers:
-wg_firewall: false
+wg_router: false
