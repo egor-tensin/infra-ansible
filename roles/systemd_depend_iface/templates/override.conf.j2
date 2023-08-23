@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+BindsTo=sys-devices-virtual-net-{{ systemd_depend_iface_name }}.device
+After=sys-devices-virtual-net-{{ systemd_depend_iface_name }}.device
