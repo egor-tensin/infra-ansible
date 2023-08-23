@@ -1,0 +1,6 @@
+- name: 'Restart {{ service }}'
+  become: true
+  ansible.builtin.systemd_service:
+    name: '{{ service }}'
+    state: restarted
+  when: service in ansible_facts.services
