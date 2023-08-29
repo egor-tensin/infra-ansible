@@ -27,3 +27,10 @@
         enabled: true
         state: restarted
       when: config.changed
+
+- name: Set up service dependencies
+  ansible.builtin.include_role:
+    name: systemd_depend_iface
+  vars:
+    systemd_depend_iface_name: '{{ wg_name }}'
+    systemd_depend_iface_services: '{{ wg_dependent_services }}'

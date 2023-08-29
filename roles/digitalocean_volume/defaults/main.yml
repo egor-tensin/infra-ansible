@@ -1,3 +1,5 @@
 #digitalocean_volume_name:
-#digitalocean_volume_dir:
+digitalocean_volume_dir: '/mnt/{{ digitalocean_volume_name }}'
 digitalocean_volume_fs: ext4
+
+digitalocean_volume_dependent_services: []

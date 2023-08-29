@@ -1,8 +1,15 @@
 - name: 'Mount volume: {{ digitalocean_volume_name }}'
   become: true
   ansible.posix.mount:
-    path: "{{ digitalocean_volume_dir | default('/mnt/{{ digitalocean_volume_name }}') }}"
+    path: "{{ digitalocean_volume_dir }}"
     src: '/dev/disk/by-id/scsi-0DO_Volume_{{ digitalocean_volume_name }}'
     state: mounted
     fstype: '{{ digitalocean_volume_fs }}'
     opts: defaults,nofail,discard
+
+- name: Set up service dependencies
+  ansible.builtin.include_role:
+    name: systemd_depend_mount
+  vars:
+    systemd_depend_mount_dir: '{{ digitalocean_volume_dir }}'
+    systemd_depend_mount_services: '{{ digitalocean_volume_dependent_services }}'
