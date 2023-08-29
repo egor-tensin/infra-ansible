@@ -6,3 +6,4 @@ skip_list:
   # These are just plain stupid.
   - galaxy[version-incorrect]
   - name[casing]
+  - yaml[comments]
