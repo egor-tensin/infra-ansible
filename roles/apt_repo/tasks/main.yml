@@ -23,9 +23,19 @@
       ansible.builtin.setup:
         gather_subset: [distribution_release]
 
+    # Not using the apt_repository module, since it _adds_ a new repository
+    # in the .list file. That way, we can end up with an invalid repository
+    # line.
     - name: 'Add repository: {{ apt_repo_name }}'
-      ansible.builtin.apt_repository:
-        repo: 'deb [signed-by={{ key_path }}] {{ apt_repo_url }} {{ distro }} {{ apt_repo_component }}'
-        filename: '{{ apt_repo_name }}'
-      vars:
-        distro: '{{ apt_repo_distro | default(ansible_distribution_release) }}'
+      ansible.builtin.template:
+        src: repo.list.j2
+        dest: '/etc/apt/sources.list.d/{{ apt_repo_name }}.list'
+        owner: root
+        group: root
+        mode: '644'
+      register: repo_file
+
+    - name: Refresh apt repositories
+      ansible.builtin.apt:
+        update_cache: true
+      when: repo_file.changed
