@@ -1,0 +1,5 @@
+- name: Refresh apt repositories
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  listen: apt_repo_update

@@ -18,6 +18,7 @@
         url: '{{ apt_repo_key_url }}'
         dest: '{{ key_path }}'
         mode: '644'
+      notify: apt_repo_update
 
     - name: Get host distro
       ansible.builtin.setup:
@@ -33,9 +34,7 @@
         owner: root
         group: root
         mode: '644'
-      register: repo_file
+      notify: apt_repo_update
 
-    - name: Refresh apt repositories
-      ansible.builtin.apt:
-        update_cache: true
-      when: repo_file.changed
+    - name: Refresh apt repositories if necessary
+      ansible.builtin.meta: flush_handlers
