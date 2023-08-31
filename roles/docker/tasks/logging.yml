@@ -4,29 +4,22 @@
       become: true
       ansible.builtin.slurp:
         src: /etc/docker/daemon.json
-      register: docker_config
+      register: current_docker_config
 
     - name: Parse daemon.json
       ansible.builtin.set_fact:
-        docker_config: '{{ docker_config.content | b64decode | from_json }}'
+        current_docker_config: '{{ current_docker_config.content | b64decode | from_json }}'
   rescue:
     - name: daemon.json is missing
       ansible.builtin.set_fact:
-        docker_config: {}
+        current_docker_config: {}
 
 - name: Modify Docker config
   become: true
   ansible.builtin.copy:
     dest: /etc/docker/daemon.json
-    content: '{{ docker_config | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
+    content: '{{ current_docker_config | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
     owner: root
     group: root
     mode: '644'
-  register: daemon_json
-
-- name: Restart Docker
-  become: true
-  ansible.builtin.systemd_service:
-    name: docker
-    state: restarted
-  when: daemon_json.changed
+  notify: docker_restart

@@ -5,7 +5,16 @@
     name:
       - docker.io
       - docker-compose
+    policy_rc_d: 101
     state: present
+  notify: docker_restart
+
+- name: Configure Docker logging driver
+  when: docker_logging_driver is defined and docker_logging_driver
+  ansible.builtin.include_tasks: logging.yml
+
+- name: Restart systemd service if necessary
+  ansible.builtin.meta: flush_handlers
 
 - name: Clean up Docker data
   become: true
@@ -17,7 +26,3 @@
     networks: true
     volumes: true
     builder_cache: true
-
-- name: Configure Docker logging driver
-  when: docker_logging_driver is defined and docker_logging_driver
-  ansible.builtin.include_tasks: logging.yml
