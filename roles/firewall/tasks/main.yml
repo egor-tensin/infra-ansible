@@ -6,7 +6,15 @@
     install_recommends: false
 
 - name: Configure rule files
-  ansible.builtin.include_tasks: file.yml
+  become: true
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: root
+    group: root
+    mode: '640'
+    validate: '/usr/sbin/{{ item.tool }}-restore --test %s'
+  notify: firewall_reboot
   loop:
     - {src: rules.v4.j2, dest: /etc/iptables/rules.v4, tool: iptables}
     - {src: rules.v6.j2, dest: /etc/iptables/rules.v6, tool: ip6tables}
