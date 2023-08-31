@@ -2,7 +2,7 @@ dependencies:
   - role: cloud_init_wait
   - role: apt
     vars:
-      apt_extra_packages: '{{ debian_cloud_server_packages }}'
+      apt_packages: '{{ debian_cloud_server_packages }}'
       apt_unattended: true
   - role: sshd
   - role: firewall

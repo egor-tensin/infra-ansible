@@ -19,11 +19,11 @@
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
 
-- name: Install extra packages
+- name: Install packages
   become: true
   ansible.builtin.apt:
     install_recommends: false
-    name: '{{ apt_extra_packages }}'
+    name: '{{ apt_packages }}'
     state: present
 
 - name: Configure unattended-upgrades
