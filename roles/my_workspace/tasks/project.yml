@@ -5,7 +5,7 @@
     project_dir: '{{ my_workspace_dir }}/{{ project_name }}'
   block:
     - name: 'Update repository: {{ project_name }}'
-      ansible.builtin.git:
+      ansible.builtin.git: # noqa: latest
         repo: '{{ project_url }}'
         dest: '{{ project_dir }}'
         accept_hostkey: true

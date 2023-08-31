@@ -1,5 +1,5 @@
 - name: Pull repositories
-  ansible.builtin.git:
+  ansible.builtin.git: # noqa: latest
     repo: '{{ my_dotfiles_repo }}'
     dest: '{{ my_dotfiles_dir }}'
     accept_hostkey: true
