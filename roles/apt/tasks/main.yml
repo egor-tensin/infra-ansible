@@ -1,9 +1,9 @@
 - name: Upgrade packages
   become: true
   ansible.builtin.apt:
-    install_recommends: false
     update_cache: true
     upgrade: dist
+    install_recommends: false
   notify: apt_reboot
 
 - name: Reboot if necessary
@@ -19,9 +19,9 @@
 - name: Install packages
   become: true
   ansible.builtin.apt:
-    install_recommends: false
     name: '{{ apt_packages }}'
     state: present
+    install_recommends: false
 
 - name: Configure unattended-upgrades
   ansible.builtin.include_tasks: unattended_upgrades.yml

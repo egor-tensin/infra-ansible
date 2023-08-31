@@ -3,9 +3,9 @@
   block:
     - name: Install wireguard-tools
       ansible.builtin.apt:
-        install_recommends: false
         name: wireguard-tools
         state: present
+        install_recommends: false
 
     - name: Write wg-quick config file
       ansible.builtin.template:

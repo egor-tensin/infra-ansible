@@ -13,6 +13,8 @@
     name:
       - git
       - make
+    state: present
+    install_recommends: false
 
 - name: Configure git
   block:

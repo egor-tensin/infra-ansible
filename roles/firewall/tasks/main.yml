@@ -1,9 +1,9 @@
 - name: Install iptables-persistent
   become: true
   ansible.builtin.apt:
-    install_recommends: false
     name: iptables-persistent
     state: present
+    install_recommends: false
 
 - name: Configure rule files
   ansible.builtin.include_tasks: file.yml

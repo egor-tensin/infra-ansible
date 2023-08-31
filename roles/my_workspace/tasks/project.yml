@@ -6,9 +6,9 @@
   block:
     - name: 'Update repository: {{ project_name }}'
       ansible.builtin.git:
-        accept_hostkey: true
-        dest: '{{ project_dir }}'
         repo: '{{ project_url }}'
+        dest: '{{ project_dir }}'
+        accept_hostkey: true
 
     - name: Check for Makefile
       ansible.builtin.file:
@@ -33,9 +33,9 @@
     - name: Run docker-compose
       become: true
       community.docker.docker_compose:
-        build: true
-        debug: true
         project_src: '{{ project_dir }}'
         pull: true
+        build: true
         remove_orphans: true
+        debug: true
       when: makefile_check is not succeeded and docker_compose_check is succeeded

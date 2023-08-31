@@ -6,13 +6,15 @@
   block:
     - name: Install snapd
       ansible.builtin.apt:
-        install_recommends: false
         name: snapd
+        state: present
+        install_recommends: false
 
     - name: Install Certbot
       community.general.snap:
-        classic: true
         name: certbot
+        state: present
+        classic: true
 
     - name: Confirm plugin containment level
       ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
@@ -20,6 +22,7 @@
     - name: Install Certbot DigitalOcean plugin
       community.general.snap:
         name: certbot-dns-digitalocean
+        state: present
 
     - name: Create Certbot symlink in /usr/bin
       ansible.builtin.file:

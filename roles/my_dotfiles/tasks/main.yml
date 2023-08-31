@@ -1,8 +1,8 @@
 - name: Pull repositories
   ansible.builtin.git:
-    accept_hostkey: true
-    dest: '{{ my_dotfiles_dir }}'
     repo: '{{ my_dotfiles_repo }}'
+    dest: '{{ my_dotfiles_dir }}'
+    accept_hostkey: true
 
 - name: Run setup.sh
   ansible.builtin.command: ./setup.sh

@@ -10,13 +10,17 @@
     - name: Create keys directory
       ansible.builtin.file:
         path: '{{ apt_repo_keys_dir }}'
-        mode: '755'
         state: directory
+        owner: root
+        group: root
+        mode: '755'
 
     - name: 'Add key: {{ apt_repo_name }}'
       ansible.builtin.get_url:
         url: '{{ apt_repo_key_url }}'
         dest: '{{ key_path }}'
+        owner: root
+        group: root
         mode: '644'
       notify: apt_repo_update
 

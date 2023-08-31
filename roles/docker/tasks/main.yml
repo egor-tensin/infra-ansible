@@ -1,12 +1,12 @@
 - name: Install Docker
   become: true
   ansible.builtin.apt:
-    install_recommends: false
     name:
       - docker.io
       - docker-compose
-    policy_rc_d: 101
     state: present
+    install_recommends: false
+    policy_rc_d: 101
   notify: docker_restart
 
 - name: Configure Docker logging driver
@@ -19,10 +19,10 @@
 - name: Clean up Docker data
   become: true
   community.docker.docker_prune:
+    builder_cache: true
     containers: true
     images: true
     images_filters:
       dangling: false
     networks: true
     volumes: true
-    builder_cache: true
