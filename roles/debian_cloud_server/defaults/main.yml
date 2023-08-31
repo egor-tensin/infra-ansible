@@ -1,0 +1,12 @@
+debian_cloud_server_packages:
+  # Some common & useful packages:
+  - curl
+  - dnsutils
+  - git
+  - man-db
+  - rsync
+  - screen
+  - telnet
+  - tmux
+  - vim
+  - wget
