@@ -1,0 +1,3 @@
+dependencies:
+  - role: router
+    when: wg_router
