@@ -16,9 +16,6 @@
     purge: true
   notify: apt_reboot
 
-- name: Reboot if necessary
-  ansible.builtin.meta: flush_handlers
-
 - name: Install packages
   become: true
   ansible.builtin.apt:
