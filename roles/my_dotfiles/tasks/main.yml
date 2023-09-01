@@ -1,10 +1,12 @@
-- name: Pull repositories
+- name: Pull repository
   ansible.builtin.git: # noqa: latest
     repo: '{{ my_dotfiles_repo }}'
     dest: '{{ my_dotfiles_dir }}'
     accept_hostkey: true
+  register: repo
 
 - name: Run setup.sh
   ansible.builtin.command: ./setup.sh
   args:
     chdir: '{{ my_dotfiles_dir }}'
+  when: repo.changed
