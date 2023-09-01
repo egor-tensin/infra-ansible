@@ -6,6 +6,7 @@
     owner: root
     group: root
     mode: '644'
+    validate: /usr/sbin/sshd -t -f %s
   register: sshd_config
 
 - name: Restart sshd
