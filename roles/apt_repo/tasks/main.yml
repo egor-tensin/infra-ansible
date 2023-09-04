@@ -1,44 +1,38 @@
-- name: Set up repository
+- name: Create keys directory
   become: true
-  vars:
-    # For some reason, if the key is in a weird format that requires
-    # running `gpg --dearmor`, you must save it with the .gpg extension
-    # instead of .asc. You can then completely skip the gpg step. Source:
-    # https://stackoverflow.com/q/71585303/514684
-    key_path: '{{ apt_repo_keys_dir }}/{{ apt_repo_name }}{{ apt_repo_key_dearmor | ternary(".gpg", ".asc") }}'
-  block:
-    - name: Create keys directory
-      ansible.builtin.file:
-        path: '{{ apt_repo_keys_dir }}'
-        state: directory
-        owner: root
-        group: root
-        mode: '755'
+  ansible.builtin.file:
+    path: '{{ apt_repo_keys_dir }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '755'
 
-    - name: 'Add key: {{ apt_repo_name }}'
-      ansible.builtin.get_url:
-        url: '{{ apt_repo_key_url }}'
-        dest: '{{ key_path }}'
-        owner: root
-        group: root
-        mode: '644'
-      notify: apt_repo_update
+- name: 'Add key: {{ apt_repo_name }}'
+  become: true
+  ansible.builtin.get_url:
+    url: '{{ apt_repo_key_url }}'
+    dest: '{{ apt_repo_key_path }}'
+    owner: root
+    group: root
+    mode: '644'
+  notify: apt_repo_update
 
-    - name: Get host distro
-      ansible.builtin.setup:
-        gather_subset: [distribution_release]
+- name: Get host distro
+  ansible.builtin.setup:
+    gather_subset: [distribution_release]
 
-    # Not using the apt_repository module, since it _adds_ a new repository
-    # in the .list file. That way, we can end up with an invalid repository
-    # line.
-    - name: 'Add repository: {{ apt_repo_name }}'
-      ansible.builtin.template:
-        src: repo.list.j2
-        dest: '/etc/apt/sources.list.d/{{ apt_repo_name }}.list'
-        owner: root
-        group: root
-        mode: '644'
-      notify: apt_repo_update
+# Not using the apt_repository module, since it _adds_ a new repository
+# in the .list file. That way, we can end up with an invalid repository
+# line.
+- name: 'Add repository: {{ apt_repo_name }}'
+  become: true
+  ansible.builtin.template:
+    src: repo.list.j2
+    dest: '/etc/apt/sources.list.d/{{ apt_repo_name }}.list'
+    owner: root
+    group: root
+    mode: '644'
+  notify: apt_repo_update
 
-    - name: Refresh apt repositories if necessary
-      ansible.builtin.meta: flush_handlers
+- name: Refresh apt repositories if necessary
+  ansible.builtin.meta: flush_handlers

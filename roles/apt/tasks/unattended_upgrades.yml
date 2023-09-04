@@ -5,7 +5,7 @@
     state: present
     install_recommends: false
 
-- name: 50unattended-upgrades
+- name: Configure 50unattended-upgrades
   become: true
   ansible.builtin.template:
     src: 50unattended-upgrades.j2
@@ -17,13 +17,13 @@
 # https://wiki.debian.org/UnattendedUpgrades says that 20auto-upgrades and
 # 02periodic are _alternatives_ (and, presumably, not mechanisms that can be
 # used together).
-- name: 20auto-upgrades
+- name: Configure 20auto-upgrades
   become: true
   ansible.builtin.file:
     path: /etc/apt/apt.conf.d/20auto-upgrades
     state: absent
 
-- name: 02periodic
+- name: Configure 02periodic
   become: true
   ansible.builtin.template:
     src: 02periodic.j2

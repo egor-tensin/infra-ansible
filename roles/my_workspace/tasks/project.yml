@@ -4,7 +4,7 @@
     project_name: "{{ project.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
     project_dir: '{{ my_workspace_dir }}/{{ project_name }}'
   block:
-    - name: 'Update repository: {{ project_name }}'
+    - name: Update repository
       ansible.builtin.git: # noqa: latest
         repo: '{{ project_url }}'
         dest: '{{ project_dir }}'
