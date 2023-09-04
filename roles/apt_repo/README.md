@@ -1,2 +1,4 @@
-This role is used to enable a 3rd-party repository on Ubuntu/Debian. It
-downloads a key file from the web and adds an entry in /etc/apt/sources.list.d.
+This role enables a 3rd-party repository on Ubuntu/Debian.
+
+* Download a key file from the web to /etc/apt/keyrings.
+* Add an entry in /etc/apt/sources.list.d.

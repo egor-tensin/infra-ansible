@@ -4,7 +4,7 @@
     name: '{{ item }}'
     value: 1
     reload: true
-    sysctl_file: /etc/sysctl.d/99-router.conf
+    sysctl_file: '{{ router_sysctl_file }}'
   loop:
     - net.ipv4.ip_forward
     - net.ipv4.conf.all.forwarding

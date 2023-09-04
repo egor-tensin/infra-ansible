@@ -1,4 +1,4 @@
-This role is used to wait until cloud-init is done initializing an instance.
-This is supposed to be the first role in a playbook; it is advisable to disable
-facts gathering so that the playbook can wait until a connection is
-established.
+This role waits until cloud-init is done initializing an cloud VM.
+
+This is supposed to be the first role in a playbook; facts gathering should be
+disabled so that the role can handle connectivity issues.
