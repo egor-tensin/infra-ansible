@@ -46,3 +46,29 @@
       value: '1'
     - name: AVOID_COMMIT_BEFORE_INSTALL
       value: '1'
+
+- name: Configure repository remote
+  when: etckeeper_remote_url is defined
+  become: true
+  block:
+    - name: git remote add
+      ansible.builtin.command:
+        argv:
+          - git
+          - remote
+          - add
+          - '{{ etckeeper_remote_name }}'
+          - '{{ etckeeper_remote_url }}'
+        chdir: /etc
+        creates: '/etc/.git/refs/remotes/{{ etckeeper_remote_name }}/'
+
+    - name: Configure pushes for etckeeper
+      community.general.ini_file:
+        path: /etc/etckeeper/etckeeper.conf
+        no_extra_spaces: true
+        owner: root
+        group: root
+        mode: '644'
+        section: null
+        option: PUSH_REMOTE
+        value: '{{ etckeeper_remote_name }}'
