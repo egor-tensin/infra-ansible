@@ -10,13 +10,14 @@
   become: true
   block:
     - name: Check for changes in /etc
-      ansible.builtin.command: git status --porcelain=v1
-      args:
+      ansible.builtin.command: # noqa: command-instead-of-module
+        cmd: git status --porcelain=v1
         chdir: /etc
       register: git_status
       changed_when: false
 
-    - ansible.builtin.fail:
+    - name: Fail
+      ansible.builtin.fail:
         msg: |
           There are uncommitted changes in /etc:
           {{ git_status.stdout }}

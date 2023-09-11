@@ -7,16 +7,16 @@
         | grep -G -v '^etckeeper/etckeeper.conf'
   args:
     chdir: /etc
-  register: etckeeper_modified_files
+  register: git_status
   changed_when: false
-  failed_when: etckeeper_modified_files.rc not in [0, 1]
+  failed_when: git_status.rc not in [0, 1]
 
 - name: Fail if unexpected files were modified
   ansible.builtin.fail:
     msg: |
       Unexpected files were modified:
-      {{ etckeeper_modified_files.stdout }}
-  when: etckeeper_modified_files.rc == 0
+      {{ git_status.stdout }}
+  when: git_status.rc == 0
 
 - name: etckeeper commit
   become: true

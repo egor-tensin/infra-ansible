@@ -23,8 +23,8 @@
       when: not etc_versioned
 
     - name: Check for changes in /etc
-      ansible.builtin.command: git status --porcelain=v1
-      args:
+      ansible.builtin.command: # noqa: command-instead-of-module
+        cmd: git status --porcelain=v1
         chdir: /etc
       register: git_status
       changed_when: false
