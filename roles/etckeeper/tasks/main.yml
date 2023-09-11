@@ -46,6 +46,7 @@
       value: '1'
     - name: AVOID_COMMIT_BEFORE_INSTALL
       value: '1'
+  notify: etckeeper_commit_conf
 
 - name: Configure repository remote
   when: etckeeper_remote_url is defined
@@ -72,3 +73,4 @@
         section: null
         option: PUSH_REMOTE
         value: '{{ etckeeper_remote_name }}'
+      notify: etckeeper_commit_conf

@@ -1,0 +1,3 @@
+- name: Commit etckeeper.conf
+  ansible.builtin.include_tasks: commit_conf.yml
+  listen: etckeeper_commit_conf
