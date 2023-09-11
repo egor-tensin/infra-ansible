@@ -1,3 +1,13 @@
 - name: Commit etckeeper.conf
-  ansible.builtin.include_tasks: commit_conf.yml
+  ansible.builtin.include_tasks: commit.yml
+  vars:
+    paths: [etckeeper/etckeeper.conf]
+    commit_msg: configure etckeeper
   listen: etckeeper_commit_conf
+
+- name: Commit .gitignore
+  ansible.builtin.include_tasks: commit.yml
+  vars:
+    paths: '{{ [".gitignore"] + etckeeper_ignored_paths + etckeeper_extra_ignored_paths }}'
+    commit_msg: configure ignored files
+  listen: etckeeper_commit_gitignore

@@ -3,3 +3,18 @@ git_email: Egor.Tensin@gmail.com
 
 etckeeper_remote_name: origin
 #etckeeper_remote_url:
+
+etckeeper_ignored_paths:
+  # My resolv.conf is typically managed, by either systemd or NetworkManager.
+  - /resolv.conf
+  # This is just a stupid systemd file.
+  - /.updated
+  # I really don't need all the Wi-Fi networks.
+  - /NetworkManager/system-connections/
+  # I'm unsure about this; but it does make pacman upgrades much easier - I
+  # don't need to account for /etc/pacman.d/gnupg suddenly having changes.
+  - /pacman.d/gnupg/
+  # I run rate-mirrors before every upgrade pretty much.
+  - /pacman.d/mirrorlist
+
+etckeeper_extra_ignored_paths: []

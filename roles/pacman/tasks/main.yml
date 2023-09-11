@@ -1,62 +1,10 @@
-- name: Upgrade packages or fail gracefully
+- name: Upgrade packages
   become: true
-  block:
-    - name: Upgrade packages
-      community.general.pacman:
-        update_cache: true
-        upgrade: true
-      register: pacman_result
-      notify: pacman_upgraded
+  community.general.pacman:
+    update_cache: true
+    upgrade: true
+  register: pacman_result
+  notify: pacman_upgraded
 
-    - name: Reboot if necessary
-      ansible.builtin.meta: flush_handlers
-  rescue:
-    - name: Check if /etc is versioned
-      ansible.builtin.file:
-        path: /etc/.git/config
-        state: file
-      register: etc_versioned
-
-    - name: Fail if /etc is not versioned
-      ansible.builtin.fail:
-        msg: Upgrading packages failed for an unknown reason!
-      when: not etc_versioned
-
-    - name: Check for changes in /etc
-      ansible.builtin.command: # noqa: command-instead-of-module
-        cmd: git status --porcelain=v1
-        chdir: /etc
-      register: git_status
-      changed_when: false
-
-    - name: Fail if there're no uncommitted changes in /etc
-      ansible.builtin.fail:
-        msg: Upgrading packages failed for an unknown reason!
-      when: not git_status.stdout
-
-    - name: All changes in /etc are in pacman.d/gnupg?
-      ansible.builtin.shell: |
-        set -o pipefail && \
-        git status --porcelain=v1 \
-            | cut -c 4- \
-            | grep -G -v '^pacman.d/gnupg/'
-      args:
-        chdir: /etc
-      register: only_gnupg
-      changed_when: false
-      failed_when: only_gnupg.rc not in [0, 1]
-
-    - name: Commit changes in /etc/pacman.d/gnupg
-      ansible.builtin.command: |
-        etckeeper commit 'pacman: GPG keys'
-      when: only_gnupg.rc == 1
-
-    - name: Retry upgrading packages
-      community.general.pacman:
-        update_cache: true
-        upgrade: true
-      register: pacman_result
-      notify: pacman_upgraded
-
-    - name: Reboot if necessary
-      ansible.builtin.meta: flush_handlers
+- name: Reboot if necessary
+  ansible.builtin.meta: flush_handlers
