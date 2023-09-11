@@ -11,6 +11,12 @@
     - name: Reboot if necessary
       ansible.builtin.meta: flush_handlers
   rescue:
+    - name: Check if /etc is versioned
+      ansible.builtin.file:
+        path: /etc/.git/config
+        state: file
+      register: etc_versioned
+
     - name: Fail if /etc is not versioned
       ansible.builtin.fail:
         msg: Upgrading packages failed for an unknown reason!
@@ -23,7 +29,7 @@
       register: git_status
       changed_when: false
 
-    - name: Fail if there're no unstaged changes in /etc
+    - name: Fail if there're no uncommitted changes in /etc
       ansible.builtin.fail:
         msg: Upgrading packages failed for an unknown reason!
       when: not git_status.stdout
@@ -38,11 +44,12 @@
         chdir: /etc
       register: only_gnupg
       changed_when: false
+      failed_when: only_gnupg.rc not in [0, 1]
 
-    - name: Commit changes in /etc
+    - name: Commit changes in /etc/pacman.d/gnupg
       ansible.builtin.command: |
         etckeeper commit 'pacman: GPG keys'
-      when: git_status.stdout and only_gnupg.rc != 0
+      when: only_gnupg.rc == 1
 
     - name: Retry upgrading packages
       community.general.pacman:
