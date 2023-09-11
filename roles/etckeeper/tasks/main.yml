@@ -1,33 +1,48 @@
-- name: Check if /etc is versioned
+- name: Install etckeeper
   become: true
-  ansible.builtin.file:
-    path: /etc/.git/config
-    state: file
-  register: etc_versioned
-  ignore_errors: true
+  ansible.builtin.package:
+    name: etckeeper
+    state: present
 
-- when: etc_versioned
-  block:
-    - name: Check etckeeper is available
-      ansible.builtin.command: etckeeper --version
-      register: etckeeper_installed
-      changed_when: false
-      failed_when: false
+- name: etckeeper init
+  become: true
+  ansible.builtin.command: etckeeper init
+  args:
+    creates: /etc/.git/config
 
-    - name: Fail if /etc is versioned, but not by etckeeper
-      ansible.builtin.fail:
-        msg: /etc is versioned, but etckeeper doesn't seem to be installed.
-      when: not etckeeper_installed
+- name: Configure /etc repository
+  become: true
+  community.general.git_config:
+    scope: local
+    repo: /etc
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+  loop:
+    - name: user.name
+      value: '{{ git_name }}'
+    - name: user.email
+      value: '{{ git_email }}'
 
-    - name: Configure /etc repository
-      become: true
-      community.general.git_config:
-        scope: local
-        repo: /etc
-        name: '{{ item.name }}'
-        value: '{{ item.value }}'
-      loop:
-        - name: user.name
-          value: '{{ git_name }}'
-        - name: user.email
-          value: '{{ git_email }}'
+- name: Initial commit
+  become: true
+  ansible.builtin.command: etckeeper commit 'initial commit'
+  args:
+    creates: /etc/.git/index
+
+- name: Configure etckeeper
+  become: true
+  community.general.ini_file:
+    path: /etc/etckeeper/etckeeper.conf
+    # I'm pretty sure this file is sourced by a shell, so this is required:
+    no_extra_spaces: true
+    owner: root
+    group: root
+    mode: '644'
+    section: null
+    option: '{{ item.name }}'
+    value: '{{ item.value }}'
+  loop:
+    - name: AVOID_DAILY_AUTOCOMMITS
+      value: '1'
+    - name: AVOID_COMMIT_BEFORE_INSTALL
+      value: '1'
