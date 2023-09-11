@@ -1,43 +1,59 @@
-- name: As root user
+- name: Check if /etc is versioned
+  become: true
+  ansible.builtin.file:
+    path: /etc/.git/config
+    state: file
+  register: etc_versioned
+
+- name: Fail if there're uncommitted changes in /etc
+  when: etc_versioned
   become: true
   block:
-    - name: Fail if there're uncommitted changes in /etc
-      when: etc_versioned
-      block:
-        - name: Check for changes in /etc
-          ansible.builtin.command: git status --porcelain=v1
-          args:
-            chdir: /etc
-          register: git_status
-          changed_when: false
+    - name: Check for changes in /etc
+      ansible.builtin.command: git status --porcelain=v1
+      args:
+        chdir: /etc
+      register: git_status
+      changed_when: false
 
-        - ansible.builtin.fail:
-            msg: There are uncommitted changes in /etc
-          when: git_status.stdout
+    - ansible.builtin.fail:
+        msg: |
+          There are uncommitted changes in /etc:
+          {{ git_status.stdout }}
+      when: git_status.stdout
 
-    - name: Rate pacman mirrors
+- name: Rate pacman mirrors
+  become: true
+  ansible.builtin.shell: |
+    . /etc/os-release && rate-mirrors \
+        --allow-root \
+        --disable-comments \
+        --save /etc/pacman.d/mirrorlist \
+        "$ID"
+
+- name: Commit pacman.d/mirrorlist
+  when: etc_versioned
+  become: true
+  block:
+    - name: Check for changes in /etc
       ansible.builtin.shell: |
-        . /etc/os-release && rate-mirrors \
-            --allow-root \
-            --disable-comments \
-            --save /etc/pacman.d/mirrorlist \
-            "$ID"
+        set -o pipefail && \
+        git status --porcelain=v1 \
+            | cut -c 4- \
+            | grep -G -v '^pacman.d/mirrorlist'
+      args:
+        chdir: /etc
+      register: git_status
+      changed_when: false
+      failed_when: git_status.rc not in [0, 1]
 
-    - name: Commit pacman.d/mirrorlist
-      when: etc_versioned
-      block:
-        - name: Check for changes in /etc
-          ansible.builtin.command: git status --porcelain=v1
-          args:
-            chdir: /etc
-          register: git_status
-          changed_when: false
+    - name: Fail if there're other uncommitted changes
+      ansible.builtin.fail:
+        msg: |
+          How did this happen? Other files have been modified:
+          {{ git_status.stdout }}
+      when: git_status.rc == 0
 
-        - name: Fail if there're other uncommitted changes
-          ansible.builtin.fail:
-            msg: How did this happen?
-          when: git_status.stdout != ' M pacman.d/mirrorlist'
-
-        - name: Commit changes in /etc/pacman.d/mirrorlist
-          ansible.builtin.command: |
-            etckeeper commit 'rate-mirrors'
+    - name: etckeeper commit
+      ansible.builtin.command: |
+        etckeeper commit 'rate-mirrors'
