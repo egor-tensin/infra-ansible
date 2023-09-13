@@ -1,1 +1,3 @@
+pacman_rate_mirrors: true
+
 pacman_packages: []
