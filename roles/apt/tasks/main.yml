@@ -22,6 +22,7 @@
     name: '{{ apt_packages }}'
     state: present
     install_recommends: false
+  when: apt_packages | length > 0
 
 - name: Configure unattended-upgrades
   ansible.builtin.include_tasks: unattended_upgrades.yml
