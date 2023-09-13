@@ -8,3 +8,10 @@
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
+
+- name: Install packages
+  become: true
+  community.general.pacman:
+    name: '{{ pacman_packages }}'
+    state: present
+  when: pacman_packages | length > 0
