@@ -9,12 +9,11 @@
 
 - name: Install dependencies
   become: true
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name:
       - git
       - make
     state: present
-    install_recommends: false
 
 - name: Configure git
   block:

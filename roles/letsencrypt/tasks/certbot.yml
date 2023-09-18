@@ -5,10 +5,9 @@
   become: true
   block:
     - name: Install snapd
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name: snapd
         state: present
-        install_recommends: false
 
     - name: Install Certbot
       community.general.snap:
