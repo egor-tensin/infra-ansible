@@ -3,7 +3,6 @@
   ansible.builtin.apt:
     name: unattended-upgrades
     state: present
-    install_recommends: false
 
 - name: Configure 50unattended-upgrades
   become: true

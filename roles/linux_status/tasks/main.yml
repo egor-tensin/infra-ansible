@@ -24,7 +24,6 @@
   ansible.builtin.apt:
     name: linux-status
     state: present
-    install_recommends: false
     policy_rc_d: 101
   notify: linux_status_restart
 

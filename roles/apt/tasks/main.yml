@@ -3,7 +3,6 @@
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist
-    install_recommends: false
   notify: apt_reboot
 
 - name: Reboot if necessary
@@ -20,7 +19,6 @@
   ansible.builtin.apt:
     name: '{{ apt_packages }}'
     state: present
-    install_recommends: false
   when: apt_packages | length > 0
 
 - name: Configure unattended-upgrades
