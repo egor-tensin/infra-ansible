@@ -18,11 +18,10 @@
     owner: root
     group: root
     mode: '644'
-  register: systemd_depend_mount_result
-  notify: systemd_depend_mount_restart
+  notify: systemd_depend_mount_reload
   loop: '{{ systemd_depend_mount_services }}'
   loop_control:
     loop_var: service
 
-- name: Restart systemd services if necessary
+- name: Reload systemd services if necessary
   ansible.builtin.meta: flush_handlers

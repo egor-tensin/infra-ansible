@@ -2,15 +2,4 @@
   become: true
   ansible.builtin.systemd_service:
     daemon_reload: true
-  listen: systemd_depend_iface_restart
-
-- name: Collect installed services
-  ansible.builtin.service_facts:
-  listen: systemd_depend_iface_restart
-
-- name: Restart systemd services
-  ansible.builtin.include_tasks: service.yml
-  listen: systemd_depend_iface_restart
-  loop: "{{ systemd_depend_iface_result.results | selectattr('changed', 'equalto', true) | map(attribute='service') | list }}"
-  loop_control:
-    loop_var: service
+  listen: systemd_depend_iface_reload
