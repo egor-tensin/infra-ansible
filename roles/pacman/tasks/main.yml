@@ -30,7 +30,7 @@
 
 - name: Install packages
   become: true
-  community.general.pacman:
+  ansible.builtin.package:
     name: '{{ pacman_packages }}'
     state: present
   when: pacman_packages | length > 0

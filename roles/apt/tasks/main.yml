@@ -16,7 +16,7 @@
 
 - name: Install packages
   become: true
-  ansible.builtin.apt:
+  ansible.builtin.package:
     name: '{{ apt_packages }}'
     state: present
   when: apt_packages | length > 0
