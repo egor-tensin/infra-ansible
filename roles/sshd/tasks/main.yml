@@ -7,11 +7,7 @@
     group: root
     mode: '644'
     validate: /usr/sbin/sshd -t -f %s
-  register: sshd_config
+  notify: sshd_restart
 
-- name: Restart sshd
-  become: true
-  ansible.builtin.systemd_service:
-    name: sshd
-    state: restarted
-  when: sshd_config.changed
+- name: Restart sshd service if necessary
+  ansible.builtin.meta: flush_handlers
