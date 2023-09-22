@@ -1,19 +1,21 @@
-- name: Install Docker
-  become: true
-  ansible.builtin.apt:
-    name:
-      - docker.io
-      - docker-compose
-    state: present
-    policy_rc_d: 101
-  notify: docker_restart
-
 - name: Configure Docker logging driver
   when: docker_logging_driver is defined and docker_logging_driver
   ansible.builtin.include_tasks: logging.yml
 
-- name: Restart systemd service if necessary
-  ansible.builtin.meta: flush_handlers
+- name: Install Docker
+  become: true
+  ansible.builtin.package:
+    name:
+      - docker.io
+      - docker-compose
+    state: present
+
+- name: Enable & start Docker service
+  become: true
+  ansible.builtin.systemd_service:
+    name: docker
+    enabled: true
+    state: started
 
 - name: Clean up Docker data
   become: true

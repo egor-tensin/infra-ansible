@@ -16,10 +16,34 @@
 
 - name: Modify Docker config
   become: true
-  ansible.builtin.copy:
-    dest: /etc/docker/daemon.json
-    content: '{{ docker_current_config | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
-    owner: root
-    group: root
-    mode: '644'
-  notify: docker_restart
+  block:
+    - name: Create /etc/docker
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: root
+        mode: '755'
+
+    - name: Write daemon.json
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: '{{ docker_current_config | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
+        owner: root
+        group: root
+        mode: '644'
+      register: docker_config
+
+- name: Restart Docker if necessary
+  become: true
+  when: docker_config.changed
+  block:
+    - name: Collect service facts
+      ansible.builtin.service_facts:
+
+    - name: Restart Docker service
+      when: |
+        'docker' in ansible_facts.services and ansible_facts.services.docker.state == 'running'
+      ansible.builtin.systemd_service:
+        name: docker
+        state: restarted
