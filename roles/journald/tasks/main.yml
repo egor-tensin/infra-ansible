@@ -1,20 +1,14 @@
-- name: Make journald less noisy
+- name: Edit journald.conf
   become: true
-  block:
-    - name: Edit journald.conf
-      community.general.ini_file:
-        dest: /etc/systemd/journald.conf
-        section: Journal
-        option: MaxLevelStore
-        value: '{{ journald_log_level }}'
-        owner: root
-        group: root
-        mode: '644'
-      register: edited
+  community.general.ini_file:
+    dest: /etc/systemd/journald.conf
+    section: Journal
+    option: MaxLevelStore
+    value: '{{ journald_log_level }}'
+    owner: root
+    group: root
+    mode: '644'
+  notify: journald_restart
 
-    - name: Restart systemd-journald
-      ansible.builtin.systemd_service:
-        daemon_reload: true
-        name: systemd-journald
-        state: restarted
-      when: edited.changed
+- name: Restart systemd-journald if necessary
+  ansible.builtin.meta: flush_handlers
