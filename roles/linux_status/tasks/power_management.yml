@@ -1,0 +1,30 @@
+- name: Create override directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/linux-status.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '755'
+
+- name: Enable power management
+  become: true
+  ansible.builtin.file:
+    path: /etc/systemd/system/linux-status.service.d/99-disable_power_management.conf
+    state: absent
+  when: linux_status_enable_power_management
+  notify: linux_status_configured
+
+- name: Disable power management
+  become: true
+  ansible.builtin.template:
+    src: disable_power_management.conf.j2
+    dest: /etc/systemd/system/linux-status.service.d/99-disable_power_management.conf
+    owner: root
+    group: root
+    mode: '644'
+  when: not linux_status_enable_power_management
+  notify: linux_status_configured
+
+- name: Restart systemd service if necessary
+  ansible.builtin.meta: flush_handlers

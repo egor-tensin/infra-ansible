@@ -1,1 +1,1 @@
-linux_status_disable_power_management: false
+linux_status_enable_power_management: true

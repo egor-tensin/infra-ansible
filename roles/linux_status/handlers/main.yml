@@ -1,7 +1,18 @@
-- name: Restart linux-status
+- name: Collect service facts
+  ansible.builtin.service_facts:
+  listen: linux_status_configured
+
+- name: Reload systemd daemon
   become: true
   ansible.builtin.systemd_service:
     daemon_reload: true
+  listen: linux_status_configured
+
+- name: Restart linux-status service
+  become: true
+  when: |
+    'linux-status.service' in ansible_facts.services and ansible_facts.services['linux-status.service'].state == 'running'
+  ansible.builtin.systemd_service:
     name: linux-status
     state: restarted
-  listen: linux_status_restart
+  listen: linux_status_configured
