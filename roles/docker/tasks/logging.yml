@@ -32,18 +32,7 @@
         owner: root
         group: root
         mode: '644'
-      register: docker_config
+      notify: docker_configured
 
-- name: Restart Docker if necessary
-  become: true
-  when: docker_config.changed
-  block:
-    - name: Collect service facts
-      ansible.builtin.service_facts:
-
-    - name: Restart Docker service
-      when: |
-        'docker.service' in ansible_facts.services and ansible_facts.services['docker.service'].state == 'running'
-      ansible.builtin.systemd_service:
-        name: docker
-        state: restarted
+- name: Restart Docker service if necessary
+  ansible.builtin.meta: flush_handlers
