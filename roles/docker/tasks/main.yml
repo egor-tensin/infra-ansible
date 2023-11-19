@@ -1,3 +1,15 @@
+- name: Ensure ansible_facts used by role
+  ansible.builtin.setup:
+    gather_subset: os_family
+
+- name: Set platform-specific variables
+  ansible.builtin.include_vars: "{{ __docker_vars_file }}"
+  loop:
+    - "{{ ansible_facts['os_family'] }}.yml"
+  vars:
+    __docker_vars_file: "{{ role_path }}/vars/{{ item }}"
+  when: __docker_vars_file is file
+
 - name: Configure Docker logging driver
   when: docker_logging_driver is defined and docker_logging_driver
   ansible.builtin.include_tasks: logging.yml
@@ -5,17 +17,21 @@
 - name: Install Docker
   become: true
   ansible.builtin.package:
-    name:
-      - docker.io
-      - docker-compose
+    name: "{{ docker_package_names }}"
     state: present
 
 - name: Enable & start Docker service
   become: true
   ansible.builtin.systemd_service:
-    name: docker
+    name: "{{ docker_service_name }}"
     enabled: true
     state: started
+
+- name: Install module dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ docker_prune_module_deps }}"
+    state: present
 
 - name: Clean up Docker data
   become: true
