@@ -1,0 +1,15 @@
+- name: Install Vagrant
+  become: true
+  ansible.builtin.package:
+    name: vagrant
+    state: present
+
+- name: Update plugins
+  ansible.builtin.command: vagrant plugin update
+
+- name: Prune invalid entries
+  become: true
+  ansible.builtin.command: vagrant global-status --prune
+
+- name: Clean up boxes
+  ansible.builtin.command: vagrant box prune --force --keep-active-boxes
