@@ -1,6 +1,19 @@
 - name: Get host distro
   ansible.builtin.setup:
-    gather_subset: [distribution_release]
+    gather_subset:
+      - distribution
+      - distribution_major_version
+      - distribution_release
+      - os_family
+
+- name: Set platform-specific variables
+  ansible.builtin.include_vars: "{{ __ppa_vars_file }}"
+  loop:
+    - "{{ ansible_facts['os_family'] }}.yml"
+    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+  vars:
+    __ppa_vars_file: "{{ role_path }}/vars/{{ item }}"
+  when: __ppa_vars_file is file
 
 - name: Set up PPA repository
   ansible.builtin.include_role:
@@ -9,4 +22,4 @@
     apt_repo_name: '{{ ppa_name }}'
     apt_repo_key_url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
     apt_repo_url: 'https://ppa.launchpadcontent.net/{{ ppa_owner }}/{{ ppa_name }}/ubuntu'
-    apt_repo_distro: '{{ ppa_distro | default(ansible_distribution_release) }}'
+    apt_repo_distro: '{{ ppa_distro }}'
