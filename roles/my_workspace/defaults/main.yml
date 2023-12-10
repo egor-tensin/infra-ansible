@@ -1,5 +1,5 @@
-git_name: Egor Tensin
-git_email: Egor.Tensin@gmail.com
+#my_workspace_git_name:
+#my_workspace_git_email:
 
 my_workspace_dir: /srv/workspace
 my_workspace_projects: []

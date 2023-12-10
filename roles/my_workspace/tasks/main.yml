@@ -21,13 +21,13 @@
       community.general.git_config:
         scope: global
         name: user.name
-        value: '{{ git_name }}'
+        value: '{{ my_workspace_git_name }}'
 
     - name: Set user.email
       community.general.git_config:
         scope: global
         name: user.email
-        value: '{{ git_email }}'
+        value: '{{ my_workspace_git_email }}'
 
 - name: Update projects
   ansible.builtin.include_tasks: project.yml
