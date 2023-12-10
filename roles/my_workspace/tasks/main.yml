@@ -15,20 +15,6 @@
       - make
     state: present
 
-- name: Configure git
-  block:
-    - name: Set user.name
-      community.general.git_config:
-        scope: global
-        name: user.name
-        value: '{{ my_workspace_git_name }}'
-
-    - name: Set user.email
-      community.general.git_config:
-        scope: global
-        name: user.email
-        value: '{{ my_workspace_git_email }}'
-
 - name: Update projects
   ansible.builtin.include_tasks: project.yml
   loop: '{{ my_workspace_projects }}'

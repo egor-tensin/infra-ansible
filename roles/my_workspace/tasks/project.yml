@@ -10,6 +10,18 @@
         dest: '{{ project_dir }}'
         accept_hostkey: true
 
+    - name: Configure git repository
+      community.general.git_config:
+        scope: local
+        repo: '{{ project_dir }}'
+        name: '{{ item.name }}'
+        value: '{{ item.value }}'
+      loop:
+        - name: user.name
+          value: '{{ my_workspace_git_name }}'
+        - name: user.email
+          value: '{{ my_workspace_git_email }}'
+
     - name: Check for Makefile
       ansible.builtin.file:
         path: '{{ project_dir }}/Makefile'
