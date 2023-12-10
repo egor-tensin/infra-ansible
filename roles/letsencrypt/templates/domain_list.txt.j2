@@ -1,5 +1,7 @@
 {{ ansible_managed | comment }}
 
+{{ letsencrypt_email }}
+{{ letsencrypt_credentials_ini }}
 {% for domain in certificate_domains %}
 {{ domain }}
 {% endfor %}
