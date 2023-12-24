@@ -4,6 +4,8 @@ debian_cloud_server_packages:
   - dnsutils
   - git
   - man-db
+  - ncat
+  - nmap
   - rsync
   - screen
   - telnet
