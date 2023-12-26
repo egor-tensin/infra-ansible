@@ -2,7 +2,7 @@
   become: true
   vars:
     certificate_name: '{{ domain.name | default(domain) }}'
-    certificate_domains: "{{ domain.domains | default([certificate_name]) | sort | unique }}"
+    certificate_domains: "{{ domain.domains | default([certificate_name]) | unique }}"
   block:
     - name: Cache domain list
       ansible.builtin.template:

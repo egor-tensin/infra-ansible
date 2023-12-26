@@ -2,6 +2,6 @@
 
 {{ letsencrypt_email }}
 {{ letsencrypt_credentials_ini }}
-{% for domain in certificate_domains %}
+{% for domain in certificate_domains | sort %}
 {{ domain }}
 {% endfor %}
