@@ -5,6 +5,7 @@ debian_cloud_server_packages:
   - git
   - man-db
   - ncat
+  - net-tools
   - nmap
   - rsync
   - screen
