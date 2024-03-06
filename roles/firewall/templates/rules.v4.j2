@@ -12,7 +12,7 @@
 -A INPUT -i lo -j ACCEPT
 
 # Accept any packet for an open connection:
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT   -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 # The SSH port is always open:

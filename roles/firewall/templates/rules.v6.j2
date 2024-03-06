@@ -12,7 +12,7 @@
 -A INPUT -i lo -j ACCEPT
 
 # Accept any packet for an open connection:
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT   -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 # The SSH port is always open:
@@ -49,10 +49,10 @@
 #
 #     https://github.com/trailofbits/algo/blob/master/roles/common/templates/rules.v6.j2
 #
--A INPUT -p icmpv6 --icmpv6-type router-advertisement -m hl --hl-eq 255 -j ACCEPT
--A INPUT -p icmpv6 --icmpv6-type neighbor-solicitation -m hl --hl-eq 255 -j ACCEPT
+-A INPUT -p icmpv6 --icmpv6-type router-advertisement   -m hl --hl-eq 255 -j ACCEPT
+-A INPUT -p icmpv6 --icmpv6-type neighbor-solicitation  -m hl --hl-eq 255 -j ACCEPT
 -A INPUT -p icmpv6 --icmpv6-type neighbor-advertisement -m hl --hl-eq 255 -j ACCEPT
--A INPUT -p icmpv6 --icmpv6-type redirect -m hl --hl-eq 255 -j ACCEPT
+-A INPUT -p icmpv6 --icmpv6-type redirect               -m hl --hl-eq 255 -j ACCEPT
 
 # Log denies (this must be at the bottom of the file):
 -A INPUT -m limit --limit 3/min -j LOG --log-prefix "iptables denied: " --log-level 4
