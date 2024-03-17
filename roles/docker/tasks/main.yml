@@ -1,14 +1,20 @@
-- name: Ensure ansible_facts used by role
+- name: Get host distro
   ansible.builtin.setup:
-    gather_subset: os_family
+    gather_subset:
+      - distribution
+      - distribution_major_version
+      - distribution_release
+      - os_family
 
 - name: Set platform-specific variables
   ansible.builtin.include_vars: "{{ __docker_vars_file }}"
   loop:
     - "{{ ansible_facts['os_family'] }}.yml"
+    - "{{ ansible_facts['distribution'] }}.yml"
+    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
   vars:
     __docker_vars_file: "{{ role_path }}/vars/{{ item }}"
-  when: __docker_vars_file is file
+  when: __docker_vars_file is exists
 
 - name: Configure Docker logging driver
   when: docker_logging_driver is defined and docker_logging_driver
