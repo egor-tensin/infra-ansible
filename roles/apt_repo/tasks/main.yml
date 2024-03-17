@@ -1,3 +1,9 @@
+- name: Enable HTTPS transport
+  become: true
+  ansible.builtin.package:
+    name: apt-transport-https
+    state: present
+
 - name: Create keys directory
   become: true
   ansible.builtin.file:
