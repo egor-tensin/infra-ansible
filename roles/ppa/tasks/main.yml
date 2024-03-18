@@ -24,3 +24,5 @@
     apt_repo_key_url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
     apt_repo_url: 'https://ppa.launchpadcontent.net/{{ ppa_owner }}/{{ ppa_name }}/ubuntu'
     apt_repo_codename: '{{ ppa_distro }}'
+    # All PPA repositories are Ubuntu repositories, even though they might be used on Debian:
+    apt_repo_append_distro: false

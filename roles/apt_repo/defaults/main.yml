@@ -3,6 +3,11 @@
 #apt_repo_key_url:
 #apt_repo_codename:
 
+# Often, APT repository URLs would end with either /debian or /ubuntu.
+# For ease of use, this is appended by default. Set to false to disable this
+# behaviour.
+apt_repo_append_distro: true
+
 # This is a fairly common "component" part value in the repository file.
 apt_repo_component: main
 

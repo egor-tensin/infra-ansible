@@ -25,7 +25,9 @@
 
 - name: Get host distro
   ansible.builtin.setup:
-    gather_subset: [distribution_release]
+    gather_subset:
+      - distribution
+      - distribution_release
 
 # Not using the apt_repository module, since it _adds_ a new repository
 # in the .list file. That way, we can end up with an invalid repository
