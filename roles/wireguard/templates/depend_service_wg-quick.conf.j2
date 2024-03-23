@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+# This is required so that systemd actually starts the wg-quick service before
+# the dependants. We also set up the actual dependency on the interface so that
+# the dependants actually start after the interface is up.
+After=wg-quick@{{ wg_name }}.service
