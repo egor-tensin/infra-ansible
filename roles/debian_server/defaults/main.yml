@@ -1,4 +1,4 @@
-debian_cloud_server_packages:
+debian_server_packages:
   # Some common & useful packages:
   - curl
   - dnsutils
@@ -13,3 +13,4 @@ debian_cloud_server_packages:
   - tmux
   - vim
   - wget
+debian_server_unattended_upgrades: false

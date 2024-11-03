@@ -1,10 +1,5 @@
 dependencies:
   - role: cloud_init_wait
-  - role: apt
+  - role: debian_server
     vars:
-      apt_packages: '{{ debian_cloud_server_packages }}'
-      apt_unattended: true
-  - role: sshd
-  - role: firewall
-  - role: linux_status
-  - role: journald
+      debian_server_unattended_upgrades: true
