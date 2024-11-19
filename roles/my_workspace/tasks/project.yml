@@ -44,10 +44,9 @@
 
     - name: Run docker-compose
       become: true
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: '{{ project_dir }}'
-        pull: true
-        build: true
+        pull: always
+        build: always
         remove_orphans: true
-        debug: true
       when: makefile_check is not succeeded and docker_compose_check is succeeded
