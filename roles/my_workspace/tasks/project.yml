@@ -22,31 +22,34 @@
         - name: user.email
           value: '{{ my_workspace_git_email }}'
 
-    - name: Check for Makefile
-      ansible.builtin.file:
-        path: '{{ project_dir }}/Makefile'
-        state: file
-      register: makefile_check
-      ignore_errors: true
+    - name: Set the project running
+      when: not my_workspace_clone_only
+      block:
+        - name: Check for Makefile
+          ansible.builtin.file:
+            path: '{{ project_dir }}/Makefile'
+            state: file
+          register: makefile_check
+          ignore_errors: true
 
-    - name: Check for docker-compose.yml
-      ansible.builtin.file:
-        path: '{{ project_dir }}/docker-compose.yml'
-        state: file
-      register: docker_compose_check
-      ignore_errors: true
+        - name: Check for docker-compose.yml
+          ansible.builtin.file:
+            path: '{{ project_dir }}/docker-compose.yml'
+            state: file
+          register: docker_compose_check
+          ignore_errors: true
 
-    - name: Run make
-      become: true
-      community.general.make:
-        chdir: '{{ project_dir }}'
-      when: makefile_check is succeeded
+        - name: Run make
+          become: true
+          community.general.make:
+            chdir: '{{ project_dir }}'
+          when: makefile_check is succeeded
 
-    - name: Run docker-compose
-      become: true
-      community.docker.docker_compose_v2:
-        project_src: '{{ project_dir }}'
-        pull: always
-        build: always
-        remove_orphans: true
-      when: makefile_check is not succeeded and docker_compose_check is succeeded
+        - name: Run docker-compose
+          become: true
+          community.docker.docker_compose_v2:
+            project_src: '{{ project_dir }}'
+            pull: always
+            build: always
+            remove_orphans: true
+          when: makefile_check is not succeeded and docker_compose_check is succeeded
