@@ -1,0 +1,11 @@
+{% set _opts = 'rw,sync,insecure,no_subtree_check' %}
+{% if nfs_opts %}
+  {% set _opts %}{{ _opts }},{{ nfs_opts }}{% endset %}
+{% endif %}
+{% if nfs_all_squash %}
+  {% set _anonuid = nfs_anonuid if nfs_anonuid is defined else ansible_facts['user_uid'] %}
+  {% set _anongid = nfs_anongid if nfs_anongid is defined else ansible_facts['user_gid'] %}
+  {% set _opts %}{{ _opts }},all_squash,anonuid={{ _anonuid }},anongid={{ _anongid }}{% endset %}
+{% endif %}
+
+{{ nfs_dir }}	*({{ _opts }})

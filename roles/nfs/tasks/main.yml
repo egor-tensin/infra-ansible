@@ -1,0 +1,26 @@
+- name: Install NFS
+  become: true
+  ansible.builtin.package:
+    name: nfs-server
+    state: present
+
+- name: Enable & start NFS service
+  become: true
+  ansible.builtin.systemd_service:
+    name: nfs-server
+    enabled: true
+    state: started
+
+- name: Collect required info
+  ansible.builtin.setup:
+    gather_subset: [user]
+
+- name: Configure NFS
+  become: true
+  ansible.builtin.template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '644'
+  notify: nfs_configured
