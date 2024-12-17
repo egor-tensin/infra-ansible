@@ -4,6 +4,5 @@ dependencies:
       apt_packages: '{{ debian_server_packages }}'
       apt_unattended_upgrades: '{{ debian_server_unattended_upgrades }}'
   - role: sshd
-  - role: firewall
-  - role: linux_status
   - role: journald
+  - role: linux_status

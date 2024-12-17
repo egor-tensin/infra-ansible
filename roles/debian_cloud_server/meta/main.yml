@@ -3,3 +3,4 @@ dependencies:
   - role: debian_server
     vars:
       debian_server_unattended_upgrades: true
+  - role: firewall
