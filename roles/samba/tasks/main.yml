@@ -1,0 +1,49 @@
+- name: Install Samba
+  become: true
+  ansible.builtin.package:
+    name: samba
+    state: present
+
+- name: Create /etc/samba
+  become: true
+  ansible.builtin.file:
+    path: /etc/samba
+    state: directory
+    owner: root
+    group: root
+    mode: '755'
+
+- name: Format smb.conf
+  become: true
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: '644'
+    validate: '/usr/bin/testparm --suppress-prompt %s'
+  notify: samba_configured
+
+- name: Enable & start Samba
+  become: true
+  ansible.builtin.systemd_service:
+    name: smbd
+    enabled: true
+    state: started
+
+- name: Restart Samba service if necessary
+  ansible.builtin.meta: flush_handlers
+
+# Enable network discovery on Windows.
+- name: Install wsdd
+  become: true
+  ansible.builtin.package:
+    name: wsdd
+    state: present
+
+- name: Enable & start wsdd
+  become: true
+  ansible.builtin.systemd_service:
+    name: wsdd
+    enabled: true
+    state: started

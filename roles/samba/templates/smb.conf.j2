@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+
+# https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server#Creating_a_Basic_guest_only_smb.conf_File
+
+[global]
+    logging = syslog
+    map to guest = Bad user
+    server role = standalone server
+    auto services = {{ samba_share_name }}
+
+[{{ samba_share_name }}]
+    path = {{ samba_share_dir }}
+    read only = no
+    guest ok = yes
+    guest only = yes
