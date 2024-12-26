@@ -1,0 +1,4 @@
+# en_US.UTF-8 is always included.
+locale_list:
+  # The better locale for Europe, compared to en_US.
+  - en_GB.UTF-8

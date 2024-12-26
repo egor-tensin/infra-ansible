@@ -14,3 +14,6 @@ debian_server_packages:
   - vim
   - wget
 debian_server_unattended_upgrades: false
+debian_server_locale_list:
+  # The saner option for Europe.
+  - en_GB.UTF-8

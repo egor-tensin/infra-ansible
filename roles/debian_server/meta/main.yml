@@ -3,6 +3,9 @@ dependencies:
     vars:
       apt_packages: '{{ debian_server_packages }}'
       apt_unattended_upgrades: '{{ debian_server_unattended_upgrades }}'
+  - role: locale
+    vars:
+      locale_list: '{{ debian_server_locale_list }}'
   - role: sshd
   - role: journald
   - role: linux_status
