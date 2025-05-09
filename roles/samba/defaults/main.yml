@@ -1,2 +1,6 @@
 #samba_share_dir:
 #samba_share_name:
+
+# Specify this if you want to get basically the same access to the share as
+# this account (as opposed to `nobody` and read-only permissions):
+#samba_guest_account:
