@@ -17,7 +17,7 @@
   when: __docker_vars_file is exists
 
 - name: Configure Docker logging driver
-  when: docker_logging_driver is defined and docker_logging_driver
+  when: docker_logging_driver is defined and docker_logging_driver != false
   ansible.builtin.include_tasks: logging.yml
 
 - name: Install Docker
