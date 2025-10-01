@@ -10,9 +10,7 @@
 - name: Install dependencies
   become: true
   ansible.builtin.package:
-    name:
-      - git
-      - make
+    name: "{{ ['git', 'make'] + my_workspace_dependencies }}"
     state: present
 
 - name: Update projects
