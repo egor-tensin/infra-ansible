@@ -26,18 +26,19 @@
     name: "{{ docker_package_names }}"
     state: present
 
+# Dependencies of the community.docker.docker_prune Ansible module:
+- name: Install module dependencies
+  become: true
+  ansible.builtin.package:
+    name: "{{ docker_prune_module_deps }}"
+    state: present
+
 - name: Enable & start Docker service
   become: true
   ansible.builtin.systemd_service:
     name: "{{ docker_service_name }}"
     enabled: true
     state: started
-
-- name: Install module dependencies
-  become: true
-  ansible.builtin.package:
-    name: "{{ docker_prune_module_deps }}"
-    state: present
 
 - name: Clean up Docker data
   become: true
