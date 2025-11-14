@@ -1,6 +1,5 @@
 docker_package_names:
   - docker.io
   - docker-compose
-docker_service_name: docker
 docker_prune_module_deps:
   - python3-requests

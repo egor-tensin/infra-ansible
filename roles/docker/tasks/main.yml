@@ -36,9 +36,16 @@
 - name: Enable & start Docker service
   become: true
   ansible.builtin.systemd_service:
-    name: "{{ docker_service_name }}"
-    enabled: true
-    state: started
+    name: docker.service
+    enabled: "{{ docker_enable_service }}"
+    state: "{{ docker_enable_service | ternary('started', 'stopped') }}"
+
+- name: Enable & start Docker socket
+  become: true
+  ansible.builtin.systemd_service:
+    name: docker.socket
+    enabled: "{{ docker_enable_socket }}"
+    state: "{{ docker_enable_socket | ternary('started', 'stopped') }}"
 
 - name: Clean up Docker data
   become: true
