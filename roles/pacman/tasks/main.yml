@@ -23,6 +23,11 @@
     update_cache: true
     upgrade: true
   register: pacman_result
+  # According to
+  #     https://docs.ansible.com/projects/ansible/latest/collections/community/general/pacman_module.html
+  # this module now reports 'changed' even if only the cache was updated, with
+  # no upgrades; this is the workaround.
+  changed_when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
   notify: pacman_upgraded
 
 - name: Reboot if necessary
