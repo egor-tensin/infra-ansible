@@ -14,7 +14,7 @@ etckeeper_ignored_paths:
   # I'm unsure about this; but it does make pacman upgrades much easier - I
   # don't need to account for /etc/pacman.d/gnupg suddenly having changes.
   - /pacman.d/gnupg/
-  # I run rate-mirrors before every upgrade pretty much.
+  # I frequently run something to rate my mirrors.
   - /pacman.d/mirrorlist
 
 etckeeper_extra_ignored_paths: []
