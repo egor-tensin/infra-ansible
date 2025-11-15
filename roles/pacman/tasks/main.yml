@@ -1,21 +1,6 @@
 - name: Use rate-mirrors if available
   when: pacman_rate_mirrors
-  block:
-    - name: Check for rate-mirrors
-      ansible.builtin.command: rate-mirrors --version
-      register: rate_mirrors_version
-      changed_when: false
-      failed_when: false
-
-    - name: Run rate-mirrors
-      when: rate_mirrors_version.rc == 0
-      become: true
-      ansible.builtin.shell: |
-        . /etc/os-release && rate-mirrors \
-            --allow-root \
-            --disable-comments \
-            --save /etc/pacman.d/mirrorlist \
-            "$ID"
+  ansible.builtin.include_tasks: rate_mirrors.yml
 
 - name: Upgrade packages
   become: true
