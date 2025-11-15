@@ -28,7 +28,30 @@
   when: pacman_packages | length > 0
   register: pacman_result
 
-- name: Print installed packages
+- name: Show installed packages
+  ansible.builtin.debug:
+    var: pacman_result.packages
+  when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
+
+- name: Get list of unneeded dependencies
+  ansible.builtin.command: pacman -Qqdt
+  register: pacman_result
+  changed_when: false
+  failed_when: |
+    pacman_result.rc != 0
+    and not (pacman_result.rc == 1 and (pacman_result.stdout_lines | length == 0))
+
+- name: Remove unneeded dependencies
+  become: true
+  community.general.pacman:
+    name: '{{ pacman_result.stdout_lines }}'
+    state: absent
+    extra_args: --recursive
+    remove_nosave: true
+  when: pacman_result.stdout_lines | length > 0
+  register: pacman_result
+
+- name: Show removed packages
   ansible.builtin.debug:
     var: pacman_result.packages
   when: pacman_result.packages is defined
