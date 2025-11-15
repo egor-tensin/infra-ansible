@@ -1,0 +1,29 @@
+- name: Collect service facts
+  community.general.systemd_info:
+    unitname:
+      - docker.service
+      - docker.socket
+  register: systemd_info
+
+- name: Clean up docker data
+  become: true
+  when: |
+    systemd_info.units['docker.service'].substate == 'running'
+    or systemd_info.units['docker.socket'].substate == 'listening'
+    or systemd_info.units['docker.socket'].substate == 'running'
+  block:
+    # Dependencies of the community.docker.docker_prune Ansible module:
+    - name: Install module dependencies
+      ansible.builtin.package:
+        name: "{{ docker_prune_module_deps }}"
+        state: present
+
+    - name: Run docker system prune
+      community.docker.docker_prune:
+        builder_cache: true
+        containers: true
+        images: true
+        images_filters:
+          dangling: false
+        networks: true
+        volumes: true

@@ -26,12 +26,9 @@
     name: "{{ docker_package_names }}"
     state: present
 
-# Dependencies of the community.docker.docker_prune Ansible module:
-- name: Install module dependencies
-  become: true
-  ansible.builtin.package:
-    name: "{{ docker_prune_module_deps }}"
-    state: present
+# The docker system prune call should be before enabling/disabling the service
+# and socket, otherwise the service could be woken up.
+- ansible.builtin.import_tasks: prune.yml
 
 - name: Enable & start Docker service
   become: true
@@ -46,14 +43,3 @@
     name: docker.socket
     enabled: "{{ docker_enable_socket }}"
     state: "{{ docker_enable_socket | ternary('started', 'stopped') }}"
-
-- name: Clean up Docker data
-  become: true
-  community.docker.docker_prune:
-    builder_cache: true
-    containers: true
-    images: true
-    images_filters:
-      dangling: false
-    networks: true
-    volumes: true
