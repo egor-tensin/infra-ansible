@@ -14,5 +14,5 @@
   when: gitignore.changed
   become: true
   ansible.builtin.command: # noqa: command-instead-of-module
-    cmd: git rm -r --ignore-unmatch --cached -- '{{ ignore_path | regex_replace("^/", "") }}'
+    cmd: git rm -r --ignore-unmatch --cached -- {{ ignore_path | regex_replace("^/", "") | quote }}
     chdir: /etc

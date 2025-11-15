@@ -16,11 +16,11 @@
     - name: 'Create certificate: {{ certificate_name }}'
       ansible.builtin.command: |
         certbot certonly --noninteractive --agree-tos \
-            --cert-name '{{ certificate_name }}' \
-            --email '{{ letsencrypt_email }}' \
-            --domains '{{ certificate_domains | join(',') }}' \
+            --cert-name {{ certificate_name | quote }} \
+            --email {{ letsencrypt_email | quote }} \
+            --domains {{ certificate_domains | join(',') | quote }} \
             --preferred-challenges dns \
             --dns-digitalocean \
-            --dns-digitalocean-credentials '{{ letsencrypt_credentials_ini }}' \
+            --dns-digitalocean-credentials {{ letsencrypt_credentials_ini | quote }} \
             --dns-digitalocean-propagation-seconds 30
       when: domain_list.changed

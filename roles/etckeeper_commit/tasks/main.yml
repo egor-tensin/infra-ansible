@@ -34,4 +34,4 @@
     - name: etckeeper commit
       become: true
       ansible.builtin.command: |
-        etckeeper commit '{{ etckeeper_commit_msg }}'
+        etckeeper commit {{ etckeeper_commit_msg | quote }}
