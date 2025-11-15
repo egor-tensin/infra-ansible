@@ -11,6 +11,8 @@
         | grep -G -v {{ ('^' + (paths | map("regex_replace", "^/", "") | list | join("\|^"))) | quote }}
   args:
     chdir: /etc
+  vars:
+    ansible_shell_executable: /bin/bash
   register: git_status
   changed_when: false
   failed_when: git_status.rc not in [0, 1]
