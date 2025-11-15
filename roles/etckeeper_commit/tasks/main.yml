@@ -6,23 +6,32 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail && \
-    git status --porcelain=v1 \
-        | cut -c 4- \
-        | grep -G -v '^{{ etckeeper_commit_paths | map("regex_replace", "^/", "") | list | join("\|^") }}'
+    git status --porcelain=v1 | cut -c 4-
   args:
     chdir: /etc
   register: git_status
   changed_when: false
-  failed_when: git_status.rc not in [0, 1]
 
-- name: Fail if unexpected files were modified
-  ansible.builtin.fail:
-    msg: |
-      Unexpected files were modified:
-      {{ git_status.stdout }}
-  when: git_status.rc == 0
+- name: Try to commit if there're modified files
+  when: git_status.stdout_lines | length > 0
+  block:
+    - name: Filter out expected modifications
+      ansible.builtin.shell: |
+        set -o pipefail && \
+        echo {{ git_status.stdout | quote }} \
+            | grep -G -v {{ ('^' + (etckeeper_commit_paths | map("regex_replace", "^/", "") | list | join("\|^"))) | quote }}
+      register: unexpected_files
+      changed_when: false
+      failed_when: unexpected_files.rc not in [0, 1]
 
-- name: etckeeper commit
-  become: true
-  ansible.builtin.command: |
-    etckeeper commit '{{ etckeeper_commit_msg }}'
+    - name: Fail if unexpected files were modified
+      ansible.builtin.fail:
+        msg: |
+          Unexpected files were modified:
+          {{ unexpected_files.stdout }}
+      when: unexpected_files.stdout_lines | length > 0
+    
+    - name: etckeeper commit
+      become: true
+      ansible.builtin.command: |
+        etckeeper commit '{{ etckeeper_commit_msg }}'
