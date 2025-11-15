@@ -23,6 +23,8 @@
   ansible.builtin.package:
     name: '{{ pacman_packages }}'
     state: present
+    reason: explicit
+    reason_for: all
   when: pacman_packages | length > 0
   register: pacman_result
 
