@@ -1,4 +1,0 @@
-- name: Reload NFS mounts
-  become: true
-  ansible.builtin.command: /usr/sbin/exportfs -arv
-  listen: nfs_configured

@@ -13,10 +13,19 @@
   # this module now reports 'changed' even if only the cache was updated, with
   # no upgrades; this is the workaround.
   changed_when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
-  notify: pacman_upgraded
 
-- name: Reboot if necessary
-  ansible.builtin.meta: flush_handlers
+- name: Post-upgrade
+  when: pacman_result is changed
+  block:
+    - name: Show upgraded packages
+      ansible.builtin.debug:
+        var: pacman_result.packages
+
+    - name: Reboot
+      become: true
+      ansible.builtin.reboot:
+        # 3 minutes is plenty.
+        reboot_timeout: 180
 
 - name: Get list of unneeded dependencies
   ansible.builtin.command: pacman -Qqdt

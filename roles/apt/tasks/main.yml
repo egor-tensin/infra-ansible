@@ -13,7 +13,14 @@
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist
-  notify: apt_reboot
+  register: apt_result
+
+- name: Reboot
+  become: true
+  ansible.builtin.reboot:
+    # 3 minutes is plenty.
+    reboot_timeout: 180
+  when: apt_result is changed
 
 - name: Get dpkg.log
   ansible.builtin.shell: |

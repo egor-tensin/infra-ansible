@@ -23,4 +23,9 @@
     owner: root
     group: root
     mode: '644'
-  notify: nfs_configured
+  register: exports_conf
+
+- name: Reload NFS mounts
+  become: true
+  when: exports_conf is changed
+  ansible.builtin.command: /usr/sbin/exportfs -arv
