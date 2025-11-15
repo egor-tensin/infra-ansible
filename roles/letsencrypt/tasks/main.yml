@@ -1,8 +1,8 @@
 - name: Install Certbot
-  ansible.builtin.include_tasks: certbot.yml
+  ansible.builtin.import_tasks: certbot.yml
 
 - name: Configure Certbot DigitalOcean plugin
-  ansible.builtin.include_tasks: digitalocean.yml
+  ansible.builtin.import_tasks: digitalocean.yml
 
 - name: Create /etc/letsencrypt
   become: true

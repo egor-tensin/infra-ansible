@@ -1,5 +1,5 @@
 - name: Configure power management
-  ansible.builtin.include_tasks: power_management.yml
+  ansible.builtin.import_tasks: power_management.yml
 
 - name: Install linux-status
   become: true
