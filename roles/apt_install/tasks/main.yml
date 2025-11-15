@@ -1,0 +1,35 @@
+- name: Get dpkg.log
+  ansible.builtin.shell: |
+    set -o pipefail && \
+    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+    | cut -d ' ' -f 3-5
+  vars:
+    ansible_shell_executable: /bin/bash
+  register: dpkg_log1
+  changed_when: false
+
+- name: Install packages
+  become: true
+  ansible.builtin.package:
+    name: '{{ apt_install_packages }}'
+    state: present
+
+- name: Get dpkg.log
+  ansible.builtin.shell: |
+    set -o pipefail && \
+    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+    | cut -d ' ' -f 3-5
+  vars:
+    ansible_shell_executable: /bin/bash
+  register: dpkg_log2
+  changed_when: false
+
+- name: Show installed packages
+  ansible.builtin.debug:
+    var: dpkg_log_diff
+  when: dpkg_len_diff > 0
+  vars:
+    dpkg_log1_len: '{{ dpkg_log1.stdout_lines | length }}'
+    dpkg_log2_len: '{{ dpkg_log2.stdout_lines | length }}'
+    dpkg_len_diff: '{{ dpkg_log2_len - dpkg_log1_len }}'
+    dpkg_log_diff: '{{ dpkg_log2.stdout_lines[-dpkg_len_diff:] }}'

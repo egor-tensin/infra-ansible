@@ -14,13 +14,6 @@
     autoremove: true
     purge: true
 
-- name: Install packages
-  become: true
-  ansible.builtin.package:
-    name: '{{ apt_packages }}'
-    state: present
-  when: apt_packages | length > 0
-
 - name: Configure unattended-upgrades
   ansible.builtin.include_tasks: unattended_upgrades.yml
   when: apt_unattended_upgrades
