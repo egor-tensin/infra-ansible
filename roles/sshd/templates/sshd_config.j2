@@ -19,6 +19,9 @@ PasswordAuthentication no
 ChallengeResponseAuthentication no
 AuthenticationMethods publickey
 
+# Print user's key fingerprint on login:
+LogLevel VERBOSE
+
 # Whitelist accepted environment variables:
 AcceptEnv LANG LC_*
 
@@ -28,4 +31,4 @@ ClientAliveInterval 15
 
 # Miscellaneous:
 PrintMotd no
-Subsystem sftp /usr/lib/openssh/sftp-server
+Subsystem sftp {{ __sshd_sftp_path }} -f AUTHPRIV -l INFO
