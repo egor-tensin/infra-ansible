@@ -18,21 +18,6 @@
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
 
-- name: Install packages
-  become: true
-  ansible.builtin.package:
-    name: '{{ pacman_packages }}'
-    state: present
-    reason: explicit
-    reason_for: all
-  when: pacman_packages | length > 0
-  register: pacman_result
-
-- name: Show installed packages
-  ansible.builtin.debug:
-    var: pacman_result.packages
-  when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
-
 - name: Get list of unneeded dependencies
   ansible.builtin.command: pacman -Qqdt
   register: pacman_result
@@ -55,3 +40,18 @@
   ansible.builtin.debug:
     var: pacman_result.packages
   when: pacman_result.packages is defined
+
+- name: Install packages
+  become: true
+  ansible.builtin.package:
+    name: '{{ pacman_packages }}'
+    state: present
+    reason: explicit
+    reason_for: all
+  when: pacman_packages | length > 0
+  register: pacman_result
+
+- name: Show installed packages
+  ansible.builtin.debug:
+    var: pacman_result.packages
+  when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
