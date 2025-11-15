@@ -1,1 +1,1 @@
-ppa_distro: '{{ ansible_distribution_release }}'
+ppa_distro: "{{ ansible_facts['distribution_release'] }}"

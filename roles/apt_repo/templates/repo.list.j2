@@ -1,3 +1,3 @@
 {{ ansible_managed | comment }}
 
-deb [signed-by={{ apt_repo_key_path }}] {{ apt_repo_url }}{{ apt_repo_append_distro | ternary(ansible_distribution | lower, "") }} {{ apt_repo_codename | default(ansible_distribution_release) }} {{ apt_repo_component }}
+deb [signed-by={{ apt_repo_key_path }}] {{ apt_repo_url }}{{ apt_repo_append_distro | ternary(ansible_facts["distribution"] | lower, "") }} {{ apt_repo_codename | default(ansible_facts["distribution_release"]) }} {{ apt_repo_component }}
