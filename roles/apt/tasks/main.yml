@@ -1,9 +1,39 @@
+- name: Get dpkg.log
+  ansible.builtin.shell: |
+    set -o pipefail && \
+    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+    | cut -d ' ' -f 3-5
+  vars:
+    ansible_shell_executable: /bin/bash
+  register: dpkg_log1
+  changed_when: false
+
 - name: Upgrade packages
   become: true
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist
   notify: apt_reboot
+
+- name: Get dpkg.log
+  ansible.builtin.shell: |
+    set -o pipefail && \
+    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+    | cut -d ' ' -f 3-5
+  vars:
+    ansible_shell_executable: /bin/bash
+  register: dpkg_log2
+  changed_when: false
+
+- name: Show upgraded packages
+  ansible.builtin.debug:
+    var: dpkg_log_diff
+  when: dpkg_len_diff > 0
+  vars:
+    dpkg_log1_len: '{{ dpkg_log1.stdout_lines | length }}'
+    dpkg_log2_len: '{{ dpkg_log2.stdout_lines | length }}'
+    dpkg_len_diff: '{{ dpkg_log2_len - dpkg_log1_len }}'
+    dpkg_log_diff: '{{ dpkg_log2.stdout_lines[-dpkg_len_diff:] }}'
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers
@@ -13,6 +43,26 @@
   ansible.builtin.apt:
     autoremove: true
     purge: true
+
+- name: Get dpkg.log
+  ansible.builtin.shell: |
+    set -o pipefail && \
+    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+    | cut -d ' ' -f 3-5
+  vars:
+    ansible_shell_executable: /bin/bash
+  register: dpkg_log3
+  changed_when: false
+
+- name: Show upgraded packages
+  ansible.builtin.debug:
+    var: dpkg_log_diff
+  when: dpkg_len_diff > 0
+  vars:
+    dpkg_log2_len: '{{ dpkg_log2.stdout_lines | length }}'
+    dpkg_log3_len: '{{ dpkg_log3.stdout_lines | length }}'
+    dpkg_len_diff: '{{ dpkg_log3_len - dpkg_log2_len }}'
+    dpkg_log_diff: '{{ dpkg_log3.stdout_lines[-dpkg_len_diff:] }}'
 
 - name: Configure unattended-upgrades
   ansible.builtin.include_tasks: unattended_upgrades.yml
