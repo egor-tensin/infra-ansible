@@ -2,7 +2,7 @@
 
 # Parameters that have sane defaults on Debian 11 are omitted.
 
-{% set ssh_port = hostvars[inventory_hostname].ansible_port %}
+{% set ssh_port = hostvars[inventory_hostname].ansible_port | default(22) %}
 {% set ssh_user = hostvars[inventory_hostname].ansible_user %}
 
 {% set groups = [ssh_user] + sshd_allowed_groups %}
