@@ -3,6 +3,8 @@
     project_url: '{{ project.url | default(project) }}'
     project_name: "{{ project.name | default(project_url | urlsplit('path') | basename | regex_replace('\\.git$', '')) }}"
     project_dir: '{{ my_workspace_dir }}/{{ project_name }}'
+    makefile: '{{ project_dir }}/Makefile'
+    compose_file: '{{ project_dir }}/docker-compose.yml'
   block:
     - name: Update repository
       ansible.builtin.git: # noqa: latest
@@ -22,34 +24,41 @@
         - name: user.email
           value: '{{ my_workspace_git_email }}'
 
-    - name: Set the project running
-      when: not my_workspace_clone_only
-      block:
-        - name: Check for Makefile
-          ansible.builtin.file:
-            path: '{{ project_dir }}/Makefile'
-            state: file
-          register: makefile_check
-          ignore_errors: true
+    - name: Check for Makefile
+      ansible.builtin.stat:
+        path: '{{ makefile }}'
+        get_attributes: false
+        get_checksum: false
+        get_mime: false
+        follow: true
+      register: makefile_stat
 
-        - name: Check for docker-compose.yml
-          ansible.builtin.file:
-            path: '{{ project_dir }}/docker-compose.yml'
-            state: file
-          register: docker_compose_check
-          ignore_errors: true
+    - name: Check for docker-compose file
+      ansible.builtin.stat:
+        path: '{{ compose_file }}'
+        get_attributes: false
+        get_checksum: false
+        get_mime: false
+        follow: true
+      register: compose_file_stat
 
-        - name: Run make
-          become: true
-          community.general.make:
-            chdir: '{{ project_dir }}'
-          when: makefile_check is succeeded
+    - name: Run make
+      become: true
+      community.general.make:
+        chdir: '{{ project_dir }}'
+      when: makefile_stat.stat.readable
 
-        - name: Run docker-compose
-          become: true
-          community.docker.docker_compose_v2:
-            project_src: '{{ project_dir }}'
-            pull: always
-            build: always
-            remove_orphans: true
-          when: makefile_check is not succeeded and docker_compose_check is succeeded
+    - name: Run docker-compose
+      become: true
+      community.docker.docker_compose_v2:
+        project_src: '{{ project_dir }}'
+        pull: always
+        build: always
+        remove_orphans: true
+      when: not makefile_stat.stat.readable and compose_file_stat.stat.readable
+
+    - name: Fail if both files are unreadable
+      ansible.builtin.fail:
+        msg: |
+          Don't know how to run project in {{ project_dir }}
+      when: not (makefile_stat.stat.readable or compose_file_stat.stat.readable)
