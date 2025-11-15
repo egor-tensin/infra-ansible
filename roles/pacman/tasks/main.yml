@@ -24,3 +24,9 @@
     name: '{{ pacman_packages }}'
     state: present
   when: pacman_packages | length > 0
+  register: pacman_result
+
+- name: Print installed packages
+  ansible.builtin.debug:
+    var: pacman_result.packages
+  when: pacman_result.packages is defined
