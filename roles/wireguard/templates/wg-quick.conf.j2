@@ -6,7 +6,7 @@ Address = {{ wg_addr4 }}, {{ wg_addr6 }}
 ListenPort = {{ wg_listen_port }}
 SaveConfig = false
 
-{% if wg_router %}
+{% if wg_server %}
 PostUp = iptables -t nat -A POSTROUTING -s {{ wg_addr4 }} -m policy --pol none --dir out -j MASQUERADE
 PostUp = iptables -A FORWARD -s {{ wg_addr4 }} -j ACCEPT
 PostUp = ip6tables -t nat -A POSTROUTING -s {{ wg_addr6 }} -m policy --pol none --dir out -j MASQUERADE

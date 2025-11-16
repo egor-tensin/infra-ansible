@@ -7,7 +7,7 @@ wg_listen_port: 51280
 #wg_addr4:
 #wg_addr6:
 #wg_peers:
-wg_router: false
+wg_server: false
 
 wg_autoconnect: true
 
