@@ -1,3 +1,6 @@
+# Must be one of wg-quick, NetworkManager
+wg_backend: wg-quick
+
 wg_name: wg0
 wg_listen_port: 51280
 #wg_private_key:
@@ -5,5 +8,7 @@ wg_listen_port: 51280
 #wg_addr6:
 #wg_peers:
 wg_router: false
+
+wg_autoconnect: true
 
 wg_dependent_services: []

@@ -1,0 +1,39 @@
+{{ ansible_managed | comment }}
+
+[connection]
+id={{ wg_name }}
+type=wireguard
+interface-name={{ wg_name }}
+autoconnect={{ wg_autoconnect | ternary('true', 'false') }}
+
+[wireguard]
+private-key={{ wg_private_key }}
+private-key-flags=0
+
+{% if wg_peers is defined %}
+{% for peer in wg_peers %}
+[wireguard-peer.{{ peer.public_key }}]
+{% if peer.endpoint is defined %}
+endpoint={{ peer.endpoint }}
+{% endif %}
+{% if peer.preshared_key is defined %}
+preshared-key={{ peer.preshared_key }}
+preshared-key-flags=0
+{% endif %}
+{% if peer.allowed_ips is defined %}
+allowed-ips={{ (peer.allowed_ips | join(';')) + ';' }}
+{% endif %}
+{% if peer.persistent_keepalive is defined and peer.persistent_keepalive %}
+persistent-keepalive=25
+{% endif %}
+{% endfor %}
+{% endif %}
+
+[ipv4]
+address1={{ wg_addr4 }}
+method=manual
+
+[ipv6]
+addr-gen-mode=stable-privacy
+address1={{ wg_addr6 }}
+method=manual

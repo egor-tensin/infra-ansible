@@ -24,7 +24,9 @@ PublicKey = {{ peer.public_key }}
 {% if peer.preshared_key is defined %}
 PresharedKey = {{ peer.preshared_key }}
 {% endif %}
-AllowedIPs = {{ peer.allowed_ips }}
+{% if peer.allowed_ips is defined %}
+AllowedIPs = {{ peer.allowed_ips | join(', ') }}
+{% endif %}
 {% if peer.endpoint is defined %}
 Endpoint = {{ peer.endpoint }}
 {% endif %}

@@ -1,58 +1,14 @@
-- name: Set up Wireguard
-  become: true
-  block:
-    - name: Install wireguard-tools
-      ansible.builtin.package:
-        name: wireguard-tools
-        state: present
+- name: Validate backend
+  ansible.builtin.fail:
+    msg: |
+      Unknown Wireguard backend: {{ wg_backend }}
+  when: |
+    wg_backend not in ['wg-quick', 'NetworkManager']
 
-    - name: Write wg-quick config file
-      ansible.builtin.template:
-        src: wg0.conf.j2
-        dest: '/etc/wireguard/{{ wg_name }}.conf'
-        owner: root
-        group: root
-        mode: '600'
-      register: config
+- name: Set up using wg-quick
+  ansible.builtin.include_tasks: wg-quick.yml
+  when: wg_backend == 'wg-quick'
 
-    - name: Restart wg-quick service
-      ansible.builtin.systemd_service:
-        name: 'wg-quick@{{ wg_name }}'
-        enabled: true
-        state: restarted
-      when: config.changed
-
-- name: Set up service dependencies for the interface
-  ansible.builtin.include_role:
-    name: systemd_depend_iface
-  vars:
-    systemd_depend_iface_name: '{{ wg_name }}'
-    systemd_depend_iface_services: '{{ wg_dependent_services }}'
-
-- name: Create override directory for services
-  become: true
-  ansible.builtin.file:
-    path: '/etc/systemd/system/{{ service }}.service.d'
-    state: directory
-    owner: root
-    group: root
-    mode: '755'
-  loop: '{{ wg_dependent_services }}'
-  loop_control:
-    loop_var: service
-
-- name: Set up service dependencies for wg-quick
-  become: true
-  ansible.builtin.template:
-    src: depend_service_wg-quick.conf.j2
-    dest: '/etc/systemd/system/{{ service }}.service.d/depend_service_wg-quick@{{ wg_name }}.conf'
-    owner: root
-    group: root
-    mode: '644'
-  notify: wireguard_reload
-  loop: '{{ wg_dependent_services }}'
-  loop_control:
-    loop_var: service
-
-- name: Reload systemd services if necessary
-  ansible.builtin.meta: flush_handlers
+- name: Set up using NetworkManager
+  ansible.builtin.include_tasks: NetworkManager.yml
+  when: wg_backend == 'NetworkManager'
