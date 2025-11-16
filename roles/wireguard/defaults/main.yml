@@ -12,3 +12,5 @@ wg_server: false
 wg_autoconnect: true
 
 wg_dependent_services: []
+
+wg_tunnel_everything: false

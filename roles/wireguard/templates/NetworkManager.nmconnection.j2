@@ -20,7 +20,9 @@ endpoint={{ peer.endpoint }}
 preshared-key={{ peer.preshared_key }}
 preshared-key-flags=0
 {% endif %}
-{% if peer.allowed_ips is defined %}
+{% if wg_tunnel_everything %}
+allowed-ips=0.0.0.0/0;::/0;
+{% elif peer.allowed_ips is defined %}
 allowed-ips={{ (peer.allowed_ips | join(';')) + ';' }}
 {% endif %}
 {% if peer.persistent_keepalive is defined and peer.persistent_keepalive %}
@@ -32,8 +34,18 @@ persistent-keepalive=25
 [ipv4]
 address1={{ wg_addr4 }}
 method=manual
+{% if wg_tunnel_everything %}
+dns=1.1.1.1;1.0.0.1;
+dns-priority=-10
+dns-search=~;
+{% endif %}
 
 [ipv6]
 addr-gen-mode=stable-privacy
 address1={{ wg_addr6 }}
 method=manual
+{% if wg_tunnel_everything %}
+dns=2606:4700:4700::1111;2606:4700:4700::1001;
+dns-priority=-10
+dns-search=~;
+{% endif %}

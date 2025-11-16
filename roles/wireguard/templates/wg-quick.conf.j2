@@ -6,6 +6,10 @@ Address = {{ wg_addr4 }}, {{ wg_addr6 }}
 ListenPort = {{ wg_listen_port }}
 SaveConfig = false
 
+{% if wg_tunnel_everything %}
+DNS = 1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001
+{% endif %}
+
 {% if wg_server %}
 PostUp = iptables -t nat -A POSTROUTING -s {{ wg_addr4 }} -m policy --pol none --dir out -j MASQUERADE
 PostUp = iptables -A FORWARD -s {{ wg_addr4 }} -j ACCEPT
@@ -24,7 +28,9 @@ PublicKey = {{ peer.public_key }}
 {% if peer.preshared_key is defined %}
 PresharedKey = {{ peer.preshared_key }}
 {% endif %}
-{% if peer.allowed_ips is defined %}
+{% if wg_tunnel_everything %}
+AllowedIPs = 0.0.0.0/0, ::/0
+{% elif peer.allowed_ips is defined %}
 AllowedIPs = {{ peer.allowed_ips | join(', ') }}
 {% endif %}
 {% if peer.endpoint is defined %}
