@@ -1,0 +1,38 @@
+- name: Fail if invalid action
+  ansible.builtin.fail:
+    msg: |
+      Action parameter must be either 'update' or 'remove'
+  when: |
+    config_links_action not in ['update', 'remove']
+
+- name: Create temporary directory
+  ansible.builtin.tempfile:
+    prefix: config-links
+    state: directory
+  register: repo
+
+- name: Run config-links
+  block:
+    - name: Checkout config-links repo
+      ansible.builtin.git:
+        repo: 'https://github.com/egor-tensin/config-links.git'
+        dest: '{{ repo.path }}'
+        accept_hostkey: true
+
+    - name: Run links-update
+      ansible.builtin.command:
+        cmd: '{{ repo.path }}/links-update'
+        chdir: '{{ config_links_path }}'
+      when: config_links_action == 'update'
+
+    - name: Run links-update
+      ansible.builtin.command:
+        cmd: '{{ repo.path }}/links-remove'
+        chdir: '{{ config_links_path }}'
+      when: config_links_action == 'remove'
+
+  always:
+    - name: Clean up
+      ansible.builtin.file:
+        path: '{{ repo.path }}'
+        state: absent
