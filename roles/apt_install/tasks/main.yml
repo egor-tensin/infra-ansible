@@ -1,8 +1,10 @@
 - name: Get dpkg.log
   ansible.builtin.shell: |
     set -o pipefail && \
-    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
-    | cut -d ' ' -f 3-5
+    if [ -s /var/log/dpkg.log ]; then \
+        grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+        | cut -d ' ' -f 3-5 ; \
+    fi
   vars:
     ansible_shell_executable: /bin/bash
   register: dpkg_log1
@@ -17,8 +19,10 @@
 - name: Get dpkg.log
   ansible.builtin.shell: |
     set -o pipefail && \
-    grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
-    | cut -d ' ' -f 3-5
+    if [ -s /var/log/dpkg.log ]; then \
+        grep ' install \| upgrade \| remove \| purge ' /var/log/dpkg.log \
+        | cut -d ' ' -f 3-5 ; \
+    fi
   vars:
     ansible_shell_executable: /bin/bash
   register: dpkg_log2
