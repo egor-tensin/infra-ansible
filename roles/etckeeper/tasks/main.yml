@@ -79,10 +79,4 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Configure ignored paths
-  ansible.builtin.include_tasks: ignore.yml
-  loop: '{{ etckeeper_ignored_paths + etckeeper_extra_ignored_paths }}'
-  loop_control:
-    loop_var: ignore_path
-
-- name: Commit .gitignore if necessary
-  ansible.builtin.meta: flush_handlers
+  ansible.builtin.import_tasks: ignore.yml

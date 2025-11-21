@@ -1,18 +1,24 @@
-- name: Add line to .gitignore
+- name: Check git status
   become: true
-  ansible.builtin.lineinfile:
-    path: /etc/.gitignore
-    line: '{{ ignore_path }}'
-    state: present
-    owner: root
-    group: root
-    mode: '644'
-  register: gitignore
-  notify: etckeeper_commit_gitignore
-
-- name: Remove path from cache
-  when: gitignore.changed
-  become: true
-  ansible.builtin.command: # noqa: command-instead-of-module
-    cmd: git rm -r --ignore-unmatch --cached -- {{ ignore_path | regex_replace("^/", "") | quote }}
+  ansible.builtin.command:
+    cmd: git status --porcelain
     chdir: /etc
+  register: git_status
+  changed_when: false
+
+- name: Fail if there're modifications
+  ansible.builtin.fail:
+    msg: |
+      Unexpected modifications found:
+      {{ git_status.stdout }}
+  when: |
+    git_status.stdout_lines | length > 0
+
+- name: Configure ignored path
+  ansible.builtin.include_tasks: ignore_line.yml
+  loop: '{{ etckeeper_ignored_paths + etckeeper_extra_ignored_paths }}'
+  loop_control:
+    loop_var: ignore_path
+
+- name: Commit .gitignore if necessary
+  ansible.builtin.meta: flush_handlers

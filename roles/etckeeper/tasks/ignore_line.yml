@@ -1,0 +1,21 @@
+- name: Add line to .gitignore
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/.gitignore
+    line: '{{ ignore_path }}'
+    state: present
+    owner: root
+    group: root
+    mode: '644'
+  register: gitignore
+  notify: etckeeper_commit_gitignore
+
+- name: Remove path from cache
+  become: true
+  ansible.builtin.command: # noqa: command-instead-of-module
+    cmd: git rm -r --ignore-unmatch --cached -- {{ ignore_path | regex_replace("^/", "") | quote }}
+    chdir: /etc
+  register: git_rm_result
+  changed_when: |
+    git_rm_result.stdout_lines | length > 0
+  notify: etckeeper_commit_gitignore

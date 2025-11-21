@@ -8,6 +8,6 @@
 - name: Commit .gitignore
   ansible.builtin.include_tasks: commit.yml
   vars:
-    paths: '{{ [".gitignore"] + etckeeper_ignored_paths + etckeeper_extra_ignored_paths }}'
+    paths: ['.*']
     commit_msg: configure ignored files
   listen: etckeeper_commit_gitignore
