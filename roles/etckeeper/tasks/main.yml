@@ -52,16 +52,21 @@
   when: etckeeper_remote_url is defined
   become: true
   block:
-    - name: git remote add
+    - name: Read current remote URL
       ansible.builtin.command:
-        argv:
-          - git
-          - remote
-          - add
-          - '{{ etckeeper_remote_name }}'
-          - '{{ etckeeper_remote_url }}'
+        cmd: git config --local remote.{{ etckeeper_remote_name | quote }}.url
         chdir: /etc
-        creates: '/etc/.git/refs/remotes/{{ etckeeper_remote_name }}/'
+      changed_when: false
+      failed_when: false
+      register: url_result
+
+    - name: Fix remote URL if necessary
+      ansible.builtin.shell:
+        cmd: |
+          git remote remove {{ etckeeper_remote_name | quote }} && \
+          git remote add -f {{ etckeeper_remote_name | quote }} {{ etckeeper_remote_url | quote }}
+        chdir: /etc
+      when: url_result.stdout != etckeeper_remote_url
 
     - name: Configure pushes for etckeeper
       community.general.ini_file:
