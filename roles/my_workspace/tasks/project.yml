@@ -7,9 +7,10 @@
     compose_file: '{{ project_dir }}/docker-compose.yml'
   block:
     - name: Update repository
-      ansible.builtin.git: # noqa: latest
+      tensin.infra.safe_git:
         repo: '{{ project_url }}'
         dest: '{{ project_dir }}'
+        version: master
         accept_hostkey: true
 
     - name: Configure git repository

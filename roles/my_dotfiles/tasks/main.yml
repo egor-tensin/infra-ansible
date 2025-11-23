@@ -1,7 +1,8 @@
 - name: Pull repository
-  ansible.builtin.git: # noqa: latest
+  tensin.infra.safe_git: # noqa: latest
     repo: '{{ my_dotfiles_repo }}'
     dest: '{{ my_dotfiles_dir }}'
+    version: master
     accept_hostkey: true
   register: my_dotfiles_repo
 
