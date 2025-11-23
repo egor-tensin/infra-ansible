@@ -9,30 +9,32 @@
   ansible.builtin.tempfile:
     prefix: config-links
     state: directory
-  register: repo
+  register: config_links_repo
 
 - name: Run config-links
   block:
     - name: Checkout config-links repo
+      # noqa: latest[git]
+      # config-links is supposed to be always working if you just check it out.
       ansible.builtin.git:
         repo: 'https://github.com/egor-tensin/config-links.git'
-        dest: '{{ repo.path }}'
+        dest: '{{ config_links_repo.path }}'
         accept_hostkey: true
 
     - name: Run links-update
       ansible.builtin.command:
-        cmd: '{{ repo.path }}/links-update'
+        cmd: '{{ config_links_repo.path }}/links-update'
         chdir: '{{ config_links_path }}'
       when: config_links_action == 'update'
 
     - name: Run links-remove
       ansible.builtin.command:
-        cmd: '{{ repo.path }}/links-remove'
+        cmd: '{{ config_links_repo.path }}/links-remove'
         chdir: '{{ config_links_path }}'
       when: config_links_action == 'remove'
 
   always:
     - name: Clean up
       ansible.builtin.file:
-        path: '{{ repo.path }}'
+        path: '{{ config_links_repo.path }}'
         state: absent

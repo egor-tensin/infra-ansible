@@ -6,18 +6,18 @@
         prompt: |
           Enter your API token:
         echo: false
-      register: digitalocean_token
+      register: letsencrypt_do_token
       when:
         - lookup('env', 'DIGITALOCEAN_TOKEN') | length <= 0
 
     - name: Set token as fact
       ansible.builtin.set_fact:
-        digitalocean_token: "{{ digitalocean_token.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
+        letsencrypt_do_token: "{{ letsencrypt_do_token.user_input | default(lookup('env', 'DIGITALOCEAN_TOKEN')) }}"
 
     - name: Fail if token is invalid
       ansible.builtin.fail:
         msg: 'DigitalOcean token is invalid'
-      when: digitalocean_token | length == 0
+      when: letsencrypt_do_token | length == 0
 
     - name: Configure certbot.ini
       ansible.builtin.template:

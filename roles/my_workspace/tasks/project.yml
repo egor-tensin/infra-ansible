@@ -31,7 +31,7 @@
         get_checksum: false
         get_mime: false
         follow: true
-      register: makefile_stat
+      register: my_workspace_makefile
 
     - name: Check for docker-compose file
       ansible.builtin.stat:
@@ -40,13 +40,13 @@
         get_checksum: false
         get_mime: false
         follow: true
-      register: compose_file_stat
+      register: my_workspace_compose_file
 
     - name: Run make
       become: true
       community.general.make:
         chdir: '{{ project_dir }}'
-      when: makefile_stat.stat.readable
+      when: my_workspace_makefile.stat.readable
 
     - name: Run docker-compose
       become: true
@@ -55,10 +55,10 @@
         pull: always
         build: always
         remove_orphans: true
-      when: not makefile_stat.stat.readable and compose_file_stat.stat.readable
+      when: not my_workspace_makefile.stat.readable and my_workspace_compose_file.stat.readable
 
     - name: Fail if both files are unreadable
       ansible.builtin.fail:
         msg: |
           Don't know how to run project in {{ project_dir }}
-      when: not (makefile_stat.stat.readable or compose_file_stat.stat.readable)
+      when: not (my_workspace_makefile.stat.readable or my_workspace_compose_file.stat.readable)

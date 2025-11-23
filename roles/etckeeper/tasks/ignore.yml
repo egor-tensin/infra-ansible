@@ -3,16 +3,16 @@
   ansible.builtin.command:
     cmd: git status --porcelain
     chdir: /etc
-  register: git_status
+  register: etckeeper_git_status
   changed_when: false
 
 - name: Fail if there're modifications
   ansible.builtin.fail:
     msg: |
       Unexpected modifications found:
-      {{ git_status.stdout }}
+      {{ etckeeper_git_status.stdout }}
   when: |
-    git_status.stdout_lines | length > 0
+    etckeeper_git_status.stdout_lines | length > 0
 
 - name: Configure ignored path
   ansible.builtin.include_tasks: ignore_line.yml

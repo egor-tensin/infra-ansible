@@ -12,21 +12,21 @@
     owner: root
     group: root
     mode: '600'
-  register: config
+  register: wireguard_config
 
 - name: Enable wg-quick service
   become: true
   ansible.builtin.systemd_service:
     name: 'wg-quick@{{ wg_name }}'
     enabled: '{{ wg_autoconnect }}'
-  when: config.changed
+  when: wireguard_config.changed
 
 - name: Restart wg-quick service
   become: true
   ansible.builtin.systemd_service:
     name: 'wg-quick@{{ wg_name }}'
     state: restarted
-  when: config.changed and wg_autoconnect
+  when: wireguard_config.changed and wg_autoconnect
 
 - name: Set up service dependencies for the interface
   ansible.builtin.include_role:

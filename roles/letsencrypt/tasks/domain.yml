@@ -11,7 +11,7 @@
         owner: root
         group: root
         mode: '640'
-      register: domain_list
+      register: letsencrypt_domain_list
 
     - name: 'Create certificate: {{ certificate_name }}'
       ansible.builtin.command: |
@@ -23,4 +23,5 @@
             --dns-digitalocean \
             --dns-digitalocean-credentials {{ letsencrypt_credentials_ini | quote }} \
             --dns-digitalocean-propagation-seconds 30
-      when: domain_list.changed
+      changed_when: true
+      when: letsencrypt_domain_list.changed

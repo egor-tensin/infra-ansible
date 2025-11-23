@@ -5,9 +5,9 @@
     state: present
     reason: explicit
     reason_for: all
-  register: pacman_result
+  register: pacman_install_result
 
 - name: Show installed packages
   ansible.builtin.debug:
     var: pacman_result.packages
-  when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
+  when: pacman_install_result.packages is defined and (pacman_install_result.packages | length > 0)

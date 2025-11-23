@@ -4,9 +4,9 @@
     apt_args:
       name: '{{ apt_install_packages }}'
       state: present
-  register: apt_result
+  register: apt_install_result
 
 - name: Show installed packages
   ansible.builtin.debug:
-    var: apt_result.packages
-  when: apt_result is changed
+    var: apt_install_result.packages
+  when: apt_install_result is changed

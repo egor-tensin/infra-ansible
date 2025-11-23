@@ -3,7 +3,7 @@
   tensin.infra.parse_json_file:
     path: /etc/docker/daemon.json
     default: {}
-  register: daemon_json
+  register: docker_daemon_json
 
 - name: Modify Docker config
   become: true
@@ -19,7 +19,7 @@
     - name: Write daemon.json
       ansible.builtin.copy:
         dest: /etc/docker/daemon.json
-        content: '{{ daemon_json.content | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
+        content: '{{ docker_daemon_json.content | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
         owner: root
         group: root
         mode: '644'

@@ -1,11 +1,11 @@
 - name: Check for rate-mirrors
   ansible.builtin.command: rate-mirrors --version
-  register: rate_mirrors_version
+  register: pacman_rate_mirrors_version
   changed_when: false
   failed_when: false
 
 - name: Run rate-mirrors
-  when: rate_mirrors_version.rc == 0
+  when: pacman_rate_mirrors_version.rc == 0
   become: true
   ansible.builtin.shell: |
     . /etc/os-release && rate-mirrors \
@@ -13,3 +13,4 @@
         --disable-comments \
         --save /etc/pacman.d/mirrorlist \
         "$ID"
+  changed_when: true

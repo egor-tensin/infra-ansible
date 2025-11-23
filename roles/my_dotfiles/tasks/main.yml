@@ -3,10 +3,10 @@
     repo: '{{ my_dotfiles_repo }}'
     dest: '{{ my_dotfiles_dir }}'
     accept_hostkey: true
-  register: repo
+  register: my_dotfiles_repo
 
 - name: Run setup.sh
   ansible.builtin.command: ./setup.sh
   args:
     chdir: '{{ my_dotfiles_dir }}'
-  when: repo.changed
+  when: my_dotfiles_repo.changed

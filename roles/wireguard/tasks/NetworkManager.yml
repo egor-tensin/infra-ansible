@@ -6,12 +6,13 @@
     owner: root
     group: root
     mode: '600'
-  register: config
+  register: wireguard_config
 
 - name: Reload NetworkManager connections
   become: true
   ansible.builtin.command: nmcli connection reload
-  when: config.changed
+  when: wireguard_config.changed
+  changed_when: true
 
 - name: Set up service dependencies for the interface
   ansible.builtin.include_role:

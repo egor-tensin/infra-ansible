@@ -7,7 +7,6 @@
     owner: root
     group: root
     mode: '644'
-  register: gitignore
   notify: etckeeper_commit_gitignore
 
 - name: Remove path from cache
@@ -15,7 +14,7 @@
   ansible.builtin.command: # noqa: command-instead-of-module
     cmd: git rm -r --ignore-unmatch --cached -- {{ ignore_path | regex_replace("^/", "") | quote }}
     chdir: /etc
-  register: git_rm_result
+  register: etckeeper_git_rm
   changed_when: |
-    git_rm_result.stdout_lines | length > 0
+    etckeeper_git_rm.stdout_lines | length > 0
   notify: etckeeper_commit_gitignore
