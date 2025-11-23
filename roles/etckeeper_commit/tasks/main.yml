@@ -1,41 +1,6 @@
-# This was copied from role etckeeper's handlers.
-#
-# TODO: figure out how to dedupe this (handlers cannot use include_role).
-
-- name: Get list of modified files
+- name: Run etckeeper commit
   become: true
-  ansible.builtin.shell: |
-    set -o pipefail && \
-    git status --porcelain=v1 | cut -c 4-
-  args:
-    chdir: /etc
-  vars:
-    ansible_shell_executable: /bin/bash
-  register: git_status
-  changed_when: false
-
-- name: Try to commit if there're modified files
-  when: git_status.stdout_lines | length > 0
-  block:
-    - name: Filter out expected modifications
-      ansible.builtin.shell: |
-        set -o pipefail && \
-        echo {{ git_status.stdout | quote }} \
-            | grep -G -v {{ ('^' + (etckeeper_commit_paths | map("regex_replace", "^/", "") | list | join("\|^"))) | quote }}
-      vars:
-        ansible_shell_executable: /bin/bash
-      register: unexpected_files
-      changed_when: false
-      failed_when: unexpected_files.rc not in [0, 1]
-
-    - name: Fail if unexpected files were modified
-      ansible.builtin.fail:
-        msg: |
-          Unexpected files were modified:
-          {{ unexpected_files.stdout }}
-      when: unexpected_files.stdout_lines | length > 0
-    
-    - name: etckeeper commit
-      become: true
-      ansible.builtin.command: |
-        etckeeper commit {{ etckeeper_commit_msg | quote }}
+  tensin.infra.etckeeper_commit:
+    msg: '{{ etckeeper_commit_msg }}'
+    allowlist: '{{ etckeeper_commit_allowlist }}'
+    skip_no_changes: true
