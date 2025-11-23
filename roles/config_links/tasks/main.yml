@@ -25,7 +25,7 @@
         chdir: '{{ config_links_path }}'
       when: config_links_action == 'update'
 
-    - name: Run links-update
+    - name: Run links-remove
       ansible.builtin.command:
         cmd: '{{ repo.path }}/links-remove'
         chdir: '{{ config_links_path }}'
