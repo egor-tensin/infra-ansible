@@ -10,7 +10,7 @@
       tensin.infra.safe_git:
         repo: '{{ project_url }}'
         dest: '{{ project_dir }}'
-        version: master
+        version: '{{ project.version | default("master") }}'
         accept_hostkey: true
 
     - name: Configure git repository
