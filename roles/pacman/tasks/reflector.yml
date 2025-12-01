@@ -1,0 +1,18 @@
+- name: Install Reflector
+  become: true
+  community.general.pacman:
+    update_cache: true
+    name: reflector
+
+- name: Disable reflector.service
+  become: true
+  ansible.builtin.systemd_service:
+    name: reflector.service
+    enabled: false
+
+- name: Enable reflector.timer
+  become: true
+  ansible.builtin.systemd_service:
+    name: reflector.timer
+    enabled: true
+    state: started

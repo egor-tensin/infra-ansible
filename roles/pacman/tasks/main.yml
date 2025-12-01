@@ -1,3 +1,7 @@
+- name: Configure Reflector
+  ansible.builtin.include_tasks: reflector.yml
+  when: pacman_reflector
+
 - name: Upgrade packages
   become: true
   community.general.pacman:
