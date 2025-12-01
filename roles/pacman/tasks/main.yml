@@ -1,7 +1,3 @@
-- name: Use rate-mirrors if available
-  when: pacman_rate_mirrors
-  ansible.builtin.include_tasks: rate_mirrors.yml
-
 - name: Upgrade packages
   become: true
   community.general.pacman:
