@@ -1,6 +1,6 @@
 - name: Install packages
   become: true
-  ansible.builtin.package:
+  community.general.pacman:
     name: '{{ pacman_install_packages }}'
     state: present
     reason: explicit
