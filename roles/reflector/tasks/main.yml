@@ -1,8 +1,8 @@
 - name: Install Reflector
   become: true
-  community.general.pacman:
-    update_cache: true
+  ansible.builtin.package:
     name: reflector
+    state: present
 
 - name: Disable reflector.service
   become: true

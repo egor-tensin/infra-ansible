@@ -1,5 +1,1 @@
-This role upgrades packages on Arch Linux.
-
-* Obsolete dependencies are removed.
-* Optionally, Reflector is installed & configured to bring the mirror list
-  up-to-date periodically.
+This role upgrades packages and removes obsolete dependencies on Arch Linux.
