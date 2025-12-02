@@ -16,7 +16,7 @@
 
 - name: Configure ignored path
   ansible.builtin.include_tasks: ignore_line.yml
-  loop: '{{ etckeeper_ignored_paths + etckeeper_extra_ignored_paths }}'
+  loop: '{{ etckeeper_ignored_paths }}'
   loop_control:
     loop_var: ignore_path
 
