@@ -9,7 +9,7 @@ wg_listen_port: 51280
 #wg_peers:
 wg_server: false
 
-wg_autoconnect: true
+wg_autoconnect: false
 
 wg_dependent_services: []
 
