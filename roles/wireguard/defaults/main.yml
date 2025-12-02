@@ -11,6 +11,6 @@ wg_server: false
 
 wg_autoconnect: false
 
-wg_dependent_services: []
-
 wg_tunnel_everything: false
+
+wg_dependent_services: []
