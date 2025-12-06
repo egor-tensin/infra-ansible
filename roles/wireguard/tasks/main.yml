@@ -5,10 +5,5 @@
   when: |
     wg_backend not in ['wg-quick', 'NetworkManager']
 
-- name: Set up using wg-quick
-  ansible.builtin.include_tasks: wg-quick.yml
-  when: wg_backend == 'wg-quick'
-
-- name: Set up using NetworkManager
-  ansible.builtin.include_tasks: NetworkManager.yml
-  when: wg_backend == 'NetworkManager'
+- name: 'Set up using backend {{ wg_backend }}'
+  ansible.builtin.include_tasks: '{{ wg_backend }}.yml'
