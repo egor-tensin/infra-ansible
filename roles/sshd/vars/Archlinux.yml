@@ -1,1 +1,2 @@
 __sshd_sftp_path: /usr/lib/ssh/sftp-server
+__sshd_service_name: sshd

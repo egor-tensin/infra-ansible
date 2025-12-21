@@ -1,1 +1,4 @@
-Debian.yml
+__sshd_sftp_path: /usr/lib/openssh/sftp-server
+# No idea what on Earth Canonical are smoking, making the service name
+# different to Debian's.
+__sshd_service_name: ssh
