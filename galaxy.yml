@@ -1,6 +1,6 @@
 namespace: tensin
 name: infra
-version: 7.0.1
+version: 7.0.2
 description: Some common Ansible roles used by me to manage things
 repository: https://github.com/egor-tensin/infra-ansible
 readme: README.md
