@@ -15,7 +15,7 @@
   block:
     - name: Show upgraded packages
       ansible.builtin.debug:
-        var: pacman_result.packages
+        var: pacman_result.packages | sort
 
     - name: Reboot
       become: true
@@ -43,5 +43,5 @@
 
 - name: Show removed packages
   ansible.builtin.debug:
-    var: pacman_result.packages
+    var: pacman_result.packages | sort
   when: pacman_result.packages is defined

@@ -15,7 +15,7 @@
 
 - name: Show upgraded packages
   ansible.builtin.debug:
-    var: apt_result.packages
+    var: apt_result.packages | sort
   when: apt_result is changed
 
 - name: Clean up dependencies
@@ -28,7 +28,7 @@
 
 - name: Show removed dependencies
   ansible.builtin.debug:
-    var: apt_result.packages
+    var: apt_result.packages | sort
   when: apt_result is changed
 
 - name: Configure unattended-upgrades

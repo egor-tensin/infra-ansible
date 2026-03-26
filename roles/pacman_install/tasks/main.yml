@@ -9,5 +9,5 @@
 
 - name: Show installed packages
   ansible.builtin.debug:
-    var: pacman_result.packages
+    var: pacman_result.packages | sort
   when: pacman_install_result.packages is defined and (pacman_install_result.packages | length > 0)

@@ -8,5 +8,5 @@
 
 - name: Show installed packages
   ansible.builtin.debug:
-    var: apt_install_result.packages
+    var: apt_install_result.packages | sort
   when: apt_install_result is changed
