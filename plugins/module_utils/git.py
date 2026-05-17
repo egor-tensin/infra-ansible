@@ -27,7 +27,9 @@ def get_status(action, repo_dir, task_vars):
         task_vars=task_vars,
     )
     if cmd_result.get('failed'):
-        raise AnsibleActionFail(f"Couldn't get git status for {repo_dir}", result=cmd_result)
+        raise AnsibleActionFail(
+            f"Couldn't get git status for {repo_dir}", result=cmd_result
+        )
     return to_text(cmd_result['stdout'])
 
 
@@ -48,7 +50,10 @@ def get_remote_url(action, repo_dir, task_vars, remote='origin'):
         task_vars=task_vars,
     )
     if cmd_result.get('failed'):
-        raise AnsibleActionFail(f"Couldn't read the URL of remote '{remote}' in {repo_dir}", result=cmd_result)
+        raise AnsibleActionFail(
+            f"Couldn't read the URL of remote '{remote}' in {repo_dir}",
+            result=cmd_result,
+        )
     return cmd_result['stdout']
 
 
@@ -62,17 +67,28 @@ def update_remote(action, repo_dir, remote, task_vars, accept_hostkey=False):
     cmd_result = action._execute_module(
         module_name='ansible.builtin.command',
         module_args=dict(
-            argv=['env', f'GIT_SSH_COMMAND={ssh_command}', 'git', 'remote', 'update', remote],
+            argv=[
+                'env',
+                f'GIT_SSH_COMMAND={ssh_command}',
+                'git',
+                'remote',
+                'update',
+                remote,
+            ],
             chdir=repo_dir,
         ),
         task_vars=task_vars,
     )
     if cmd_result.get('failed'):
-        raise AnsibleActionFail(f"Couldn't update remote '{remote}' for {repo_dir}", result=cmd_result)
+        raise AnsibleActionFail(
+            f"Couldn't update remote '{remote}' for {repo_dir}", result=cmd_result
+        )
 
 
 def is_ancestor(action, repo_dir, remote, version, task_vars):
-    looks_like_hash = all(((c >= '0' and c <= '9') or (c >= 'a' and c <= 'f') for c in version))
+    looks_like_hash = all(
+        ((c >= '0' and c <= '9') or (c >= 'a' and c <= 'f') for c in version)
+    )
 
     remote_versions = [f'{remote}/{version}']
     if looks_like_hash:
@@ -93,4 +109,6 @@ def is_ancestor(action, repo_dir, remote, version, task_vars):
         else:
             return True
 
-    raise AnsibleActionFail(f"Couldn't deduce how the HEAD of {repo_dir} relates to remote version {remote}/{version}")
+    raise AnsibleActionFail(
+        f"Couldn't deduce how the HEAD of {repo_dir} relates to remote version {remote}/{version}"
+    )

@@ -24,11 +24,14 @@ class ActionModule(ActionBase):
 
         if allowlist:
             unexpected = [
-                path for path in dirty_files
+                path
+                for path in dirty_files
                 if not any([pattern.fullmatch(path) for pattern in allowlist])
             ]
             if unexpected:
-                raise AnsibleActionFail(f"Unexpected modifications in repository:\n{'\n'.join(unexpected)}")
+                raise AnsibleActionFail(
+                    f"Unexpected modifications in repository:\n{'\n'.join(unexpected)}"
+                )
 
         return self._commit(msg, task_vars)
 

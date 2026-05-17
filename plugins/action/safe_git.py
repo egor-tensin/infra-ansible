@@ -34,12 +34,16 @@ class ActionModule(ActionBase):
 
         # ansible.builtin.git would just remove everything, fuck that.
         if not git.is_work_tree(self, dest, task_vars):
-            raise AnsibleActionFail(f'Destination {dest} exists but is not a repository')
+            raise AnsibleActionFail(
+                f'Destination {dest} exists but is not a repository'
+            )
 
         # Again, ansible.builtin.git would just remove everything, fuck that.
         current_url = git.get_remote_url(self, dest, task_vars, remote=remote)
         if current_url != repo:
-            raise AnsibleActionFail(f"Existing remote URL '{current_url}' doesn't match '{repo}' for {dest}")
+            raise AnsibleActionFail(
+                f"Existing remote URL '{current_url}' doesn't match '{repo}' for {dest}"
+            )
 
         # ansible.builtin.git would abort if the `force` parameter is set to
         # `false`, but I don't want to depend on default values.
@@ -54,7 +58,9 @@ class ActionModule(ActionBase):
         # (again, unlike the builtin module).
         is_ancestor = git.is_ancestor(self, dest, remote, version, task_vars)
         if not is_ancestor:
-            raise AnsibleActionFail(f'HEAD in {dest} is not an ancestor of {remote}/{version}')
+            raise AnsibleActionFail(
+                f'HEAD in {dest} is not an ancestor of {remote}/{version}'
+            )
 
         # Finally, everything looks good, delegate to the builtin module.
         return self._execute_module(

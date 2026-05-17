@@ -22,7 +22,7 @@ class ActionModule(ActionBase):
 
         after = self._parse_dpkg_log(task_vars)
 
-        apt_result['packages'] = after[len(before):]
+        apt_result['packages'] = after[len(before) :]
         return apt_result
 
     def _parse_dpkg_log(self, task_vars, default=None):
