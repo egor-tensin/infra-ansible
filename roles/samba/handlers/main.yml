@@ -1,3 +1,4 @@
+# Don't restart if it's not running.
 - name: Collect service facts
   ansible.builtin.service_facts:
   listen: samba_configured
