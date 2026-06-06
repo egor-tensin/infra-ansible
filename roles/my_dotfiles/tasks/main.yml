@@ -7,7 +7,7 @@
   register: my_dotfiles_repo
 
 - name: Run setup.sh
-  ansible.builtin.command: ./setup.sh
+  ansible.builtin.command: ./scripts/setup.sh
   args:
     chdir: '{{ my_dotfiles_dir }}'
   when: my_dotfiles_repo.changed
