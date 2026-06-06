@@ -1,3 +1,12 @@
+- name: Configure ignored packages
+  become: true
+  community.general.ini_file:
+    path: /etc/pacman.conf
+    create: false
+    section: options
+    option: IgnorePkg
+    value: "{{ pacman_ignore_packages | join(' ') }}"
+
 - name: Upgrade packages
   become: true
   community.general.pacman:
