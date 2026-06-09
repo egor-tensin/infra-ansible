@@ -1,0 +1,12 @@
+docker_package_names:
+  # At one point, docker-compose runs started failing when pulling and building
+  # external images (on existing Ubuntu LTS installations no less!). The fix is
+  # to switch to `docker compose` (instead of `docker-compose`), but - get this
+  # - it's not installed by default, and needs the docker-compose-v2 package.
+  # This was first discovered on Noble.
+  - docker.io
+  - docker-buildx
+  - docker-compose
+  - docker-compose-v2
+docker_prune_module_deps:
+  - python3-requests
