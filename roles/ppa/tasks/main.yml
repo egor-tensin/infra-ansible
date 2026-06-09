@@ -2,16 +2,13 @@
   ansible.builtin.setup:
     gather_subset:
       - distribution
-      - distribution_major_version
       - distribution_release
-      - os_family
 
 - name: Set platform-specific variables
   ansible.builtin.include_vars: "{{ __ppa_vars_file }}"
   loop:
-    - "{{ ansible_facts['os_family'] }}.yml"
     - "{{ ansible_facts['distribution'] }}.yml"
-    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_release'] }}.yml"
   vars:
     __ppa_vars_file: "{{ role_path }}/vars/{{ item }}"
   when: __ppa_vars_file is exists
