@@ -6,16 +6,16 @@
       upgrade: dist
   register: apt_result
 
+- name: Show upgraded packages
+  ansible.builtin.debug:
+    var: apt_result.packages | sort
+  when: apt_result is changed
+
 - name: Reboot
   become: true
   ansible.builtin.reboot:
     # 3 minutes is plenty.
     reboot_timeout: 180
-  when: apt_result is changed
-
-- name: Show upgraded packages
-  ansible.builtin.debug:
-    var: apt_result.packages | sort
   when: apt_result is changed
 
 - name: Clean up dependencies
