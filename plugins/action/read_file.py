@@ -8,8 +8,8 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
         result = super().run(tmp, task_vars)
 
-        path = self._task.args['path']
-        default = self._task.args.get('default')
+        path = self._task.args["path"]
+        default = self._task.args.get("default")
 
-        result['content'] = file.read_file(self, path, task_vars, default=default)
+        result["content"] = file.read_file(self, path, task_vars, default=default)
         return result

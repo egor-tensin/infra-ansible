@@ -11,16 +11,16 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
         result = super().run(tmp, task_vars)
 
-        msg = self._task.args['msg']
-        allowlist = self._task.args.get('allowlist', [])
+        msg = self._task.args["msg"]
+        allowlist = self._task.args.get("allowlist", [])
         allowlist = [re.compile(pattern) for pattern in allowlist]
-        skip_no_changes = self._task.args.get('skip_no_changes', False)
+        skip_no_changes = self._task.args.get("skip_no_changes", False)
 
-        dirty_files = git.get_dirty_file_list(self, '/etc', task_vars)
+        dirty_files = git.get_dirty_file_list(self, "/etc", task_vars)
         if not dirty_files:
             if skip_no_changes:
                 return result
-            raise AnsibleActionFail('Nothing to commit')
+            raise AnsibleActionFail("Nothing to commit")
 
         if allowlist:
             unexpected = [
@@ -37,12 +37,12 @@ class ActionModule(ActionBase):
 
     def _commit(self, msg, task_vars):
         cmd_result = self._execute_module(
-            module_name='ansible.builtin.command',
+            module_name="ansible.builtin.command",
             module_args=dict(
-                argv=['etckeeper', 'commit', msg],
+                argv=["etckeeper", "commit", msg],
             ),
             task_vars=task_vars,
         )
-        if cmd_result.get('failed'):
-            raise AnsibleActionFail('etckeeper commit failed', result=cmd_result)
+        if cmd_result.get("failed"):
+            raise AnsibleActionFail("etckeeper commit failed", result=cmd_result)
         return cmd_result

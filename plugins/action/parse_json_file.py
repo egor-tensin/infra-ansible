@@ -11,8 +11,8 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
         result = super().run(tmp, task_vars)
 
-        path = self._task.args['path']
-        default = self._task.args.get('default')
+        path = self._task.args["path"]
+        default = self._task.args.get("default")
         if default is not None:
             default = json.dumps(default)
 
@@ -21,7 +21,7 @@ class ActionModule(ActionBase):
         try:
             content = json.loads(content)
         except json.JSONDecodeError as e:
-            raise AnsibleActionFail(f'Failed to parse JSON at {path}') from e
+            raise AnsibleActionFail(f"Failed to parse JSON at {path}") from e
 
-        result['content'] = content
+        result["content"] = content
         return result
