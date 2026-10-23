@@ -4,6 +4,4 @@
 my_workspace_dir: /srv/workspace
 my_workspace_projects: []
 
-my_workspace_clone_only: false
-
 my_workspace_dependencies: []
