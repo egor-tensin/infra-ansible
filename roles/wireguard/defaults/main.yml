@@ -1,16 +1,16 @@
 # Must be one of wg-quick, NetworkManager
-wg_backend: wg-quick
+wireguard_backend: wg-quick
 
-wg_name: wg0
-wg_listen_port: 51280
-#wg_private_key:
-#wg_addr4:
-#wg_addr6:
-#wg_peers:
-wg_server: false
+wireguard_name: wg0
+wireguard_listen_port: 51280
+#wireguard_private_key:
+#wireguard_addr4:
+#wireguard_addr6:
+#wireguard_peers:
+wireguard_server: false
 
-wg_autoconnect: false
+wireguard_autoconnect: false
 
-wg_tunnel_everything: false
+wireguard_tunnel_everything: false
 
-wg_dependent_services: []
+wireguard_dependent_services: []

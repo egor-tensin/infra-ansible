@@ -8,7 +8,7 @@
   become: true
   ansible.builtin.template:
     src: wg-quick.conf.j2
-    dest: '/etc/wireguard/{{ wg_name }}.conf'
+    dest: '/etc/wireguard/{{ wireguard_name }}.conf'
     owner: root
     group: root
     mode: '600'
@@ -17,23 +17,23 @@
 - name: Enable wg-quick service
   become: true
   ansible.builtin.systemd_service:
-    name: 'wg-quick@{{ wg_name }}'
-    enabled: '{{ wg_autoconnect }}'
+    name: 'wg-quick@{{ wireguard_name }}'
+    enabled: '{{ wireguard_autoconnect }}'
   when: wireguard_config.changed
 
 - name: Restart wg-quick service
   become: true
   ansible.builtin.systemd_service:
-    name: 'wg-quick@{{ wg_name }}'
+    name: 'wg-quick@{{ wireguard_name }}'
     state: restarted
-  when: wireguard_config.changed and wg_autoconnect
+  when: wireguard_config.changed and wireguard_autoconnect
 
 - name: Set up service dependencies for the interface
   ansible.builtin.include_role:
     name: systemd_depend_iface
   vars:
-    systemd_depend_iface_name: '{{ wg_name }}'
-    systemd_depend_iface_services: '{{ wg_dependent_services }}'
+    systemd_depend_iface_name: '{{ wireguard_name }}'
+    systemd_depend_iface_services: '{{ wireguard_dependent_services }}'
 
 - name: Create override directory for services
   become: true
@@ -43,7 +43,7 @@
     owner: root
     group: root
     mode: '755'
-  loop: '{{ wg_dependent_services }}'
+  loop: '{{ wireguard_dependent_services }}'
   loop_control:
     loop_var: service
 
@@ -51,12 +51,12 @@
   become: true
   ansible.builtin.template:
     src: depend_service_wg-quick.conf.j2
-    dest: '/etc/systemd/system/{{ service }}.service.d/depend_service_wg-quick@{{ wg_name }}.conf'
+    dest: '/etc/systemd/system/{{ service }}.service.d/depend_service_wg-quick@{{ wireguard_name }}.conf'
     owner: root
     group: root
     mode: '644'
   notify: wireguard_reload
-  loop: '{{ wg_dependent_services }}'
+  loop: '{{ wireguard_dependent_services }}'
   loop_control:
     loop_var: service
 

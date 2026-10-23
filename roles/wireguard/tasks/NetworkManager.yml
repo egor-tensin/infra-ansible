@@ -2,7 +2,7 @@
   become: true
   ansible.builtin.template:
     src: NetworkManager.nmconnection.j2
-    dest: '/etc/NetworkManager/system-connections/{{ wg_name }}.nmconnection'
+    dest: '/etc/NetworkManager/system-connections/{{ wireguard_name }}.nmconnection'
     owner: root
     group: root
     mode: '600'
@@ -18,8 +18,8 @@
   ansible.builtin.include_role:
     name: systemd_depend_iface
   vars:
-    systemd_depend_iface_name: '{{ wg_name }}'
-    systemd_depend_iface_services: '{{ wg_dependent_services }}'
+    systemd_depend_iface_name: '{{ wireguard_name }}'
+    systemd_depend_iface_services: '{{ wireguard_dependent_services }}'
 
 - name: Create override directory for services
   become: true
@@ -29,7 +29,7 @@
     owner: root
     group: root
     mode: '755'
-  loop: '{{ wg_dependent_services }}'
+  loop: '{{ wireguard_dependent_services }}'
   loop_control:
     loop_var: service
 
@@ -42,7 +42,7 @@
     group: root
     mode: '644'
   notify: wireguard_reload
-  loop: '{{ wg_dependent_services }}'
+  loop: '{{ wireguard_dependent_services }}'
   loop_control:
     loop_var: service
 
