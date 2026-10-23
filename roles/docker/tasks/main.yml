@@ -23,18 +23,18 @@
     name: "{{ docker_package_names }}"
     state: present
 
-# The docker system prune call should be before enabling/disabling the service
-# and socket, otherwise the service could be woken up.
+# The docker system prune call should be before configuring the service and
+# socket, otherwise the service could be woken up.
 - ansible.builtin.import_tasks: prune.yml
 
-- name: Enable & start Docker service
+- name: Configure Docker service
   become: true
   ansible.builtin.systemd_service:
     name: docker.service
     enabled: "{{ docker_enable_service }}"
     state: "{{ docker_enable_service | ternary('started', 'stopped') }}"
 
-- name: Enable & start Docker socket
+- name: Configure Docker socket
   become: true
   ansible.builtin.systemd_service:
     name: docker.socket

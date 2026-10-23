@@ -1,7 +1,15 @@
-- name: Reload systemd daemon
+# Temporarily disable the services; systemd_info below uses systemctl list-units,
+# and it doesn't seem to update its info right after installation (so, list-units
+# doesn't show the Docker units); hopefully, disabling them will make them
+# appear in list-units output, idk.
+- name: Disable Docker services
   become: true
   ansible.builtin.systemd_service:
-    daemon_reload: true
+    name: '{{ item }}'
+    enabled: false
+  loop:
+    - docker.service
+    - docker.socket
 
 - name: Collect service facts
   community.general.systemd_info:
