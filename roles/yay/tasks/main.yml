@@ -22,7 +22,9 @@
 
     - name: Checkout & build
       block:
-        - name: Checkout # noqa: latest[git]
+        - name: Checkout
+          # noqa: latest[git]
+          # This is supposed to always work, per the project's README.
           ansible.builtin.git:
             repo: 'https://aur.archlinux.org/yay.git'
             dest: '{{ yay_dir.path }}'

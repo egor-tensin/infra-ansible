@@ -52,7 +52,8 @@
   when: etckeeper_remote_url is defined
   become: true
   block:
-    - name: Read current remote URL # noqa: command-instead-of-module
+    - name: Read current remote URL
+      # noqa: command-instead-of-module
       ansible.builtin.command:
         cmd: git config --local remote.{{ etckeeper_remote_name | quote }}.url
         chdir: /etc
@@ -60,7 +61,8 @@
       failed_when: false
       register: etckeeper_config_result
 
-    - name: Fix remote URL if necessary # noqa: command-instead-of-module
+    - name: Fix remote URL if necessary
+      # noqa: command-instead-of-module
       ansible.builtin.shell:
         cmd: |
           git remote remove {{ etckeeper_remote_name | quote }} && \

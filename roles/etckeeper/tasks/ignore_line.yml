@@ -9,7 +9,8 @@
     mode: '644'
   notify: etckeeper_commit_gitignore
 
-- name: Remove path from cache # noqa: command-instead-of-module
+- name: Remove path from cache
+  # noqa: command-instead-of-module
   become: true
   ansible.builtin.command:
     cmd: git rm -r --ignore-unmatch --cached -- {{ ignore_path | regex_replace("^/", "") | quote }}

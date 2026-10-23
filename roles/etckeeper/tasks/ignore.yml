@@ -1,4 +1,5 @@
-- name: Check git status # noqa: command-instead-of-module
+- name: Check git status
+  # noqa: command-instead-of-module
   become: true
   ansible.builtin.command:
     cmd: git status --porcelain
