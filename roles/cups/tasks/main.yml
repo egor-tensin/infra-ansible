@@ -1,0 +1,71 @@
+# https://wiki.archlinux.org/title/Avahi#Hostname_resolution
+- name: Install nss-mdns
+  become: true
+  ansible.builtin.package:
+    name: nss-mdns
+    state: present
+
+# As of May '26, without this, automatic printer discovery didn't work normally
+# (in some weird way, where the printer would be discovered, but its status
+# won't be queued properly, etc.; who cares, it's obviously an insane tech to
+# begin with), see the link above.
+- name: Fix nsswitch.conf
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/nsswitch.conf
+    search_string: 'hosts:'
+    line: 'hosts: mymachines mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] files myhostname dns'
+    state: present
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install CUPS & Avahi
+  become: true
+  ansible.builtin.package:
+    name:
+      - cups
+      - cups-pdf
+      - avahi
+    state: present
+
+- name: Enable & start CUPS
+  become: true
+  ansible.builtin.systemd_service:
+    name: cups
+    enabled: true
+    state: started
+
+- name: Enable & start Avahi
+  become: true
+  ansible.builtin.systemd_service:
+    name: avahi-daemon
+    enabled: true
+    state: started
+  notify: cups_restart
+
+- name: Configure default paper size
+  become: true
+  ansible.builtin.template:
+    src: papersize.j2
+    dest: /etc/papersize
+    owner: root
+    group: root
+    mode: '644'
+  notify: cups_restart
+
+- name: Configure logging to journald
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/cups/cups-files.conf
+    create: false
+    search_string: '{{ item }}'
+    line: '{{ item }} syslog'
+  notify: cups_restart
+  loop:
+    - AccessLog
+    - ErrorLog
+    - PageLog
+
+- name: Run handlers if neccessary
+  ansible.builtin.meta: flush_handlers
