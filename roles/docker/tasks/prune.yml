@@ -1,29 +1,22 @@
-# Temporarily disable the services; systemd_info below uses systemctl list-units,
-# and it doesn't seem to update its info right after installation (so, list-units
-# doesn't show the Docker units); hopefully, disabling them will make them
-# appear in list-units output, idk.
-- name: Disable Docker services
-  become: true
-  ansible.builtin.systemd_service:
-    name: '{{ item }}'
-    enabled: false
-  loop:
-    - docker.service
-    - docker.socket
-
 - name: Collect service facts
   community.general.systemd_info:
     unitname:
       - docker.service
       - docker.socket
   register: docker_systemd_info
+  failed_when:
+    docker_systemd_info.msg is defined
+        and "No units match any of the provided patterns" not in docker_systemd_info.msg
+# ^^^ On fresh installations, systemctl list-units (which is what systemd_info
+# does, it doesn't show the Docker units at all, don't exactly understand why.
 
 - name: Clean up docker data
   become: true
   when: |
-    docker_systemd_info.units['docker.service'].substate == 'running'
-    or docker_systemd_info.units['docker.socket'].substate == 'listening'
-    or docker_systemd_info.units['docker.socket'].substate == 'running'
+    docker_systemd_info.units is defined
+        and (docker_systemd_info.units['docker.service'].substate == 'running'
+            or docker_systemd_info.units['docker.socket'].substate == 'listening'
+            or docker_systemd_info.units['docker.socket'].substate == 'running')
   block:
     # Dependencies of the community.docker.docker_prune Ansible module:
     - name: Install module dependencies
