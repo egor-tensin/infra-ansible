@@ -1,5 +1,5 @@
 - name: Pull repository
-  tensin.infra.safe_git: # noqa: latest
+  tensin.infra.safe_git:
     repo: '{{ my_dotfiles_repo }}'
     dest: '{{ my_dotfiles_dir }}'
     version: master
