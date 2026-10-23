@@ -1,5 +1,6 @@
 docker_package_names:
   - docker
+  - docker-buildx
   - docker-compose
 docker_prune_module_deps:
   - python-requests
