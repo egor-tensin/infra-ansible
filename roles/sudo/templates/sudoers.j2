@@ -1,6 +1,8 @@
 {{ ansible_managed | comment }}
 
+{% if sudo_env | length > 0 %}
 # Preserve my environment variables:
 Defaults env_keep += "{{ sudo_env | join(' ') }}"
+{% endif %}
 # Don't prompt for password for {{ sudo_user }}:
 {{ sudo_user }} ALL=(ALL) NOPASSWD:ALL
