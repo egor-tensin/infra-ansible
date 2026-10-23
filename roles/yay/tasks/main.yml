@@ -32,6 +32,7 @@
           ansible.builtin.command:
             cmd: makepkg --install --syncdeps --rmdeps --noconfirm
             chdir: '{{ yay_dir.path }}'
+          changed_when: true
 
       always:
         - name: Clean up

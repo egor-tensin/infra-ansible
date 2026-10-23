@@ -17,6 +17,7 @@
 
     - name: Confirm plugin containment level
       ansible.builtin.command: snap set certbot trust-plugin-with-root=ok
+      changed_when: true
 
     - name: Install Certbot DigitalOcean plugin
       community.general.snap:

@@ -25,7 +25,8 @@
 
 # The docker system prune call should be before configuring the service and
 # socket, otherwise the service could be woken up.
-- ansible.builtin.import_tasks: prune.yml
+- name: Prune Docker data
+  ansible.builtin.import_tasks: prune.yml
 
 - name: Configure Docker service
   become: true

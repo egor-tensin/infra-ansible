@@ -25,12 +25,14 @@
       ansible.builtin.command:
         cmd: '{{ config_links_repo.path }}/links-update'
         chdir: '{{ config_links_path }}'
+      changed_when: true
       when: config_links_action == 'update'
 
     - name: Run links-remove
       ansible.builtin.command:
         cmd: '{{ config_links_repo.path }}/links-remove'
         chdir: '{{ config_links_path }}'
+      changed_when: true
       when: config_links_action == 'remove'
 
   always:

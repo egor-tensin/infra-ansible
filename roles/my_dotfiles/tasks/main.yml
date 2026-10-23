@@ -10,4 +10,5 @@
   ansible.builtin.command: ./scripts/setup.sh
   args:
     chdir: '{{ my_dotfiles_dir }}'
+  changed_when: true
   when: my_dotfiles_repo.changed
