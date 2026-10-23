@@ -1,0 +1,40 @@
+- name: Collect installed packages
+  ansible.builtin.package_facts:
+    manager: pacman
+
+- name: Install yay
+  when: |
+    'yay' not in ansible_facts.packages
+  block:
+    - name: Install prerequisites
+      ansible.builtin.include_role:
+        name: pacman_install
+      vars:
+        pacman_install_packages:
+          - base-devel
+          - git
+
+    - name: Create temporary directory
+      ansible.builtin.tempfile:
+        prefix: yay
+        state: directory
+      register: yay_dir
+
+    - name: Checkout & build
+      block:
+        - name: Checkout
+          ansible.builtin.git:
+            repo: 'https://aur.archlinux.org/yay.git'
+            dest: '{{ yay_dir.path }}'
+            accept_hostkey: true
+
+        - name: Build
+          ansible.builtin.command:
+            cmd: makepkg --install --syncdeps --rmdeps --noconfirm
+            chdir: '{{ yay_dir.path }}'
+
+      always:
+        - name: Clean up
+          ansible.builtin.file:
+            path: '${{ yay_dir.path }}'
+            state: absent
