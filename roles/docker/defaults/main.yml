@@ -1,3 +1,4 @@
 docker_enable_service: true
 docker_enable_socket: true
 docker_logging_driver: false
+docker_add_to_group: false
