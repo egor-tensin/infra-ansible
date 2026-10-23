@@ -1,0 +1,24 @@
+- name: Install sudo
+  become: true
+  ansible.builtin.package:
+    name: sudo
+    state: present
+
+- name: Create /etc/sudoers.d
+  become: true
+  ansible.builtin.file:
+    path: /etc/sudoers.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Configure sudoer
+  become: true
+  ansible.builtin.template:
+    src: sudoers.j2
+    dest: '/etc/sudoers.d/{{ sudo_user }}'
+    owner: root
+    group: root
+    mode: '440'
+    validate: 'visudo -cf %s'
