@@ -1,0 +1,10 @@
+- name: Upgrade AUR packages
+  kewlfft.aur.aur:
+    name: '{{ aur_install_packages }}'
+    state: latest
+    use: yay
+    aur_only: true
+    extra_args: --removemake
+  # AUR connection fails a bit too frequently:
+  retries: 3
+  delay: 3

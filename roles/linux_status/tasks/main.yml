@@ -1,11 +1,18 @@
 - name: Configure power management
   ansible.builtin.import_tasks: power_management.yml
 
-- name: Install linux-status
-  become: true
-  ansible.builtin.package:
-    name: linux-status
-    state: present
+- name: Get host distro
+  ansible.builtin.setup:
+    gather_subset:
+      - distribution
+
+- name: Install on Arch Linux
+  when: ansible_facts['distribution'] == 'Archlinux'
+  ansible.builtin.import_tasks: arch.yml
+
+- name: Install on other distros
+  when: ansible_facts['distribution'] != 'Archlinux'
+  ansible.builtin.import_tasks: default.yml
 
 - name: Enable & start linux-status.service
   become: true
