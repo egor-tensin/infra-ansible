@@ -11,7 +11,7 @@
     state: directory
     owner: root
     group: root
-    mode: '755'
+    mode: '0755'
 
 - name: 'Add key: {{ apt_repo_name }}'
   become: true
@@ -20,7 +20,7 @@
     dest: '{{ apt_repo_key_path }}'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: apt_repo_update
 
 - name: Get host distro
@@ -39,7 +39,7 @@
     dest: '/etc/apt/sources.list.d/{{ apt_repo_name }}.list'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: apt_repo_update
 
 - name: Refresh apt repositories if necessary

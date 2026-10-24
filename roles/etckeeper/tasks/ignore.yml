@@ -4,22 +4,22 @@
   ansible.builtin.command:
     cmd: git status --porcelain
     chdir: /etc
-  register: etckeeper_git_status
   changed_when: false
+  register: etckeeper_git_status
 
 - name: Fail if there're modifications
+  when: |
+    etckeeper_git_status.stdout_lines | length > 0
   ansible.builtin.fail:
     msg: |
       Unexpected modifications found:
       {{ etckeeper_git_status.stdout }}
-  when: |
-    etckeeper_git_status.stdout_lines | length > 0
 
 - name: Configure ignored path
-  ansible.builtin.include_tasks: ignore_line.yml
   loop: '{{ etckeeper_ignored_paths }}'
   loop_control:
     loop_var: ignore_path
+  ansible.builtin.include_tasks: ignore_line.yml
 
 - name: Commit .gitignore if necessary
   ansible.builtin.meta: flush_handlers

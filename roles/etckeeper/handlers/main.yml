@@ -1,10 +1,10 @@
 - name: Commit etckeeper.conf
+  listen: etckeeper_commit_conf
   tensin.infra.etckeeper_commit:
     msg: configure etckeeper
     allowlist: [etckeeper/etckeeper.conf]
-  listen: etckeeper_commit_conf
 
 - name: Commit .gitignore
+  listen: etckeeper_commit_gitignore
   tensin.infra.etckeeper_commit:
     msg: configure ignored files
-  listen: etckeeper_commit_gitignore

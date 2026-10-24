@@ -11,7 +11,7 @@
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
 
 # https://wiki.debian.org/UnattendedUpgrades says that 20auto-upgrades and
 # 02periodic are _alternatives_ (and, presumably, not mechanisms that can be
@@ -29,4 +29,4 @@
     dest: /etc/apt/apt.conf.d/02periodic
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'

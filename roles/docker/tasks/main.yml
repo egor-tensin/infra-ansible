@@ -5,13 +5,13 @@
       - distribution_release
 
 - name: Set platform-specific variables
-  ansible.builtin.include_vars: "{{ __docker_vars_file }}"
   loop:
     - "{{ ansible_facts['distribution'] }}.yml"
     - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_release'] }}.yml"
   vars:
-    __docker_vars_file: "{{ role_path }}/vars/{{ item }}"
+    __docker_vars_file: '{{ role_path }}/vars/{{ item }}'
   when: __docker_vars_file is exists
+  ansible.builtin.include_vars: '{{ __docker_vars_file }}'
 
 - name: Configure Docker logging driver
   when: docker_logging_driver is defined and docker_logging_driver != false
@@ -20,7 +20,7 @@
 - name: Install Docker
   become: true
   ansible.builtin.package:
-    name: "{{ docker_package_names }}"
+    name: '{{ docker_package_names }}'
     state: present
 
 # The docker system prune call should be before configuring the service and
@@ -32,19 +32,19 @@
   become: true
   ansible.builtin.systemd_service:
     name: docker.service
-    enabled: "{{ docker_enable_service }}"
+    enabled: '{{ docker_enable_service }}'
     state: "{{ docker_enable_service | ternary('started', 'stopped') }}"
 
 - name: Configure Docker socket
   become: true
   ansible.builtin.systemd_service:
     name: docker.socket
-    enabled: "{{ docker_enable_socket }}"
+    enabled: '{{ docker_enable_socket }}'
     state: "{{ docker_enable_socket | ternary('started', 'stopped') }}"
 
 - name: Add user to Docker group
-  become: true
   when: docker_add_to_group
+  become: true
   ansible.builtin.user:
     append: true
     groups: docker

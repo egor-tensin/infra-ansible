@@ -6,7 +6,7 @@
     state: present
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: etckeeper_commit_gitignore
 
 - name: Remove path from cache

@@ -1,9 +1,9 @@
 - name: Validate backend
+  when: |
+    wireguard_backend not in ['wg-quick', 'NetworkManager']
   ansible.builtin.fail:
     msg: |
       Unknown Wireguard backend: {{ wireguard_backend }}
-  when: |
-    wireguard_backend not in ['wg-quick', 'NetworkManager']
 
 - name: 'Set up using backend {{ wireguard_backend }}'
   ansible.builtin.include_tasks: '{{ wireguard_backend }}.yml'

@@ -7,7 +7,7 @@
     value: '{{ journald_log_level }}'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: journald_restart
 
 - name: Restart systemd-journald if necessary

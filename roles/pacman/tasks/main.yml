@@ -12,12 +12,12 @@
   community.general.pacman:
     update_cache: true
     upgrade: true
-  register: pacman_result
   # According to
   #     https://docs.ansible.com/projects/ansible/latest/collections/community/general/pacman_module.html
   # this module now reports 'changed' even if only the cache was updated, with
   # no upgrades; this is the workaround.
   changed_when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
+  register: pacman_result
 
 - name: Post-upgrade
   when: pacman_result is changed
@@ -34,23 +34,23 @@
 
 - name: Get list of unneeded dependencies
   ansible.builtin.command: pacman -Qqdt
-  register: pacman_result
   changed_when: false
   failed_when: |
     pacman_result.rc != 0
     and not (pacman_result.rc == 1 and (pacman_result.stdout_lines | length == 0))
+  register: pacman_result
 
 - name: Remove unneeded dependencies
+  when: pacman_result.stdout_lines | length > 0
   become: true
   community.general.pacman:
     name: '{{ pacman_result.stdout_lines }}'
     state: absent
     extra_args: --recursive
     remove_nosave: true
-  when: pacman_result.stdout_lines | length > 0
   register: pacman_result
 
 - name: Show removed packages
+  when: pacman_result.packages is defined
   ansible.builtin.debug:
     var: pacman_result.packages | sort
-  when: pacman_result.packages is defined

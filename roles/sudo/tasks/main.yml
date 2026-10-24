@@ -20,5 +20,5 @@
     dest: '/etc/sudoers.d/{{ sudo_user }}'
     owner: root
     group: root
-    mode: '440'
+    mode: '0440'
     validate: 'visudo -cf %s'

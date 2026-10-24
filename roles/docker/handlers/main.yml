@@ -1,13 +1,14 @@
 # Don't restart if it's not running.
 - name: Collect service facts
-  ansible.builtin.service_facts:
   listen: docker_configured
+  ansible.builtin.service_facts:
 
 - name: Restart Docker service
-  become: true
+  listen: docker_configured
   when: |
-    'docker.service' in ansible_facts.services and ansible_facts.services['docker.service'].state == 'running'
+    'docker.service' in ansible_facts.services
+    and ansible_facts.services['docker.service'].state == 'running'
+  become: true
   ansible.builtin.systemd_service:
     name: docker
     state: restarted
-  listen: docker_configured

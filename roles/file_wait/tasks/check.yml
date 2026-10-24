@@ -26,4 +26,4 @@
 
     - name: Retry if there're more reboots
       ansible.builtin.include_tasks: check.yml
-      when: (file_wait_reboots_left | int >= 0)
+      when: file_wait_reboots_left | int >= 0

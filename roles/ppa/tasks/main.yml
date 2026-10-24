@@ -5,17 +5,15 @@
       - distribution_release
 
 - name: Set platform-specific variables
-  ansible.builtin.include_vars: "{{ __ppa_vars_file }}"
   loop:
     - "{{ ansible_facts['distribution'] }}.yml"
     - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_release'] }}.yml"
   vars:
-    __ppa_vars_file: "{{ role_path }}/vars/{{ item }}"
+    __ppa_vars_file: '{{ role_path }}/vars/{{ item }}'
   when: __ppa_vars_file is exists
+  ansible.builtin.include_vars: '{{ __ppa_vars_file }}'
 
 - name: Set up PPA repository
-  ansible.builtin.include_role:
-    name: apt_repo
   vars:
     apt_repo_name: '{{ ppa_name }}'
     apt_repo_key_url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
@@ -23,3 +21,5 @@
     apt_repo_codename: '{{ ppa_distro }}'
     # All PPA repositories are Ubuntu repositories, even though they might be used on Debian:
     apt_repo_append_distro: false
+  ansible.builtin.include_role:
+    name: apt_repo

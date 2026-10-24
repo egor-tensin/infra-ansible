@@ -1,27 +1,23 @@
 - name: Create override directory
+  loop: '{{ systemd_depend_mount_services }}'
   become: true
   ansible.builtin.file:
-    path: '/etc/systemd/system/{{ service }}.service.d'
+    path: '/etc/systemd/system/{{ item }}.service.d'
     state: directory
     owner: root
     group: root
-    mode: '755'
-  loop: '{{ systemd_depend_mount_services }}'
-  loop_control:
-    loop_var: service
+    mode: '0755'
 
 - name: Create service override
+  loop: '{{ systemd_depend_mount_services }}'
   become: true
   ansible.builtin.template:
     src: override.conf.j2
-    dest: '/etc/systemd/system/{{ service }}.service.d/depend_mount_{{ systemd_depend_mount_dir | regex_replace("/", "_") }}.conf'
+    dest: '/etc/systemd/system/{{ item }}.service.d/depend_mount_{{ systemd_depend_mount_dir | regex_replace("/", "_") }}.conf'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: systemd_depend_mount_reload
-  loop: '{{ systemd_depend_mount_services }}'
-  loop_control:
-    loop_var: service
 
 - name: Reload systemd services if necessary
   ansible.builtin.meta: flush_handlers

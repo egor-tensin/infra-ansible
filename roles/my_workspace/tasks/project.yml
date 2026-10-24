@@ -14,16 +14,16 @@
         accept_hostkey: true
 
     - name: Configure git repository
-      community.general.git_config:
-        scope: local
-        repo: '{{ project_dir }}'
-        name: '{{ item.name }}'
-        value: '{{ item.value }}'
       loop:
         - name: user.name
           value: '{{ my_workspace_git_name }}'
         - name: user.email
           value: '{{ my_workspace_git_email }}'
+      community.general.git_config:
+        scope: local
+        repo: '{{ project_dir }}'
+        name: '{{ item.name }}'
+        value: '{{ item.value }}'
 
     - name: Check for Makefile
       ansible.builtin.stat:
@@ -44,22 +44,22 @@
       register: my_workspace_compose_file
 
     - name: Run make
+      when: my_workspace_makefile.stat.readable
       become: true
       community.general.make:
         chdir: '{{ project_dir }}'
-      when: my_workspace_makefile.stat.readable
 
     - name: Run docker-compose
+      when: not my_workspace_makefile.stat.readable and my_workspace_compose_file.stat.readable
       become: true
       community.docker.docker_compose_v2:
         project_src: '{{ project_dir }}'
         pull: always
         build: always
         remove_orphans: true
-      when: not my_workspace_makefile.stat.readable and my_workspace_compose_file.stat.readable
 
     - name: Fail if both files are unreadable
+      when: not (my_workspace_makefile.stat.readable or my_workspace_compose_file.stat.readable)
       ansible.builtin.fail:
         msg: |
           Don't know how to run project in {{ project_dir }}
-      when: not (my_workspace_makefile.stat.readable or my_workspace_compose_file.stat.readable)

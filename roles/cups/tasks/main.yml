@@ -51,21 +51,21 @@
     dest: /etc/papersize
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: cups_restart
 
 - name: Configure logging to journald
   become: true
+  loop:
+    - AccessLog
+    - ErrorLog
+    - PageLog
   ansible.builtin.lineinfile:
     path: /etc/cups/cups-files.conf
     create: false
     search_string: '{{ item }}'
     line: '{{ item }} syslog'
   notify: cups_restart
-  loop:
-    - AccessLog
-    - ErrorLog
-    - PageLog
 
 - name: Run handlers if neccessary
   ansible.builtin.meta: flush_handlers

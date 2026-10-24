@@ -31,5 +31,5 @@
       always:
         - name: Clean up
           ansible.builtin.file:
-            path: '${{ yay_dir.path }}'
+            path: '{{ yay_dir.path }}'
             state: absent

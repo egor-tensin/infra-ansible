@@ -5,18 +5,18 @@
     state: present
 
 - name: Configure rule files
+  loop:
+    - {src: rules.v4.j2, dest: /etc/iptables/rules.v4, tool: iptables}
+    - {src: rules.v6.j2, dest: /etc/iptables/rules.v6, tool: ip6tables}
   become: true
   ansible.builtin.template:
     src: '{{ item.src }}'
     dest: '{{ item.dest }}'
     owner: root
     group: root
-    mode: '640'
+    mode: '0640'
     validate: '/usr/sbin/{{ item.tool }}-restore --test %s'
   notify: firewall_reboot
-  loop:
-    - {src: rules.v4.j2, dest: /etc/iptables/rules.v4, tool: iptables}
-    - {src: rules.v6.j2, dest: /etc/iptables/rules.v6, tool: ip6tables}
 
 - name: Reboot if necessary
   ansible.builtin.meta: flush_handlers

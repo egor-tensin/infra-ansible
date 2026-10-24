@@ -5,46 +5,42 @@
     dest: '/etc/NetworkManager/system-connections/{{ wireguard_name }}.nmconnection'
     owner: root
     group: root
-    mode: '600'
+    mode: '0600'
   register: wireguard_config
 
 - name: Reload NetworkManager connections
+  when: wireguard_config is changed
   become: true
   ansible.builtin.command: nmcli connection reload
-  when: wireguard_config.changed
   changed_when: true
 
 - name: Set up service dependencies for the interface
-  ansible.builtin.include_role:
-    name: systemd_depend_iface
   vars:
     systemd_depend_iface_name: '{{ wireguard_name }}'
     systemd_depend_iface_services: '{{ wireguard_dependent_services }}'
+  ansible.builtin.include_role:
+    name: systemd_depend_iface
 
 - name: Create override directory for services
+  loop: '{{ wireguard_dependent_services }}'
   become: true
   ansible.builtin.file:
-    path: '/etc/systemd/system/{{ service }}.service.d'
+    path: '/etc/systemd/system/{{ item }}.service.d'
     state: directory
     owner: root
     group: root
-    mode: '755'
-  loop: '{{ wireguard_dependent_services }}'
-  loop_control:
-    loop_var: service
+    mode: '0755'
 
 - name: Set up service dependencies for wg-quick
+  loop: '{{ wireguard_dependent_services }}'
   become: true
   ansible.builtin.template:
     src: depend_service_NetworkManager.conf.j2
-    dest: '/etc/systemd/system/{{ service }}.service.d/depend_service_NetworkManager.conf'
+    dest: '/etc/systemd/system/{{ item }}.service.d/depend_service_NetworkManager.conf'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: wireguard_reload
-  loop: '{{ wireguard_dependent_services }}'
-  loop_control:
-    loop_var: service
 
 - name: Reload systemd services if necessary
   ansible.builtin.meta: flush_handlers

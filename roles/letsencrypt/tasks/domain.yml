@@ -1,8 +1,8 @@
 - name: Set up certificate for domain
-  become: true
   vars:
     certificate_name: '{{ domain.name | default(domain) }}'
-    certificate_domains: "{{ domain.domains | default([certificate_name]) | unique }}"
+    certificate_domains: '{{ domain.domains | default([certificate_name]) | unique }}'
+  become: true
   block:
     - name: Cache domain list
       ansible.builtin.template:
@@ -10,10 +10,11 @@
         dest: '/etc/letsencrypt/.domains_{{ certificate_name }}.txt'
         owner: root
         group: root
-        mode: '640'
+        mode: '0640'
       register: letsencrypt_domain_list
 
     - name: 'Create certificate: {{ certificate_name }}'
+      when: letsencrypt_domain_list is changed
       ansible.builtin.command: |
         certbot certonly --noninteractive --agree-tos \
             --cert-name {{ certificate_name | quote }} \
@@ -24,4 +25,3 @@
             --dns-digitalocean-credentials {{ letsencrypt_credentials_ini | quote }} \
             --dns-digitalocean-propagation-seconds 30
       changed_when: true
-      when: letsencrypt_domain_list.changed

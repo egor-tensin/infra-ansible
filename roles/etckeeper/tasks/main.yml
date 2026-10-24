@@ -11,17 +11,17 @@
     creates: /etc/.git/config
 
 - name: Configure /etc repository
+  loop:
+    - name: user.name
+      value: '{{ etckeeper_git_name }}'
+    - name: user.email
+      value: '{{ etckeeper_git_email }}'
   become: true
   community.general.git_config:
     scope: local
     repo: /etc
     name: '{{ item.name }}'
     value: '{{ item.value }}'
-  loop:
-    - name: user.name
-      value: '{{ etckeeper_git_name }}'
-    - name: user.email
-      value: '{{ etckeeper_git_email }}'
 
 - name: Initial commit
   become: true
@@ -30,6 +30,11 @@
     creates: /etc/.git/index
 
 - name: Configure etckeeper
+  loop:
+    - name: AVOID_DAILY_AUTOCOMMITS
+      value: '1'
+    - name: AVOID_COMMIT_BEFORE_INSTALL
+      value: '1'
   become: true
   community.general.ini_file:
     path: /etc/etckeeper/etckeeper.conf
@@ -37,15 +42,10 @@
     no_extra_spaces: true
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
     section: null
     option: '{{ item.name }}'
     value: '{{ item.value }}'
-  loop:
-    - name: AVOID_DAILY_AUTOCOMMITS
-      value: '1'
-    - name: AVOID_COMMIT_BEFORE_INSTALL
-      value: '1'
   notify: etckeeper_commit_conf
 
 - name: Configure repository remote
@@ -55,7 +55,7 @@
     - name: Read current remote URL
       # noqa: command-instead-of-module
       ansible.builtin.command:
-        cmd: git config --local remote.{{ etckeeper_remote_name | quote }}.url
+        cmd: 'git config --local remote.{{ etckeeper_remote_name | quote }}.url'
         chdir: /etc
       changed_when: false
       failed_when: false
@@ -63,13 +63,13 @@
 
     - name: Fix remote URL if necessary
       # noqa: command-instead-of-module
+      when: etckeeper_config_result.stdout != etckeeper_remote_url
       ansible.builtin.shell:
         cmd: |
           git remote remove {{ etckeeper_remote_name | quote }} && \
           git remote add -f {{ etckeeper_remote_name | quote }} {{ etckeeper_remote_url | quote }}
         chdir: /etc
       changed_when: true
-      when: etckeeper_config_result.stdout != etckeeper_remote_url
 
     - name: Configure pushes for etckeeper
       community.general.ini_file:
@@ -77,7 +77,7 @@
         no_extra_spaces: true
         owner: root
         group: root
-        mode: '644'
+        mode: '0644'
         section: null
         option: PUSH_REMOTE
         value: '{{ etckeeper_remote_name }}'

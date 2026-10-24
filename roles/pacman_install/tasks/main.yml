@@ -8,6 +8,6 @@
   register: pacman_install_result
 
 - name: Show installed packages
+  when: pacman_install_result.packages is defined and (pacman_install_result.packages | length > 0)
   ansible.builtin.debug:
     var: pacman_install_result.packages | sort
-  when: pacman_install_result.packages is defined and (pacman_install_result.packages | length > 0)

@@ -1,13 +1,14 @@
 # Don't restart if it's not running.
 - name: Collect service facts
-  ansible.builtin.service_facts:
   listen: cups_restart
+  ansible.builtin.service_facts:
 
 - name: Restart CUPS if necessary
-  become: true
+  listen: cups_restart
   when: |
-    'cups.service' in ansible_facts.services and ansible_facts.services['cups.service'].state == 'running'
+    'cups.service' in ansible_facts.services
+    and ansible_facts.services['cups.service'].state == 'running'
+  become: true
   ansible.builtin.systemd_service:
     name: cups
     state: restarted
-  listen: cups_restart

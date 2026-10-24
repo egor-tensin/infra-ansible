@@ -11,54 +11,50 @@
     dest: '/etc/wireguard/{{ wireguard_name }}.conf'
     owner: root
     group: root
-    mode: '600'
+    mode: '0600'
   register: wireguard_config
 
 - name: Enable wg-quick service
+  when: wireguard_config is changed
   become: true
   ansible.builtin.systemd_service:
     name: 'wg-quick@{{ wireguard_name }}'
     enabled: '{{ wireguard_autoconnect }}'
-  when: wireguard_config.changed
 
 - name: Restart wg-quick service
+  when: wireguard_config is changed and wireguard_autoconnect
   become: true
   ansible.builtin.systemd_service:
     name: 'wg-quick@{{ wireguard_name }}'
     state: restarted
-  when: wireguard_config.changed and wireguard_autoconnect
 
 - name: Set up service dependencies for the interface
-  ansible.builtin.include_role:
-    name: systemd_depend_iface
   vars:
     systemd_depend_iface_name: '{{ wireguard_name }}'
     systemd_depend_iface_services: '{{ wireguard_dependent_services }}'
+  ansible.builtin.include_role:
+    name: systemd_depend_iface
 
 - name: Create override directory for services
+  loop: '{{ wireguard_dependent_services }}'
   become: true
   ansible.builtin.file:
-    path: '/etc/systemd/system/{{ service }}.service.d'
+    path: '/etc/systemd/system/{{ item }}.service.d'
     state: directory
     owner: root
     group: root
-    mode: '755'
-  loop: '{{ wireguard_dependent_services }}'
-  loop_control:
-    loop_var: service
+    mode: '0755'
 
 - name: Set up service dependencies for wg-quick
+  loop: '{{ wireguard_dependent_services }}'
   become: true
   ansible.builtin.template:
     src: depend_service_wg-quick.conf.j2
-    dest: '/etc/systemd/system/{{ service }}.service.d/depend_service_wg-quick@{{ wireguard_name }}.conf'
+    dest: '/etc/systemd/system/{{ item }}.service.d/depend_service_wg-quick@{{ wireguard_name }}.conf'
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
   notify: wireguard_reload
-  loop: '{{ wireguard_dependent_services }}'
-  loop_control:
-    loop_var: service
 
 - name: Reload systemd services if necessary
   ansible.builtin.meta: flush_handlers

@@ -5,7 +5,7 @@
     state: directory
     owner: '{{ ansible_user }}'
     group: '{{ ansible_user }}'
-    mode: '750'
+    mode: '0750'
 
 - name: Install dependencies
   become: true
@@ -14,7 +14,7 @@
     state: present
 
 - name: Update projects
-  ansible.builtin.include_tasks: project.yml
   loop: '{{ my_workspace_projects }}'
   loop_control:
     loop_var: project
+  ansible.builtin.include_tasks: project.yml

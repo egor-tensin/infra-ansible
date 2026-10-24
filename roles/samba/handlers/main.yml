@@ -1,13 +1,14 @@
 # Don't restart if it's not running.
 - name: Collect service facts
-  ansible.builtin.service_facts:
   listen: samba_configured
+  ansible.builtin.service_facts:
 
 - name: Restart Samba service
-  become: true
+  listen: samba_configured
   when: |
-    'smbd.service' in ansible_facts.services and ansible_facts.services['smbd.service'].state == 'running'
+    'smbd.service' in ansible_facts.services
+    and ansible_facts.services['smbd.service'].state == 'running'
+  become: true
   ansible.builtin.systemd_service:
     name: smbd
     state: restarted
-  listen: samba_configured

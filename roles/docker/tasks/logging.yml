@@ -14,7 +14,7 @@
         state: directory
         owner: root
         group: root
-        mode: '755'
+        mode: '0755'
 
     - name: Write daemon.json
       ansible.builtin.copy:
@@ -22,7 +22,7 @@
         content: '{{ docker_daemon_json.content | combine({"log-driver": docker_logging_driver}) | to_nice_json }}'
         owner: root
         group: root
-        mode: '644'
+        mode: '0644'
       notify: docker_configured
 
 - name: Restart Docker service if necessary

@@ -11,7 +11,7 @@
     state: directory
     owner: root
     group: root
-    mode: '755'
+    mode: '0755'
 
 - name: Format smb.conf
   become: true
@@ -20,7 +20,7 @@
     dest: /etc/samba/smb.conf
     owner: root
     group: root
-    mode: '644'
+    mode: '0644'
     validate: '/usr/bin/testparm --suppress-prompt %s'
   notify: samba_configured
 

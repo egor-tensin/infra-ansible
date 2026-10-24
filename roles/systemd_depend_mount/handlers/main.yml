@@ -1,5 +1,5 @@
 - name: Reload systemd daemon
+  listen: systemd_depend_mount_reload
   become: true
   ansible.builtin.systemd_service:
     daemon_reload: true
-  listen: systemd_depend_mount_reload

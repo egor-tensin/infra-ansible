@@ -7,16 +7,16 @@
   register: apt_result
 
 - name: Show upgraded packages
+  when: apt_result is changed
   ansible.builtin.debug:
     var: apt_result.packages | sort
-  when: apt_result is changed
 
 - name: Reboot
+  when: apt_result is changed
   become: true
   ansible.builtin.reboot:
     # 3 minutes is plenty.
     reboot_timeout: 180
-  when: apt_result is changed
 
 - name: Clean up dependencies
   become: true
@@ -27,10 +27,10 @@
   register: apt_result
 
 - name: Show removed dependencies
+  when: apt_result is changed
   ansible.builtin.debug:
     var: apt_result.packages | sort
-  when: apt_result is changed
 
 - name: Configure unattended-upgrades
-  ansible.builtin.include_tasks: unattended_upgrades.yml
   when: apt_unattended_upgrades
+  ansible.builtin.include_tasks: unattended_upgrades.yml
