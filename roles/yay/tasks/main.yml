@@ -6,14 +6,6 @@
   when: |
     'yay' not in ansible_facts.packages
   block:
-    - name: Install prerequisites
-      ansible.builtin.include_role:
-        name: pacman_install
-      vars:
-        pacman_install_packages:
-          - base-devel
-          - git
-
     - name: Create temporary directory
       ansible.builtin.tempfile:
         prefix: yay
