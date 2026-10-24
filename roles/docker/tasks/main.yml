@@ -43,6 +43,7 @@
     state: "{{ docker_enable_socket | ternary('started', 'stopped') }}"
 
 - name: Add user to Docker group
+  become: true
   when: docker_add_to_group
   ansible.builtin.user:
     append: true
