@@ -14,7 +14,7 @@
     - rw
   when: item not in ansible_facts['cmdline']
   ansible.builtin.fail:
-    msg:
+    msg: |
       Expected option {{ item }} was not found in the current config!
 
 - name: Generate bootloader entries
