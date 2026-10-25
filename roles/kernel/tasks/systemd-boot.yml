@@ -1,0 +1,53 @@
+- name: Get default command line options
+  ansible.builtin.setup:
+    gather_subset:
+      - cmdline
+
+- name: Current command line
+  ansible.builtin.debug:
+    var: |
+      ansible_facts['cmdline']
+
+- name: Validate command line
+  loop:
+    - root
+    - rw
+  when: item not in ansible_facts['cmdline']
+  ansible.builtin.fail:
+    msg:
+      Expected option {{ item }} was not found in the current config!
+
+- name: Generate bootloader entries
+  loop:
+    - latest
+    - lts
+  loop_control:
+    loop_var: flavour
+  become: true
+  ansible.builtin.template:
+    src: loader.conf
+    dest: '/boot/loader/entries/{{ flavour }}.conf'
+    owner: root
+    group: root
+    mode: '0600'
+  notify: bootloader_configured
+
+- name: Set default entry
+  become: true
+  ansible.builtin.lineinfile:
+    path: /boot/loader/loader.conf
+    regexp: '^default '
+    line: 'default {{ kernel_flavour }}.conf'
+    owner: root
+    group: root
+    mode: '0600'
+  notify: bootloader_configured
+
+- name: Remove archinstall entries
+  when: kernel_systemd_boot_purge_archinstall
+  become: true
+  community.general.file_remove:
+    path: /boot/loader/entries
+    pattern: '\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_linux.conf'
+    use_regex: true
+  notify: bootloader_configured

@@ -1,0 +1,38 @@
+- name: Get distro
+  ansible.builtin.setup:
+    gather_subset:
+      - distribution
+
+- name: Fail unless Arch Linux
+  when: |
+    ansible_facts['distribution'] != 'Archlinux'
+  ansible.builtin.fail:
+    msg: Only works on Arch Linux
+
+- name: Fail if wrong flavour
+  when: |
+    kernel_flavour not in ['latest', 'lts']
+  ansible.builtin.fail:
+    msg: Kernel flavour must be either 'latest' or 'lts'
+
+- name: Install kernels
+  become: true
+  ansible.builtin.package:
+    name:
+      - linux
+      - linux-headers
+      - linux-lts
+      - linux-lts-headers
+
+- name: Fail if invalid bootloader
+  when: |
+    kernel_bootloader not in ['grub', 'systemd-boot']
+  ansible.builtin.fail:
+    msg: |
+      Supported bootloaders are: 'grub', 'systemd-boot'
+
+- name: 'Set up for bootloader {{ kernel_bootloader }}'
+  ansible.builtin.include_tasks: '{{ kernel_bootloader }}.yml'
+
+- name: Run handlers if neccessary
+  ansible.builtin.meta: flush_handlers

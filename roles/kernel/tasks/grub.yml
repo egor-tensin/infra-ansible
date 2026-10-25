@@ -1,0 +1,33 @@
+- name: Set default GRUB entry
+  vars:
+    kernel_image: |
+      {{
+        {
+          'latest': '/boot/vmlinuz-linux',
+          'lts': '/boot/vmlinuz-linux-lts',
+        }[kernel_flavour]
+      }}
+  become: true
+  community.general.ini_file:
+    create: false
+    ignore_spaces: true
+    no_extra_spaces: true
+    path: /etc/default/grub
+    option: GRUB_TOP_LEVEL
+    value: '{{ kernel_image }}'
+
+- name: Generate GRUB config
+  become: true
+  ansible.builtin.command: grub-mkconfig
+  changed_when: false
+  register: kernel_mkconfig
+
+- name: Update grub.cfg
+  become: true
+  ansible.builtin.copy:
+    content: '{{ kernel_mkconfig.stdout }}'
+    dest: /boot/grub/grub.cfg
+    owner: root
+    group: root
+    mode: '0755'
+  notify: bootloader_configured

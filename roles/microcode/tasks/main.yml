@@ -1,0 +1,29 @@
+- name: Get host processor
+  ansible.builtin.setup:
+    gather_subset:
+      - processor
+      - distribution
+
+- name: Fail unless Arch Linux
+  when: |
+    ansible_facts['distribution'] != 'Archlinux'
+  ansible.builtin.fail:
+    msg: Only works on Arch Linux
+
+- name: Install microcode package
+  when: |
+    'GenuineIntel' in ansible_facts["processor"]
+  become: true
+  ansible.builtin.package:
+    name: intel-ucode
+    state: present
+  notify: microcode_installed
+
+- name: Install AMD microcode package
+  when: |
+    'AuthenticAMD' in ansible_facts["processor"]
+  become: true
+  ansible.builtin.package:
+    name: amd-ucode
+    state: present
+  notify: microcode_installed

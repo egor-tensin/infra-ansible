@@ -1,0 +1,7 @@
+# Must be one of 'lts', 'latest'
+kernel_flavour: latest
+# Must be one of 'grub', 'systemd-boot'
+#kernel_bootloader:
+
+# Remove entries created by archinstall:
+kernel_systemd_boot_purge_archinstall: true
