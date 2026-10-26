@@ -1,0 +1,8 @@
+- name: Disable debug in makepkg's OPTIONS
+  become: true
+  ansible.builtin.template:
+    src: debug.conf.j2
+    dest: /etc/makepkg.conf.d/debug.conf
+    owner: root
+    group: root
+    mode: '0644'

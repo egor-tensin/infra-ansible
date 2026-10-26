@@ -1,0 +1,12 @@
+{{ ansible_managed | comment }}
+
+_options=()
+for _opt in "${OPTIONS[@]}"; do
+    if [ "$_opt" == debug ]; then
+        continue
+    fi
+    _options+=("$_opt")
+done
+_options+=(!debug)
+
+OPTIONS=("${_options[@]}")
