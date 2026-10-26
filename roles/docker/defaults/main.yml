@@ -1,4 +1,7 @@
-docker_enable_service: true
+docker_enable_service: false
 docker_enable_socket: true
-docker_logging_driver: false
+
+# Add the calling user to group 'docker' for sudo-less access:
 docker_add_to_group: false
+
+docker_logging_driver: false
