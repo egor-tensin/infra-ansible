@@ -1,0 +1,9 @@
+dependencies:
+  - role: linux
+  - role: makepkg_debug
+  - role: pacman
+  - role: reflector
+  - role: paccache
+  - role: kernel
+  - role: microcode
+  - role: yay

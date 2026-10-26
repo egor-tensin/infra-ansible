@@ -1,0 +1,4 @@
+- name: Configure sudo
+  when: linux_sudo
+  ansible.builtin.import_role:
+    name: sudo
