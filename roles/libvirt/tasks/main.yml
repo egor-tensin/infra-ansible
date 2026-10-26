@@ -8,7 +8,7 @@
     state: present
 
 - name: Add user to group libvirt
-  when: '{{ libvirt_add_to_group }}'
+  when: libvirt_add_to_group
   become: true
   ansible.builtin.user:
     append: true
@@ -36,7 +36,7 @@
     state: "{{ libvirt_enable_socket | ternary('started', 'stopped') }}"
 
 - name: Fix networking for libvirt
-  when: '{{ libvirt_fix_firewall_backend }}'
+  when: libvirt_fix_firewall_backend
   become: true
   community.general.ini_file:
     path: /etc/libvirt/network.conf
