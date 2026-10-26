@@ -1,5 +1,14 @@
 - name: Set up locales
   become: true
   community.general.locale_gen:
-    name: "{{ locale_list + ['en_US.UTF-8'] }}"
+    name: "{{ (locale_list + [locale_main, 'en_US.UTF-8']) | unique }}"
     state: present
+
+- name: Set the locale to use
+  become: true
+  ansible.builtin.template:
+    src: locale.conf.j2
+    dest: /etc/locale.conf
+    owner: root
+    group: root
+    mode: '0644'

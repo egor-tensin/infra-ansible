@@ -1,4 +1,5 @@
-# en_US.UTF-8 is always included.
-locale_list:
-  # The better locale for Europe, compared to en_US.
-  - en_GB.UTF-8
+# The saner locale for English, compared to en_US. Particularly, in terms of
+# date/time formatting, stuff like that.
+locale_main: en_GB.UTF-8
+# Additional locales. en_US.UTF-8 is always included.
+locale_list: []
