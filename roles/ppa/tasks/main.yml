@@ -22,10 +22,10 @@
     signed_by: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
     suites: '{{ ppa_distro }}'
     components: main
-  register: ppa
+  register: ppa_setup
 
 - name: Update apt cache
-  when: ppa is changed
+  when: ppa_setup is changed
   become: true
   ansible.builtin.apt:
     update_cache: true
