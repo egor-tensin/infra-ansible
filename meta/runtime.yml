@@ -1,3 +1,2 @@
-# ansible.builtin.systemd was renamed to ansible.builtin.systemd_service in
-# 2.14.0.
-requires_ansible: '>=2.14.0'
+requires_ansible: '>=2.15.0'
+# For deb822_repository, at least?
