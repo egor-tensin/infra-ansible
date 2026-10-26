@@ -1,0 +1,10 @@
+libvirt_enable_service: false
+libvirt_enable_socket: true
+
+# Add the calling user to group 'libvirt' for sudo-less access:
+libvirt_add_to_group: false
+
+# https://superuser.com/a/1857648
+# https://bbs.archlinux.org/viewtopic.php?id=284664
+# https://wiki.archlinux.org/title/Libvirt#Using_iptables
+libvirt_fix_firewall_backend: true

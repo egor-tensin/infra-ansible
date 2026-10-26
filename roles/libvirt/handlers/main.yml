@@ -1,0 +1,14 @@
+# Don't restart if it's not running.
+- name: Collect service facts
+  listen: libvirt_restart
+  ansible.builtin.service_facts:
+
+- name: Restart libvirt service
+  listen: libvirt_restart
+  become: true
+  when: |
+    'libvirtd.service' in ansible_facts.services
+    and ansible_facts.services['libvirtd.service'].state == 'running'
+  ansible.builtin.systemd_service:
+    name: libvirtd
+    state: restarted

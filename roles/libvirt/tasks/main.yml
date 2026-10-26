@@ -1,0 +1,51 @@
+- name: Install libvirt & dependencies
+  become: true
+  ansible.builtin.package:
+    name:
+      - libvirt
+      - qemu-desktop
+      - dnsmasq
+    state: present
+
+- name: Add user to group libvirt
+  when: '{{ libvirt_add_to_group }}'
+  become: true
+  ansible.builtin.user:
+    append: true
+    groups: [libvirt]
+    name: '{{ ansible_user }}'
+
+- name: Enable & start systemd services
+  loop:
+    - libvirtd
+    - virtlogd
+  become: true
+  ansible.builtin.systemd_service:
+    name: '{{ item }}.service'
+    enabled: '{{ libvirt_enable_service }}'
+    state: "{{ libvirt_enable_service | ternary('started', 'stopped') }}"
+
+- name: Enable & start systemd sockets
+  loop:
+    - libvirtd
+    - virtlogd
+  become: true
+  ansible.builtin.systemd_service:
+    name: '{{ item }}.socket'
+    enabled: '{{ libvirt_enable_socket }}'
+    state: "{{ libvirt_enable_socket | ternary('started', 'stopped') }}"
+
+- name: Fix networking for libvirt
+  when: '{{ libvirt_fix_firewall_backend }}'
+  become: true
+  community.general.ini_file:
+    path: /etc/libvirt/network.conf
+    option: firewall_backend
+    value: '"iptables"'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: libvirt_restart
+
+- name: Run handlers if neccessary
+  ansible.builtin.meta: flush_handlers
