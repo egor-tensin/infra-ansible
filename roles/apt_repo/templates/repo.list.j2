@@ -1,5 +1,0 @@
-{{ ansible_managed | comment }}
-
-{% set distro = apt_repo_append_distro | ternary(ansible_facts['distribution'] | lower, '') %}
-{% set codename = apt_repo_codename | default(ansible_facts["distribution_release"]) %}
-deb [signed-by={{ apt_repo_key_path }}] {{ apt_repo_url }}{{ distro }} {{ codename }} {{ apt_repo_component }}

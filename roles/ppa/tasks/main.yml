@@ -14,12 +14,18 @@
   ansible.builtin.include_vars: '{{ __ppa_vars_file }}'
 
 - name: Set up PPA repository
-  vars:
-    apt_repo_name: '{{ ppa_name }}'
-    apt_repo_key_url: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
-    apt_repo_url: 'https://ppa.launchpadcontent.net/{{ ppa_owner }}/{{ ppa_name }}/ubuntu'
-    apt_repo_codename: '{{ ppa_distro }}'
-    # All PPA repositories are Ubuntu repositories, even though they might be used on Debian:
-    apt_repo_append_distro: false
-  ansible.builtin.include_role:
-    name: apt_repo
+  become: true
+  ansible.builtin.deb822_repository:
+    name: '{{ ppa_name }}'
+    uris: 'https://ppa.launchpadcontent.net/{{ ppa_owner }}/{{ ppa_name }}/ubuntu'
+    state: present
+    signed_by: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
+    suites: '{{ ppa_distro }}'
+    components: main
+  register: ppa
+
+- name: Update apt cache
+  when: ppa is changed
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
