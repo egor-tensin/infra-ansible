@@ -15,7 +15,7 @@ class ActionModule(ActionBase):
     def run(self, tmp=None, task_vars=None):
         super().run(tmp, task_vars)
 
-        before = self._parse_dpkg_log(task_vars, default="")
+        before = self._parse_dpkg_log(task_vars)
 
         apt_result = self._execute_module(
             module_name="ansible.builtin.apt",
@@ -28,8 +28,8 @@ class ActionModule(ActionBase):
         apt_result["packages"] = after[len(before) :]
         return apt_result
 
-    def _parse_dpkg_log(self, task_vars, default=None):
-        contents = file.read_file(self, LOG_PATH, task_vars, default=default)
+    def _parse_dpkg_log(self, task_vars):
+        contents = file.read_file(self, LOG_PATH, task_vars, default="")
         lines = contents.splitlines()
         regex = re.compile(" install | upgrade | remove | purge ")
         lines = [line for line in lines if regex.search(line)]
