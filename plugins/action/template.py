@@ -31,7 +31,8 @@ class ActionModule(ActionBase):
                     mode = int(mode, 8)
                 except ValueError:
                     raise AnsibleActionFail(f"Mode {mode} must be an octal number")
-            dir_mode = mode | stat.S_IEXEC
+            # +x on template file permissions:
+            dir_mode = mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
             dir_args["mode"] = dir_mode
 
         result = self._execute_module(
