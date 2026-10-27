@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# This module allows calling `etckeeper commit` while restricting the modified
+# files list. So, if there're other changes (except for the allowed ones),
+# it'll fail.
+
 import re
 
 from ansible.errors import AnsibleActionFail

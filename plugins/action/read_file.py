@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# ansible.builtin.slurp is a fucking joke. Returning a base64-encoded blob,
+# really? That's just idiotic. And, as of Oct '26, it seems to be the only
+# built-in way to read a remote file.
+
 from ansible.plugins.action import ActionBase
 from ansible_collections.tensin.infra.plugins.module_utils import file
 

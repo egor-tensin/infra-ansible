@@ -1,5 +1,13 @@
 #!/usr/bin/python
 
+# As of Oct '26, ansible.builtin.git is very idempotent, but also quite
+# destructive, potentially. I want a git checkout module that:
+#     * doesn't overwrite directories for no reason,
+#     * doesn't overwrite existing repositories with different remotes,
+#     * doesn't just discard every modified file,
+#     * doesn't checkout if the current HEAD is not an ancestor of the
+#       requested version.
+
 from ansible.errors import AnsibleActionFail
 from ansible.plugins.action import ActionBase
 from ansible_collections.tensin.infra.plugins.module_utils import file, git

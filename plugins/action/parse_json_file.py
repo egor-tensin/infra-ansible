@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# Read a JSON file and parse it into an Ansible object, like a normal person
+# would. As of Oct '26, there doesn't seem to be a built-in way to do this.
+
 import json
 
 from ansible.errors import AnsibleActionFail

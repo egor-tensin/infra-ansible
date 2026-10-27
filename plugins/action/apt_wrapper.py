@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# I literally can barely believe that ansible.builtin.apt doesn't return the
+# list of modified packages as of Oct '26.
+
 import re
 
 from ansible.plugins.action import ActionBase
