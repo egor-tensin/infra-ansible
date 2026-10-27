@@ -1,17 +1,7 @@
-- name: Create override directory
-  loop: '{{ systemd_depend_iface_services }}'
-  become: true
-  ansible.builtin.file:
-    path: '/etc/systemd/system/{{ item }}.service.d'
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
 - name: Create service override
   loop: '{{ systemd_depend_iface_services }}'
   become: true
-  ansible.builtin.template:
+  tensin.infra.template:
     src: override.conf.j2
     dest: '/etc/systemd/system/{{ item }}.service.d/depend_iface_{{ systemd_depend_iface_name }}.conf'
     owner: root

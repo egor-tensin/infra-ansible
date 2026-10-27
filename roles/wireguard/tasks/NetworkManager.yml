@@ -21,20 +21,10 @@
   ansible.builtin.include_role:
     name: systemd_depend_iface
 
-- name: Create override directory for services
+- name: Set up service dependencies for NetworkManager
   loop: '{{ wireguard_dependent_services }}'
   become: true
-  ansible.builtin.file:
-    path: '/etc/systemd/system/{{ item }}.service.d'
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Set up service dependencies for wg-quick
-  loop: '{{ wireguard_dependent_services }}'
-  become: true
-  ansible.builtin.template:
+  tensin.infra.template:
     src: depend_service_NetworkManager.conf.j2
     dest: '/etc/systemd/system/{{ item }}.service.d/depend_service_NetworkManager.conf'
     owner: root

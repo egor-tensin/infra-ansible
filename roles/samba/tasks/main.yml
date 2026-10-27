@@ -4,18 +4,9 @@
     name: samba
     state: present
 
-- name: Create /etc/samba
+- name: Configure Samba
   become: true
-  ansible.builtin.file:
-    path: /etc/samba
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Format smb.conf
-  become: true
-  ansible.builtin.template:
+  tensin.infra.template:
     src: smb.conf.j2
     dest: /etc/samba/smb.conf
     owner: root
