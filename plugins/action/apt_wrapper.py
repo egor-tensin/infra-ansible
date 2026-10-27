@@ -19,7 +19,7 @@ class ActionModule(ActionBase):
 
         apt_result = self._execute_module(
             module_name="ansible.builtin.apt",
-            module_args=self._task.args.get("apt_args", {}),
+            module_args=self._task.args,
             task_vars=task_vars,
         )
 

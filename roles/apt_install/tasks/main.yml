@@ -1,9 +1,8 @@
 - name: Install packages
   become: true
   tensin.infra.apt_wrapper:
-    apt_args:
-      name: '{{ apt_install_packages }}'
-      state: present
+    name: '{{ apt_install_packages }}'
+    state: present
   register: apt_install_result
 
 - name: Show installed packages

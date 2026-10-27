@@ -1,9 +1,8 @@
 - name: Upgrade packages
   become: true
   tensin.infra.apt_wrapper:
-    apt_args:
-      update_cache: true
-      upgrade: dist
+    update_cache: true
+    upgrade: dist
   register: apt_result
 
 - name: Show upgraded packages
@@ -21,9 +20,8 @@
 - name: Clean up dependencies
   become: true
   tensin.infra.apt_wrapper:
-    apt_args:
-      autoremove: true
-      purge: true
+    autoremove: true
+    purge: true
   register: apt_result
 
 - name: Show removed dependencies

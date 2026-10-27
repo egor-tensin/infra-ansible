@@ -21,22 +21,14 @@ class ActionModule(ActionBase):
         dest = self._task.args["dest"]
         accept_hostkey = self._task.args.get("accept_hostkey", False)
         remote = self._task.args.get("remote", "origin")
-        version = self._task.args["version"]
-
-        builtin_args = {
-            "repo": repo,
-            "dest": dest,
-            "accept_hostkey": accept_hostkey,
-            "remote": remote,
-            "version": version,
-        }
+        version = self._task.args.get("version", "HEAD")
 
         if not file.does_dir_exist(self, dest, task_vars):
             # If the destination directory doesn't exist, delegate to the
             # builtin module.
             return self._execute_module(
                 module_name="ansible.builtin.git",
-                module_args=builtin_args,
+                module_args=self._task.args,
                 task_vars=task_vars,
             )
 
@@ -73,6 +65,6 @@ class ActionModule(ActionBase):
         # Finally, everything looks good, delegate to the builtin module.
         return self._execute_module(
             module_name="ansible.builtin.git",
-            module_args=builtin_args,
+            module_args=self._task.args,
             task_vars=task_vars,
         )
