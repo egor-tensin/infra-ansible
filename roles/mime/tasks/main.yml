@@ -1,0 +1,5 @@
+- name: Configure applications
+  loop: '{{ mime_apps }}'
+  loop_control:
+    loop_var: app
+  ansible.builtin.include_tasks: app.yml

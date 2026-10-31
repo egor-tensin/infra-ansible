@@ -1,0 +1,37 @@
+- name: Read app's .desktop file
+  tensin.infra.read_file:
+    path: '/usr/share/applications/{{ app }}.desktop'
+  register: mime_app_file
+
+- name: With supported MIME types
+  vars:
+    # The regexes below inexplicable don't work if you add like '^\\s*' in
+    # the beginning, no idea why.
+    mime_types: >-
+      {{
+        (
+          mime_app_file.content
+          | regex_search('MimeType=.*$')
+          | regex_replace('MimeType=', '')
+        ).split(';')
+        | reject('equalto', '')
+      }}
+  block:
+    - name: Show supported MIME types
+      ansible.builtin.debug:
+        var: mime_types
+
+    - name: Fail if no MIME types
+      when: mime_types | length == 0
+      ansible.builtin.fail:
+        msg: No MIME types defined?
+
+    - name: Configure MIME type
+      loop: '{{ mime_types }}'
+      community.general.ini_file:
+        path: ~/.config/mimeapps.list
+        section: Default Applications
+        option: '{{ item }}'
+        value: '{{ app }}.desktop'
+        no_extra_spaces: true
+        mode: '0600'
