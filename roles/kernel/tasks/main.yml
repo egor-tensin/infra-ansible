@@ -15,6 +15,13 @@
   ansible.builtin.fail:
     msg: Kernel flavour must be either 'latest' or 'lts'
 
+- name: Fail if invalid bootloader
+  when: |
+    kernel_bootloader not in ['grub', 'systemd-boot']
+  ansible.builtin.fail:
+    msg: |
+      Supported bootloaders are: 'grub', 'systemd-boot'
+
 - name: Install kernels
   become: true
   ansible.builtin.package:
@@ -23,13 +30,6 @@
       - linux-headers
       - linux-lts
       - linux-lts-headers
-
-- name: Fail if invalid bootloader
-  when: |
-    kernel_bootloader not in ['grub', 'systemd-boot']
-  ansible.builtin.fail:
-    msg: |
-      Supported bootloaders are: 'grub', 'systemd-boot'
 
 - name: 'Set up for bootloader {{ kernel_bootloader }}'
   ansible.builtin.include_tasks: '{{ kernel_bootloader }}.yml'
