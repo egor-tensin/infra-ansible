@@ -8,11 +8,11 @@
 
 - name: Install on Arch Linux
   when: ansible_facts['distribution'] == 'Archlinux'
-  ansible.builtin.import_tasks: arch.yml
+  ansible.builtin.include_tasks: arch.yml
 
 - name: Install on other distros
   when: ansible_facts['distribution'] != 'Archlinux'
-  ansible.builtin.import_tasks: default.yml
+  ansible.builtin.include_tasks: default.yml
 
 - name: Enable & start linux-status.service
   become: true

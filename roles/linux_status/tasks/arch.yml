@@ -2,5 +2,5 @@
   vars:
     aur_install_packages:
       - linux-status
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: aur_install
