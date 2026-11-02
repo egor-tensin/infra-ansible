@@ -1,6 +1,0 @@
-- name: Run etckeeper commit
-  become: true
-  tensin.infra.etckeeper_commit:
-    msg: '{{ etckeeper_commit_msg }}'
-    allowlist: '{{ etckeeper_commit_allowlist }}'
-    skip_no_changes: true
