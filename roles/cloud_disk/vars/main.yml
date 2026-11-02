@@ -1,0 +1,3 @@
+cloud_disk_device:
+  digitalocean: '/dev/disk/by-id/scsi-0DO_Volume_{{ cloud_disk_name }}'
+  yandex: '/dev/disk/by-id/virtio-{{ cloud_disk_name }}'

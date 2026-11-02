@@ -1,0 +1,8 @@
+# Must be one of 'digitalocean', 'yandex'
+#cloud_disk_provider:
+
+#cloud_disk_name:
+cloud_disk_dir: '/mnt/{{ cloud_disk_name }}'
+cloud_disk_fs: ext4
+
+cloud_disk_dependent_services: []

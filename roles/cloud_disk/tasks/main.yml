@@ -1,0 +1,32 @@
+- name: Fail if invalid provider
+  when: |
+    cloud_disk_provider not in ['digitalocean', 'yandex']
+  ansible.builtin.fail:
+    msg: |
+      Cloud disk provider must be one of 'digitalocean', 'yandex'
+
+- name: 'Create filesystem on disk: {{ cloud_disk_name }}'
+  become: true
+  check_mode: |-
+    {{ not lookup('env', 'CLOUD_DISK_CREATE_FS', default='') }}
+  community.general.filesystem:
+    dev: '{{ cloud_disk_device[cloud_disk_provider] }}'
+    fstype: '{{ cloud_disk_fs }}'
+    state: present
+    force: false
+
+- name: 'Mount disk: {{ cloud_disk_name }}'
+  become: true
+  ansible.posix.mount:
+    path: '{{ cloud_disk_dir }}'
+    src: '{{ cloud_disk_device[cloud_disk_provider] }}'
+    state: mounted
+    fstype: '{{ cloud_disk_fs }}'
+    opts: defaults,nofail,discard
+
+- name: Set up service dependencies
+  vars:
+    systemd_depend_mount_dir: '{{ cloud_disk_dir }}'
+    systemd_depend_mount_services: '{{ cloud_disk_dependent_services }}'
+  ansible.builtin.include_role:
+    name: systemd_depend_mount
