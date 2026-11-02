@@ -1,0 +1,14 @@
+- name: Configure makepkg
+  ansible.builtin.import_tasks: makepkg.yml
+
+- name: Set up yay
+  # Here instead of meta/ so that the stupid debug packages are already
+  # disabled.
+  ansible.builtin.import_role:
+    name: yay
+
+- name: Set up paccache
+  ansible.builtin.import_tasks: paccache.yml
+
+- name: Set up Reflector
+  ansible.builtin.import_tasks: reflector.yml

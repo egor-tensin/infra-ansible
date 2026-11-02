@@ -1,7 +1,7 @@
 - name: Disable debug in makepkg's OPTIONS
   become: true
   tensin.infra.template:
-    src: debug.conf.j2
+    src: makepkg/debug.conf.j2
     dest: /etc/makepkg.conf.d/debug.conf
     owner: root
     group: root
