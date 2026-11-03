@@ -1,0 +1,15 @@
+- name: Install packages
+  become: true
+  community.general.pacman:
+    name: '{{ install_packages }}'
+    state: present
+    reason: explicit
+    reason_for: all
+  register: install_result
+
+- name: Show installed packages
+  when: |
+    install_result.packages is defined
+        and (install_result.packages | length > 0)
+  ansible.builtin.debug:
+    var: install_result.packages | sort

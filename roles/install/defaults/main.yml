@@ -1,0 +1,5 @@
+install_packages: []
+
+# The package manager to use, must be one of 'apt', 'pacman', 'yay', 'default'
+# (for auto-detection).
+#install_backend: default

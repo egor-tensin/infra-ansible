@@ -1,0 +1,25 @@
+- when: install_backend is defined
+  block:
+    - name: Fail unless package manager is supported
+      when: |-
+        install_backend not in in ['apt', 'default', 'pacman', 'yay']
+      ansible.builtin.fail:
+        msg: 'Unsupported package manager: {{ install_backend }}'
+    
+    - name: Install using specific backend if specified
+      ansible.builtin.include_tasks: '{{ install_backend }}.yml'
+
+- when: install_backend is not defined
+  block:
+    - name: Detect system package manager
+      ansible.builtin.setup:
+        gather_subset:
+          - pkg_mgr
+    
+    - name: Install using one of the supported backends
+      when: ansible_facts['pkg_mgr'] in ['apt', 'pacman']
+      ansible.builtin.include_tasks: "{{ ansible_facts['pkg_mgr'] }}.yml"
+    
+    - name: Install using the default backend
+      when: ansible_facts['pkg_mgr'] not in ['apt', 'pacman']
+      ansible.builtin.include_tasks: default.yml

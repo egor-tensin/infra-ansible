@@ -1,6 +1,6 @@
-- name: Upgrade AUR packages
+- name: Install AUR packages
   kewlfft.aur.aur:
-    name: '{{ aur_install_packages }}'
+    name: '{{ install_packages }}'
     state: latest
     use: yay
     aur_only: true

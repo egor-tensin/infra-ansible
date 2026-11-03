@@ -1,0 +1,11 @@
+- name: Install packages
+  become: true
+  tensin.infra.apt_wrapper:
+    name: '{{ install_packages }}'
+    state: present
+  register: install_result
+
+- name: Show installed packages
+  when: install_result is changed
+  ansible.builtin.debug:
+    var: install_result.packages | sort

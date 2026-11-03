@@ -1,6 +1,7 @@
 - name: Install linux-status
   vars:
-    aur_install_packages:
+    install_packages:
       - linux-status
+    install_backend: yay
   ansible.builtin.import_role:
-    name: aur_install
+    name: install

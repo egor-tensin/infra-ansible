@@ -1,6 +1,6 @@
 dependencies:
-  - role: pacman_install
+  - role: install
     vars:
-      pacman_install_packages:
+      install_packages:
         - base-devel
         - git
