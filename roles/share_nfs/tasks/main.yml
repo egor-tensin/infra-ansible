@@ -23,10 +23,10 @@
     owner: root
     group: root
     mode: '0644'
-  register: nfs_exports_conf
+  register: share_nfs_config
 
 - name: Reload NFS mounts
-  when: nfs_exports_conf is changed
+  when: share_nfs_config is changed
   become: true
   ansible.builtin.command: /usr/sbin/exportfs -arv
   changed_when: true

@@ -1,5 +1,0 @@
-#nfs_dir:
-nfs_opts:
-nfs_all_squash: false
-#nfs_anonuid:
-#nfs_anongid:

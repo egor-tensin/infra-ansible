@@ -1,0 +1,5 @@
+#share_nfs_dir:
+share_nfs_opts:
+share_nfs_all_squash: false
+#share_nfs_anonuid:
+#share_nfs_anongid:

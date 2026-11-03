@@ -5,15 +5,15 @@
 [global]
     logging = syslog
     map to guest = Bad user
-{% if samba_guest_account %}
+{% if share_smb_guest_account %}
 {# Otherwise, it's `nobody`, and you will, most likely, get read access only. #}
-    guest account = {{ samba_guest_account }}
+    guest account = {{ share_smb_guest_account }}
 {% endif %}
     server role = standalone server
-    auto services = {{ samba_share_name }}
+    auto services = {{ share_smb_name }}
 
-[{{ samba_share_name }}]
-    path = {{ samba_share_dir }}
+[{{ share_smb_name }}]
+    path = {{ share_smb_dir }}
     read only = no
     guest ok = yes
     guest only = yes
