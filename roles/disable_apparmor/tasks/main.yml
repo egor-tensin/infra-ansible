@@ -1,0 +1,19 @@
+- name: Collect service facts
+  ansible.builtin.service_facts:
+
+- name: Disable AppArmor
+  when: |
+    'apparmor.service' in ansible_facts.services
+  block:
+    - name: Disable apparmor.service
+      become: true
+      ansible.builtin.systemd_service:
+        name: apparmor
+        enabled: false
+        state: stopped
+      register: disable_apparmor_result
+
+    - name: Reboot
+      when: disable_apparmor_result is changed
+      become: true
+      ansible.builtin.reboot:
