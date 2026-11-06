@@ -1,7 +1,6 @@
 dependencies:
   - role: cloud_init_wait
   - role: debian
-    vars:
-      debian_server_unattended_upgrades: true
+  - role: unattended_upgrades
   - role: firewall
   - role: linux_status

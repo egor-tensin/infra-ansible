@@ -14,4 +14,3 @@ debian_server_packages:
   - vim
   - wget
   - xxd
-debian_server_unattended_upgrades: false

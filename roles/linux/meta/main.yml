@@ -2,3 +2,4 @@ dependencies:
   - role: locale
   - role: sshd
   - role: journald
+  - role: system_upgrade

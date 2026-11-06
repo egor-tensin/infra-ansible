@@ -5,7 +5,7 @@
     create: false
     section: options
     option: IgnorePkg
-    value: "{{ pacman_ignore_packages | join(' ') }}"
+    value: "{{ system_upgrade_ignore_packages | join(' ') }}"
 
 - name: Upgrade packages
   become: true
@@ -16,15 +16,17 @@
   #     https://docs.ansible.com/projects/ansible/latest/collections/community/general/pacman_module.html
   # this module now reports 'changed' even if only the cache was updated, with
   # no upgrades; this is the workaround.
-  changed_when: pacman_result.packages is defined and (pacman_result.packages | length > 0)
-  register: pacman_result
+  changed_when: |
+    system_upgrade_result.packages is defined
+    and (system_upgrade_result.packages | length > 0)
+  register: system_upgrade_result
 
 - name: Post-upgrade
-  when: pacman_result is changed
+  when: system_upgrade_result is changed
   block:
     - name: Show upgraded packages
       ansible.builtin.debug:
-        var: pacman_result.packages | sort
+        var: system_upgrade_result.packages | sort
 
     - name: Reboot
       become: true
@@ -36,21 +38,24 @@
   ansible.builtin.command: pacman -Qqdt
   changed_when: false
   failed_when: |
-    pacman_result.rc != 0
-    and not (pacman_result.rc == 1 and (pacman_result.stdout_lines | length == 0))
-  register: pacman_result
+    system_upgrade_result.rc != 0
+    and not (
+        system_upgrade_result.rc == 1
+        and (system_upgrade_result.stdout_lines | length == 0)
+    )
+  register: system_upgrade_result
 
 - name: Remove unneeded dependencies
-  when: pacman_result.stdout_lines | length > 0
+  when: system_upgrade_result.stdout_lines | length > 0
   become: true
   community.general.pacman:
-    name: '{{ pacman_result.stdout_lines }}'
+    name: '{{ system_upgrade_result.stdout_lines }}'
     state: absent
     extra_args: --recursive
     remove_nosave: true
-  register: pacman_result
+  register: system_upgrade_result
 
 - name: Show removed packages
-  when: pacman_result.packages is defined
+  when: system_upgrade_result.packages is defined
   ansible.builtin.debug:
-    var: pacman_result.packages | sort
+    var: system_upgrade_result.packages | sort

@@ -1,0 +1,27 @@
+- when: system_upgrade_backend is defined
+  block:
+    - name: Fail unless package manager is supported
+      when: |-
+        system_upgrade_backend not in ['apt', 'pacman', 'yay']
+      ansible.builtin.fail:
+        msg: 'Unsupported package manager: {{ system_upgrade_backend }}'
+
+    - name: Upgrade using specific backend if specified
+      ansible.builtin.include_tasks: '{{ system_upgrade_backend }}.yml'
+
+- when: system_upgrade_backend is not defined
+  block:
+    - name: Detect system package manager
+      ansible.builtin.setup:
+        gather_subset:
+          - pkg_mgr
+
+    - name: Fail unless package manager is supported
+      when: |-
+        ansible_facts['pkg_mgr'] not in ['apt', 'pacman']
+      ansible.builtin.fail:
+        msg: 'Unsupported package manager: {{ system_upgrade_backend }}'
+
+    - name: Upgrade using one of the supported backends
+      when: ansible_facts['pkg_mgr'] in ['apt', 'pacman']
+      ansible.builtin.include_tasks: "{{ ansible_facts['pkg_mgr'] }}.yml"

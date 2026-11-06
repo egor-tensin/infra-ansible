@@ -1,6 +1,8 @@
 dependencies:
   - role: linux
-  - role: pacman
   - role: yay
+  - role: system_upgrade
+    vars:
+      system_upgrade_backend: yay
   - role: kernel
   - role: microcode

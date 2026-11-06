@@ -3,15 +3,15 @@
   tensin.infra.apt_wrapper:
     update_cache: true
     upgrade: dist
-  register: apt_result
+  register: system_upgrade_result
 
 - name: Show upgraded packages
-  when: apt_result is changed
+  when: system_upgrade_result is changed
   ansible.builtin.debug:
-    var: apt_result.packages | sort
+    var: system_upgrade_result.packages | sort
 
 - name: Reboot
-  when: apt_result is changed
+  when: system_upgrade_result is changed
   become: true
   ansible.builtin.reboot:
     # 3 minutes is plenty.
@@ -22,13 +22,9 @@
   tensin.infra.apt_wrapper:
     autoremove: true
     purge: true
-  register: apt_result
+  register: system_upgrade_result
 
 - name: Show removed dependencies
-  when: apt_result is changed
+  when: system_upgrade_result is changed
   ansible.builtin.debug:
-    var: apt_result.packages | sort
-
-- name: Configure unattended-upgrades
-  when: apt_unattended_upgrades
-  ansible.builtin.include_tasks: unattended_upgrades.yml
+    var: system_upgrade_result.packages | sort

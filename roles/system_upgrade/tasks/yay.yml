@@ -1,0 +1,9 @@
+- name: Upgrade AUR packages
+  kewlfft.aur.aur:
+    upgrade: true
+    use: yay
+    aur_only: true
+    extra_args: --removemake
+  # AUR connection fails a bit too frequently:
+  retries: 3
+  delay: 3

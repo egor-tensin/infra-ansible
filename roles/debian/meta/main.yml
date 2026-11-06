@@ -1,9 +1,6 @@
 dependencies:
   - role: linux
   - role: disable_apparmor
-  - role: apt
-    vars:
-      apt_unattended_upgrades: '{{ debian_server_unattended_upgrades }}'
   - role: install
     vars:
       install_packages: '{{ debian_server_packages }}'

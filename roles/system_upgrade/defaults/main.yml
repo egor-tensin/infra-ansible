@@ -1,0 +1,4 @@
+# The package manager to use, must be one of 'apt', 'pacman', 'yay'.
+#system_upgrade_backend:
+
+system_upgrade_ignore_packages: []

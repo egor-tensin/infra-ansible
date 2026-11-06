@@ -33,8 +33,8 @@ Unattended-Upgrade::Mail "root";
 Unattended-Upgrade::MailOnlyOnError "true";
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
 Unattended-Upgrade::Remove-Unused-Dependencies "true";
-Unattended-Upgrade::Automatic-Reboot "{{ apt_unattended_reboot | lower }}";
-Unattended-Upgrade::Automatic-Reboot-Time "{{ apt_unattended_reboot_time }}";
+Unattended-Upgrade::Automatic-Reboot "{{ unattended_upgrades_reboot | lower }}";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ unattended_upgrades_reboot_time }}";
 Unattended-Upgrade::SyslogEnable "true";
 
 Dpkg::Options {
