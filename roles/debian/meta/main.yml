@@ -3,4 +3,4 @@ dependencies:
   - role: disable_apparmor
   - role: install
     vars:
-      install_packages: '{{ debian_server_packages }}'
+      install_packages: '{{ debian_packages }}'
