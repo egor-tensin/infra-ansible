@@ -5,17 +5,19 @@
       - docker.socket
   failed_when:
     docker_systemd_info.msg is defined
-        and 'No units match any of the provided patterns' not in docker_systemd_info.msg
-# ^^^ On fresh installations, systemctl list-units (which is what systemd_info
-# does, it doesn't show the Docker units at all, don't exactly understand why.
+    and 'No units match any of the provided patterns' not in docker_systemd_info.msg
+  # ^^^ On fresh installations, systemctl list-units (which is what systemd_info
+  # does, it doesn't show the Docker units at all, don't exactly understand why.
   register: docker_systemd_info
 
 - name: Clean up docker data
   when: |
     docker_systemd_info.units is defined
-        and (docker_systemd_info.units['docker.service'].substate == 'running'
-            or docker_systemd_info.units['docker.socket'].substate == 'listening'
-            or docker_systemd_info.units['docker.socket'].substate == 'running')
+    and (
+        docker_systemd_info.units['docker.service'].substate == 'running'
+        or docker_systemd_info.units['docker.socket'].substate == 'listening'
+        or docker_systemd_info.units['docker.socket'].substate == 'running'
+    )
   become: true
   block:
     # Dependencies of the community.docker.docker_prune Ansible module:

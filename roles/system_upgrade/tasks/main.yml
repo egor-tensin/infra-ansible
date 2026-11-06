@@ -20,8 +20,7 @@
       when: |-
         ansible_facts['pkg_mgr'] not in ['apt', 'pacman']
       ansible.builtin.fail:
-        msg: 'Unsupported package manager: {{ system_upgrade_backend }}'
+        msg: "Unsupported package manager: {{ ansible_facts['pkg_mgr'] }}"
 
     - name: Upgrade using one of the supported backends
-      when: ansible_facts['pkg_mgr'] in ['apt', 'pacman']
       ansible.builtin.include_tasks: "{{ ansible_facts['pkg_mgr'] }}.yml"
