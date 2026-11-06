@@ -22,6 +22,7 @@
     signed_by: 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x{{ ppa_key }}'
     suites: '{{ ppa_distro }}'
     components: main
+    install_python_debian: true
   register: ppa_setup
 
 - name: Update apt cache
