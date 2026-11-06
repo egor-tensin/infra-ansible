@@ -1,6 +1,5 @@
 dependencies:
   - role: linux
-  - role: yay
   - role: system_upgrade
     vars:
       system_upgrade_backend: yay
