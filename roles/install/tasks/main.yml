@@ -19,7 +19,7 @@
     - name: Install using one of the supported backends
       when: ansible_facts['pkg_mgr'] in ['apt', 'pacman']
       ansible.builtin.include_tasks: "{{ ansible_facts['pkg_mgr'] }}.yml"
-    
+
     - name: Install using the default backend
       when: ansible_facts['pkg_mgr'] not in ['apt', 'pacman']
       ansible.builtin.include_tasks: default.yml
