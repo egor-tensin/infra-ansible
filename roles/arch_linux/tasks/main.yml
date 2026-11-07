@@ -7,6 +7,13 @@
   ansible.builtin.import_role:
     name: yay
 
+- name: Upgrade AUR packages
+  # Again, here instead of meta/ for the same reason.
+  ansible.builtin.import_role:
+    name: system_upgrade
+  vars:
+    system_upgrade_backend: yay
+
 - name: Set up paccache
   ansible.builtin.import_tasks: paccache.yml
 
