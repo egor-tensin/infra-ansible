@@ -29,7 +29,7 @@ Then you can use roles in your playbook:
 - name: Test playbook
   hosts: all
   roles:
-    - tensin.infra.apt
+    - tensin.infra.system_upgrade
     - tensin.infra.journald
     ...
 ```
