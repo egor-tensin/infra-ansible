@@ -23,10 +23,15 @@
     mode: '0440'
     validate: 'visudo -cf %s'
 
-- name: Remove archinstall entries
-  when: sudo_purge_archinstall
+- name: Remove installer entries
+  when: sudo_cleanup_installer
   become: true
+  loop:
+    # cloud-init:
+    - 90-cloud-init-users
+    # archinstall:
+    - '\d{2}_{{ ansible_user }}'
   community.general.file_remove:
     path: /etc/sudoers.d
-    pattern: '\d{2}_{{ ansible_user }}'
+    pattern: '{{ item }}'
     use_regex: true

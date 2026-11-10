@@ -3,5 +3,5 @@ sudo_user: '{{ ansible_user }}'
 # Environment variables to preserve for sudo calls:
 sudo_env: []
 
-# Remove entries created by archinstall:
-sudo_purge_archinstall: true
+# Remove entries created by cloud-init/archinstall/etc.:
+sudo_cleanup_installer: true
