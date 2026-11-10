@@ -2,10 +2,11 @@ infra-ansible
 =============
 
 Some common Ansible roles used by me to manage things (for example, see
-[infra-cloud], [infra-desktop]).
+[infra-cloud], [infra-desktop], [infra-raspi]).
 
 [infra-cloud]: https://github.com/egor-tensin/infra-cloud
 [infra-desktop]: https://github.com/egor-tensin/infra-desktop
+[infra-raspi]: https://github.com/egor-tensin/infra-raspi
 
 Usage
 -----
