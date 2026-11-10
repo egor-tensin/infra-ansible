@@ -1,2 +1,0 @@
-# Enable passwordless sudo for the calling user:
-linux_sudo: false

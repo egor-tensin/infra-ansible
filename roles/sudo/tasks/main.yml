@@ -22,3 +22,11 @@
     group: root
     mode: '0440'
     validate: 'visudo -cf %s'
+
+- name: Remove archinstall entries
+  when: sudo_purge_archinstall
+  become: true
+  community.general.file_remove:
+    path: /etc/sudoers.d
+    pattern: '\d{2}_{{ ansible_user }}'
+    use_regex: true

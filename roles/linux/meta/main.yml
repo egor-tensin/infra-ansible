@@ -1,5 +1,6 @@
 dependencies:
   - role: locale
+  - role: sudo
   - role: sshd
   - role: journald
   - role: system_upgrade
