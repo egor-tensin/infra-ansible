@@ -43,8 +43,8 @@
     mode: '0600'
   notify: bootloader_configured
 
-- name: Remove archinstall entries
-  when: kernel_systemd_boot_purge_archinstall
+- name: Remove installer entries
+  when: kernel_cleanup_installer
   become: true
   community.general.file_remove:
     path: /boot/loader/entries
