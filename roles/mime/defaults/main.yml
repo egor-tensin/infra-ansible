@@ -1,4 +1,8 @@
-# List of applications to bind to their supported MIME types.
-# The list can be found on your system in /usr/shared/applications (omit the
+# The application to bind to their supported MIME types.
+# All apps can be found on your system in /usr/shared/applications (omit the
 # ".desktop" extension).
-mime_apps: []
+#mime_app:
+
+# The list of MIME types to configure. If omitted, all of the app's supported
+# types will be bound.
+#mime_types: []
