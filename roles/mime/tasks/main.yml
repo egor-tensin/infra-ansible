@@ -1,4 +1,5 @@
-- name: Read app's .desktop file
+- name: Fetch MIME types supported by the app
+  when: mime_types is not defined
   tensin.infra.read_file:
     path: '/usr/share/applications/{{ mime_app }}.desktop'
   register: mime_app_file
@@ -11,6 +12,7 @@
       {{
         (
           mime_app_file.content
+          | default('')
           | regex_search('MimeType=.*$')
           | regex_replace('MimeType=', '')
         ).split(';')
